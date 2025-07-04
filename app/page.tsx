@@ -148,72 +148,6 @@ const Lightbulb = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const StickySupportBadge = () => {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isMinimized, setIsMinimized] = useState(false);
-  
-  if (!isVisible) return null;
-  
-  return (
-    <div className="fixed bottom-6 right-6 z-50">
-      {isMinimized ? (
-        // Minimized state - just a small badge
-        <button
-          onClick={() => setIsMinimized(false)}
-          className="bg-gradient-to-r from-red-500 to-red-600 text-white p-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300"
-        >
-          <span className="text-sm font-bold">💡</span>
-        </button>
-      ) : (
-        // Expanded state
-        <div className="bg-white border border-gray-200 shadow-xl rounded-xl p-4 max-w-sm w-full text-sm text-gray-800 transform transition-all duration-300 hover:shadow-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">💡</span>
-              <p className="font-semibold text-gray-900">Turn insights into results!</p>
-            </div>
-            <div className="flex gap-1">
-              <button
-                onClick={() => setIsMinimized(true)}
-                className="text-gray-400 hover:text-gray-600 text-lg leading-none w-6 h-6 flex items-center justify-center"
-                title="Minimize"
-              >
-                −
-              </button>
-              <button
-                onClick={() => setIsVisible(false)}
-                className="text-gray-400 hover:text-gray-600 text-lg leading-none w-6 h-6 flex items-center justify-center"
-                title="Close"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-          
-          <p className="text-gray-600 mb-3 leading-relaxed">
-            Need help turning these customer insights into better websites and marketing strategy?
-          </p>
-          
-          <div className="flex gap-2">
-            
-              href="mailto:hello@8bitcontent.com?subject=Customer Survey Tool - Help with insights"
-              className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-2 rounded-lg font-medium hover:from-red-600 hover:to-red-700 transition-all duration-200 text-center text-xs"
-            >
-              Get Help →
-            </a>
-            <button
-              onClick={() => setIsMinimized(true)}
-              className="px-3 py-2 text-gray-500 hover:text-gray-700 text-xs font-medium"
-            >
-              Later
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
 const SurveyCreatorTool = () => {
   const [businessInfo, setBusinessInfo] = useState({
     businessType: '',
@@ -703,8 +637,20 @@ const copyToClipboard = async () => {
           </div>
         </CardContent>
       </Card>
+      <div className="text-center p-6 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100">
+        <p className="text-gray-700">
+          Need help turning these customer insights into better websites and content marketing strategy?{' '}
+          <strong>
+            <a 
+              href="mailto:start@8bitcontent.com?subject=Customer Survey Tool - Help with insights"
+              className="text-red-600 hover:text-red-700 hover:underline"
+            >
+              Reach out to us at 8-Bit Content today!
+            </a>
+          </strong>
+        </p>
+      </div>
     </div>
-    <StickySupportBadge />
   </div>
 );
 };
