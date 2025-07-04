@@ -639,13 +639,13 @@ const copyToClipboard = async () => {
       </Card>
       <div className="text-center p-6 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100">
   <p className="text-gray-700 mb-3">
-    Need help turning these customer insights into better websites and content marketing strategy?
+    Need help using these customer insights to improve your website and content marketing strategy?
   </p>
   <a
     href="mailto:start@8bitcontent.com?subject=Customer Survey Tool – Help with insights"
     className="block text-xl font-bold text-red-600 hover:text-red-700 hover:underline"
   >
-    Reach out to us at 8-Bit Content today!
+    Reach out to us at 8-Bit Content for a quick intro!
   </a>
 </div>
     </div>
