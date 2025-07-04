@@ -10,7 +10,7 @@ const CardHeader = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col space-y-1.5 p-6">{children}</div>
 );
 
-const CardTitle = ({ children, className = "", style }: { children: React.ReactNode, className?: string, style?: any }) => (
+const CardTitle = ({ children, className = "", style }: { children: React.ReactNode, className?: string, style?: React.CSSProperties }) => (
   <h3 className={`text-2xl font-semibold leading-none tracking-tight ${className}`} style={style}>{children}</h3>
 );
 
@@ -18,7 +18,15 @@ const CardContent = ({ children, className = "" }: { children: React.ReactNode, 
   <div className={`p-6 pt-0 ${className}`}>{children}</div>
 );
 
-const Button = ({ children, onClick, variant = "default", size = "default", disabled = false, className = "", style }: any) => {
+const Button = ({ children, onClick, variant = "default", size = "default", disabled = false, className = "", style }: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: "default" | "outline";
+  size?: "default" | "sm";
+  disabled?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
   const baseClasses = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:scale-105 active:scale-95 cursor-pointer";
   const variants: Record<string, string> = {
   default: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -63,15 +71,6 @@ interface TextareaProps {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-const Textarea = ({ placeholder, value, onChange }: TextareaProps) => (
-  <textarea
-    className="flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-    placeholder={placeholder}
-    value={value}
-    onChange={onChange}
-  />
-);
-
 const Select = ({ onValueChange, children, className = "" }: { 
   onValueChange?: (value: string) => void, 
   children: React.ReactNode,
@@ -86,8 +85,6 @@ const Select = ({ onValueChange, children, className = "" }: {
     </select>
   </div>
 );
-
-const SelectTrigger = ({ children }: { children: React.ReactNode }) => children;
 
 const SelectValue = ({ placeholder }: { placeholder: string }) => (
   <option value="">{placeholder}</option>
@@ -150,6 +147,72 @@ const Lightbulb = ({ className }: { className?: string }) => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
   </svg>
 );
+
+const StickySupportBadge = () => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [isMinimized, setIsMinimized] = useState(false);
+  
+  if (!isVisible) return null;
+  
+  return (
+    <div className="fixed bottom-6 right-6 z-50">
+      {isMinimized ? (
+        // Minimized state - just a small badge
+        <button
+          onClick={() => setIsMinimized(false)}
+          className="bg-gradient-to-r from-red-500 to-red-600 text-white p-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300"
+        >
+          <span className="text-sm font-bold">💡</span>
+        </button>
+      ) : (
+        // Expanded state
+        <div className="bg-white border border-gray-200 shadow-xl rounded-xl p-4 max-w-sm w-full text-sm text-gray-800 transform transition-all duration-300 hover:shadow-2xl">
+          <div className="flex justify-between items-start mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">💡</span>
+              <p className="font-semibold text-gray-900">Turn insights into results!</p>
+            </div>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setIsMinimized(true)}
+                className="text-gray-400 hover:text-gray-600 text-lg leading-none w-6 h-6 flex items-center justify-center"
+                title="Minimize"
+              >
+                −
+              </button>
+              <button
+                onClick={() => setIsVisible(false)}
+                className="text-gray-400 hover:text-gray-600 text-lg leading-none w-6 h-6 flex items-center justify-center"
+                title="Close"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          
+          <p className="text-gray-600 mb-3 leading-relaxed">
+            Need help turning these customer insights into better websites and marketing strategy?
+          </p>
+          
+          <div className="flex gap-2">
+            
+              href="mailto:hello@8bitcontent.com?subject=Customer Survey Tool - Help with insights"
+              className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-2 rounded-lg font-medium hover:from-red-600 hover:to-red-700 transition-all duration-200 text-center text-xs"
+            >
+              Get Help →
+            </a>
+            <button
+              onClick={() => setIsMinimized(true)}
+              className="px-3 py-2 text-gray-500 hover:text-gray-700 text-xs font-medium"
+            >
+              Later
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SurveyCreatorTool = () => {
   const [businessInfo, setBusinessInfo] = useState({
@@ -262,7 +325,7 @@ const SurveyCreatorTool = () => {
   };
 
 const generateQuestions = () => {
-  const { businessType, industry, productService, currentCustomerKnowledge, uncertaintyAreas } = businessInfo;
+  const { businessType, industry, productService, uncertaintyAreas } = businessInfo;
   
   if (!businessType || !productService) return;
 
@@ -321,10 +384,12 @@ const generateQuestions = () => {
   });
 
   // Filter out questions that are already selected to avoid duplicates
-  const newQuestions = customizedQuestions.filter(q => !selectedQuestions.includes(q));
-  
-  // Combine existing selected questions with new ones
-  const combinedQuestions = [...selectedQuestions, ...newQuestions];
+const newQuestions = customizedQuestions.filter(q => !selectedQuestions.includes(q));
+
+// Combine existing selected questions with new ones, but limit total to 12
+const availableSlots = Math.max(0, 12 - selectedQuestions.length);
+const limitedNewQuestions = newQuestions.slice(0, availableSlots);
+const combinedQuestions = [...selectedQuestions, ...limitedNewQuestions];
   
   setGeneratedQuestions(combinedQuestions);
   
@@ -427,9 +492,9 @@ const copyToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(surveyText);
     alert('Survey copied to clipboard!');
-  } catch (err) {
-    alert('Copy failed, but you can manually select and copy the text.');
-  }
+  } catch {
+  alert('Copy failed, but you can manually select and copy the text.');
+}
 };
 
   return (
@@ -441,7 +506,7 @@ const copyToClipboard = async () => {
             <Users className="w-6 h-6" />
             Customer Discovery Survey Creator
           </CardTitle>
-          <p className="text-center text-gray-600">Generate targeted questions to better understand your ideal customer profile, pain points, and motivations</p>
+          <p className="text-center text-gray-600">Generate targeted questions to better understand your ideal customer profile - their pain points, jobs-to-be-done, purchasing hesitations/motivations, and more!</p>
         </CardHeader>
         <CardContent className="space-y-8">
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -464,7 +529,7 @@ const copyToClipboard = async () => {
       <Input 
         placeholder="e.g., marketing, healthcare, finance"
         value={businessInfo.industry}
-        onChange={(e: any) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
       />
     </div>
   </div>
@@ -474,7 +539,7 @@ const copyToClipboard = async () => {
     <Input 
       placeholder="Brief description of what you offer"
       value={businessInfo.productService}
-      onChange={(e: any) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
     />
   </div>
 
@@ -537,7 +602,7 @@ const copyToClipboard = async () => {
           <CardHeader>
             <CardTitle className="text-black">Available Questions</CardTitle>
             <p className="text-sm text-gray-600">
-              Select questions you want to include in your survey. Your selected questions will persist when you generate more options.
+              Select questions you want to include in your survey. And don't worry, your selected questions will remain even after you generate more options.
             </p>
           </CardHeader>
           <CardContent>
@@ -639,6 +704,7 @@ const copyToClipboard = async () => {
         </CardContent>
       </Card>
     </div>
+    <StickySupportBadge />
   </div>
 );
 };
