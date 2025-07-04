@@ -41,7 +41,14 @@ const Button = ({ children, onClick, variant = "default", size = "default", disa
   );
 };
 
-const Input = ({ placeholder, value, onChange, className = "" }: any) => (
+interface InputProps {
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+}
+
+const Input = ({ placeholder, value, onChange, className = "" }: InputProps) => (
   <input
     className={`flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     placeholder={placeholder}
@@ -50,7 +57,13 @@ const Input = ({ placeholder, value, onChange, className = "" }: any) => (
   />
 );
 
-const Textarea = ({ placeholder, value, onChange }: any) => (
+interface TextareaProps {
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}
+
+const Textarea = ({ placeholder, value, onChange }: TextareaProps) => (
   <textarea
     className="flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
     placeholder={placeholder}
@@ -59,23 +72,40 @@ const Textarea = ({ placeholder, value, onChange }: any) => (
   />
 );
 
-const Select = ({ onValueChange, children }: any) => (
-  <div className="relative">
+const Select = ({ onValueChange, children, className = "" }: { 
+  onValueChange?: (value: string) => void, 
+  children: React.ReactNode,
+  className?: string 
+}) => (
+  <div className={`relative ${className}`}>
     <select 
       className="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-      onChange={(e) => onValueChange(e.target.value)}
+      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onValueChange?.(e.target.value)}
     >
       {children}
     </select>
   </div>
 );
 
-const SelectTrigger = ({ children }: any) => children;
-const SelectValue = ({ placeholder }: any) => <option value="">{placeholder}</option>;
-const SelectContent = ({ children }: any) => children;
-const SelectItem = ({ value, children }: any) => <option value={value}>{children}</option>;
+const SelectTrigger = ({ children }: { children: React.ReactNode }) => children;
 
-const Checkbox = ({ checked, onCheckedChange }: any) => (
+const SelectValue = ({ placeholder }: { placeholder: string }) => (
+  <option value="">{placeholder}</option>
+);
+
+const SelectContent = ({ children }: { children: React.ReactNode }) => children;
+
+const SelectItem = ({ value, children }: { value: string; children: React.ReactNode }) => (
+  <option value={value}>{children}</option>
+);
+
+interface CheckboxProps {
+  checked: boolean;
+  onCheckedChange: (value: boolean) => void;
+}
+
+const Checkbox = ({ checked, onCheckedChange }: CheckboxProps) => (
+
   <input
     type="checkbox"
     checked={checked}
@@ -417,7 +447,7 @@ const copyToClipboard = async () => {
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
     <div>
       <label className="block text-sm font-medium mb-2 text-black">Business Type</label>
-      <Select onValueChange={(value: string) => setBusinessInfo(prev => ({...prev, businessType: value}))}>
+      <Select onValueChange={(value: string) => setBusinessInfo(prev => ({...prev, businessType: value}))} className="">
         <option value="">Select business type</option>
 <option value="B2B SaaS">B2B SaaS</option>
 <option value="B2C E-commerce">B2C E-commerce</option>
