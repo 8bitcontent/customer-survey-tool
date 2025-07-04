@@ -492,30 +492,30 @@ const copyToClipboard = async () => {
 
   <div className="mt-4">
   <label className="block text-sm font-medium mb-4 text-black">What would you like to learn about your customers? (Select all that apply)</label>
-  <div className="grid grid-cols-2 gap-4">
-    {[
-      { key: 'demographics', label: 'Demographics & Role Details', icon: <Target className="w-4 h-4 text-gray-600" /> },
-      { key: 'pain-points', label: 'Pain Points & Challenges', icon: <Lightbulb className="w-4 h-4 text-gray-600" /> },
-      { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: <Target className="w-4 h-4 text-gray-600" /> },
-      { key: 'purchasing', label: 'Purchasing Behavior', icon: <Users className="w-4 h-4 text-gray-600" /> },
-      { key: 'hesitations', label: 'Hesitations & Concerns', icon: <Lightbulb className="w-4 h-4 text-gray-600" /> },
-      { key: 'language', label: 'Language & Voice', icon: <Users className="w-4 h-4 text-gray-600" /> },
-      { key: 'triggers', label: 'Purchase Triggers', icon: <Target className="w-4 h-4 text-gray-600" /> },
-      { key: 'competitors', label: 'Competitors & Alternatives', icon: <Users className="w-4 h-4 text-gray-600" /> }
-    ].map(area => (
-      <div key={area.key} className="flex items-center space-x-3">
-        <Checkbox
-          checked={businessInfo.uncertaintyAreas.includes(area.key)}
-          onCheckedChange={() => toggleUncertaintyArea(area.key)}
-        />
-        <div className="flex items-center space-x-2">
-  <div className="flex items-center">{area.icon}</div>
-  <span className="text-sm text-black">{area.label}</span>
-</div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {[
+    { key: 'demographics', label: 'Demographics & Role Details', icon: <Target className="w-5 h-5 text-gray-600" /> },
+    { key: 'pain-points', label: 'Pain Points & Challenges', icon: <Lightbulb className="w-5 h-5 text-gray-600" /> },
+    { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: <Target className="w-5 h-5 text-gray-600" /> },
+    { key: 'purchasing', label: 'Purchasing Behavior', icon: <Users className="w-5 h-5 text-gray-600" /> },
+    { key: 'hesitations', label: 'Hesitations & Concerns', icon: <Lightbulb className="w-5 h-5 text-gray-600" /> },
+    { key: 'language', label: 'Language & Voice', icon: <Users className="w-5 h-5 text-gray-600" /> },
+    { key: 'triggers', label: 'Purchase Triggers', icon: <Target className="w-5 h-5 text-gray-600" /> },
+    { key: 'competitors', label: 'Competitors & Alternatives', icon: <Users className="w-5 h-5 text-gray-600" /> }
+  ].map(area => (
+    <div key={area.key} className="flex items-center space-x-4 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+      <Checkbox
+        checked={businessInfo.uncertaintyAreas.includes(area.key)}
+        onCheckedChange={() => toggleUncertaintyArea(area.key)}
+      />
+      <div className="flex items-center space-x-3">
+        <div className="flex items-center">{area.icon}</div>
+        <span className="text-sm text-black">{area.label}</span>
       </div>
-    ))}
-  </div>
+    </div>
+  ))}
 </div>
+</div> 
 
   <div className="pt-4">
     <Button 
