@@ -454,9 +454,9 @@ const copyToClipboard = async () => {
 </CardTitle>
 <div className="text-left space-y-3">
   <p className="text-gray-600 text-lg">
-    <strong>Get strategic survey questions that uncover your customers' real motivations, pain points, and decision triggers. Use their exact words to create copy and content that helps you show up and resonate.</strong>
+    <strong>Get strategic survey questions that uncover your customers' real motivations, pain points, and decision triggers. Use their exact words to create copy and content that gets found and resonates.</strong>
   </p>
-  <p className="text-med text-gray-500">
+  <p className="text-base text-gray-500">
     <em>Built using proven insights and frameworks from customer research and conversion experts like Jennifer Havice, Tony Ulwick, Peep Laja, and others.</em>
   </p>
 </div>
