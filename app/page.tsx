@@ -642,9 +642,11 @@ const copyToClipboard = async () => {
     Need help using these customer insights to improve your website and content marketing strategy?
   </p>
   <a
-    href="mailto:start@8bitcontent.com?subject=Customer Survey Tool – Help with insights"
-    className="block text-xl font-bold text-red-600 hover:text-red-700 hover:underline"
-  >
+  href="https://www.8bitcontent.com/contact-us"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block text-xl font-bold text-red-600 hover:text-red-700 hover:underline"
+>
     Reach out to us at 8-Bit Content for a quick intro!
   </a>
 </div>
