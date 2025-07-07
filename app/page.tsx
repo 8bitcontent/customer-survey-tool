@@ -636,22 +636,22 @@ const copyToClipboard = async () => {
         </CardHeader>
         <CardContent className="text-sm space-y-3">
           <div>
-            <p className="font-medium text-black">Survey Guidelines:</p>
+            <p className="font-medium text-black">How to get quality survey responses?</p>
             <ul className="mt-2 space-y-1">
-              <li className="text-black">• Target customers who purchased/worked with you in the last 3-6 months</li>
-              <li className="text-black">• Keep to 6-8 questions maximum for best response rates</li>
-              <li className="text-black">• Focus on open-ended questions to capture authentic language</li>
-              <li className="text-black">• Send with a clear, direct subject line asking for help</li>
+              <li className="text-black">Ask customers who bought from you within the last 6 months. Recent buyers are more likely to remember their decision-making process and respond.</li>
+              <li className="text-black">Keep surveys to 7-10 questions maximum. Longer surveys kill response rates.</li>
+              <li className="text-black">Use open-ended questions that capture authentic customer language. (Yes/no questions don't reveal the insights needed for effective copy.)</li>
+              <li className="text-black">Send surveys with direct subject lines like "Can you help me with some quick questions?" - Or use your brand moderated Facebook Group, Subreddit, etc.</li>
             </ul>
           </div>
           
           <div>
-            <p className="font-medium text-black">After collecting responses:</p>
+            <p className="font-medium text-black">What to do with the responses?</p>
             <ul className="mt-2 space-y-1">
-              <li className="text-black">• Look for patterns in pain points and language used</li>
-              <li className="text-black">• Identify common motivations and trigger events</li>
-              <li className="text-black">• Note demographic patterns among your best customers</li>
-              <li className="text-black">• Use their exact words in your marketing and website copy</li>
+              <li className="text-black">Look for recurring language patterns in customer responses. The words they repeat become your messaging goldmine.</li>
+              <li className="text-black">Identify common trigger events that pushed customers to buy. These can reveal high-value insights.</li>
+              <li className="text-black">Note demographic patterns among your best customers. This data helps you tailor content to similar prospects.</li>
+              <li className="text-black">Inject their exact words into your website headlines, product descriptions, marketing emails, and more.</li>
             </ul>
           </div>
         </CardContent>
