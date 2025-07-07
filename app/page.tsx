@@ -437,10 +437,17 @@ const copyToClipboard = async () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center flex items-center justify-center gap-2" style={{color: '#ff5757'}}>
-            <Users className="w-6 h-6" />
-            Customer Discovery Survey Creator
-          </CardTitle>
-          <p className="text-center text-gray-600">Generate targeted questions to better understand your ideal customer profile - their pain points, jobs-to-be-done, purchasing hesitations/motivations, and more!</p>
+  <Users className="w-6 h-6" />
+  Customer Discovery Survey Creator
+</CardTitle>
+<div className="text-center space-y-3">
+  <p className="text-gray-600 text-lg">
+    Generate expert-backed survey questions to uncover your customers' true motivations, pain points, and decision-making process.
+  </p>
+  <p className="text-sm text-gray-500">
+    Built using proven frameworks from voice-of-customer experts like <strong>Jennifer Havice</strong> and other industry leaders to help you ask the right questions that actually drive business results.
+  </p>
+</div>
         </CardHeader>
         <CardContent className="space-y-8">
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
