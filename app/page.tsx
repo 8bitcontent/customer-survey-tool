@@ -323,11 +323,11 @@ const generateQuestions = () => {
 
   // Customize questions with business-specific terms
   const customizedQuestions = questionPool.map(q => {
-    return q
-      .replace('[product/service]', productService || 'product/service')
-      .replace('[relevant area]', getRelevantArea(industry))
-      .replace('[relevant process]', getRelevantProcess(industry));
-  });
+  return q
+    .replace('[product/service]', `"${productService}"` || 'product/service')
+    .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+    .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+});
 
   // Filter out questions that are already selected to avoid duplicates
 const newQuestions = customizedQuestions.filter(q => !selectedQuestions.includes(q));
