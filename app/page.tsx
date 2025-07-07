@@ -170,7 +170,10 @@ const SurveyCreatorTool = () => {
       "What are your biggest professional goals this year?",
       "What does a typical day look like for you?",
       "How long have you been in your current role?",
-      "What are the biggest challenges in your industry right now?"
+      "What are the biggest challenges in your industry right now?",
+      "What makes your situation different from others who might use our solution?",
+      "How would you categorize yourself compared to our typical customer?",
+      "What unique challenges do you face that others in your position might not?"
     ],
     painPointsDiscovery: [
       "What was the biggest challenge you were facing before finding our solution?",
@@ -194,7 +197,10 @@ const SurveyCreatorTool = () => {
       "What outcome would make this purchase worth every penny?",
       "If you could accomplish one thing this quarter, what would it be?",
       "What capability are you missing that would transform your results?",
-      "What would achieving your goal mean for you personally?"
+      "What would achieving your goal mean for you personally?",
+      "What specific metrics or results do you track to measure success with solutions like ours?",
+      "How do you know when a solution like this is working well for you?",
+      "What would you measure 3 months after implementing our solution to prove ROI?"
     ],
     motivationsDrivers: [
       "What motivated you to start looking for a solution in the first place?",
@@ -204,7 +210,9 @@ const SurveyCreatorTool = () => {
       "What opportunities were you hoping to unlock?",
       "What finally pushed you over the edge to take action?",
       "What would happen if you didn't solve this problem?",
-      "What made this a priority for you right now?"
+      "What made this a priority for you right now?",
+      "How quickly do you need to see results to consider this purchase successful?",
+      "How long had this problem been bothering you before you started looking for solutions?"
     ],
     purchasingBehavior: [
       "How do you typically research and evaluate solutions like ours?",
@@ -214,7 +222,8 @@ const SurveyCreatorTool = () => {
       "How long did it take you to make the decision to purchase?",
       "Where do you typically go to research solutions like this?",
       "What review sites or resources do you trust most?",
-      "How do you typically justify purchases like this to others?"
+      "How do you typically justify purchases like this to others?",
+      "What's your typical timeline for implementing new solutions like this?"
     ],
     hesitationsBarriers: [
       "What almost stopped you from moving forward with us?",
@@ -254,7 +263,10 @@ const SurveyCreatorTool = () => {
       "What do our competitors do better than us?",
       "How did you first hear about our competitors?",
       "What would make you switch to a competitor?",
-      "How do you typically compare different solutions in our category?"
+      "How do you typically compare different solutions in our category?",
+      "Before considering paid solutions, what free or DIY methods did you try?",
+      "What internal processes or workarounds were you using before seeking outside help?",
+      "Besides direct competitors, what completely different approaches did you consider?"
     ]
   };
 
@@ -438,14 +450,14 @@ const copyToClipboard = async () => {
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center flex items-center justify-center gap-2" style={{color: '#ff5757'}}>
   <Users className="w-6 h-6" />
-  Customer Discovery Survey Creator
+  <strong>Your Customer Research Survey Creator</strong>
 </CardTitle>
-<div className="text-center space-y-3">
+<div className="text-left space-y-3">
   <p className="text-gray-600 text-lg">
-    Generate expert-backed survey questions to uncover your customers' true motivations, pain points, and decision-making process.
+    Generate strategic survey questions to uncover your customers' true motivations, pain points, and decision-making process - in their own voice. With these insights, you can create targeted copy and content that resonates with their exact search needs.
   </p>
   <p className="text-sm text-gray-500">
-    Built using proven frameworks from voice-of-customer experts like <strong>Jennifer Havice</strong> and other industry leaders to help you ask the right questions that actually drive business results.
+    Built using proven frameworks from customer research experts like Jennifer Havice to help you get the answers that actually drive business results.
   </p>
 </div>
         </CardHeader>
