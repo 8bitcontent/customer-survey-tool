@@ -277,7 +277,7 @@ const generateQuestions = () => {
 
   let questionPool: string[] = [];
   
-  // ONLY add questions from selected categories
+  // Add questions from selected categories
   if (uncertaintyAreas.includes('demographics')) {
     questionPool.push(...getRandomQuestions(discoveryQuestions.demographicsPsychographics, 4));
   }
@@ -310,39 +310,30 @@ const generateQuestions = () => {
     questionPool.push(...getRandomQuestions(discoveryQuestions.competitors, 4));
   }
 
-  // If no categories are selected, don't generate any questions
   if (uncertaintyAreas.length === 0) {
     setGeneratedQuestions([]);
-    setSelectedQuestions([]);
     return;
   }
 
-  // Remove duplicates and shuffle
-  questionPool = [...new Set(questionPool)];
-  questionPool = shuffleArray(questionPool);
-
   // Customize questions with business-specific terms
   const customizedQuestions = questionPool.map(q => {
-  return q
-    .replace('[product/service]', `"${productService}"` || 'product/service')
-    .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-    .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
-});
+    return q
+      .replace('[product/service]', `"${productService}"` || 'product/service')
+      .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+      .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+  });
 
-  // Filter out questions that are already selected to avoid duplicates
-const newQuestions = customizedQuestions.filter(q => !selectedQuestions.includes(q));
+  // Remove duplicates from new questions AND existing questions
+  const allExistingQuestions = [...generatedQuestions, ...selectedQuestions];
+  const newUniqueQuestions = customizedQuestions.filter(q => !allExistingQuestions.includes(q));
+  
+  // Add new unique questions to existing pool
+const updatedQuestions = [...generatedQuestions, ...newUniqueQuestions];
 
-// Combine existing selected questions with new ones, but limit total to 12
-const availableSlots = Math.max(0, 12 - selectedQuestions.length);
-const limitedNewQuestions = newQuestions.slice(0, availableSlots);
-const combinedQuestions = [...selectedQuestions, ...limitedNewQuestions];
-  
-  setGeneratedQuestions(combinedQuestions);
-  
-  // If this is the first generation and no questions are selected, auto-select some
-  if (selectedQuestions.length === 0) {
-    setSelectedQuestions(customizedQuestions.slice(0, Math.min(6, customizedQuestions.length)));
-  }
+// Limit total available questions to 15
+const limitedQuestions = updatedQuestions.slice(0, 15);
+
+setGeneratedQuestions(limitedQuestions);
 };
 
   // Helper function to get random questions from a category
@@ -402,15 +393,14 @@ const getRandomQuestions = (questionArray: string[], count: number) => {
   };
 
   const toggleQuestionSelection = (question: string) => {
-    setSelectedQuestions(prev => {
-      if (prev.includes(question)) {
-        return prev.filter(q => q !== question);
-      } else if (prev.length < 10) {
-        return [...prev, question];
-      }
-      return prev;
-    });
-  };
+  setSelectedQuestions(prev => {
+    if (prev.includes(question)) {
+      return prev.filter(q => q !== question);
+    } else {
+      return [...prev, question]; // No limit on selections
+    }
+  });
+};
 
   const exportSurvey = () => {
     const intro = `Customer Discovery Survey
