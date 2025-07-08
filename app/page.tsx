@@ -673,9 +673,35 @@ const copyToClipboard = async () => {
               <li className="text-black flex items-start">
   <span className="text-red-500 mr-2 mt-1">→</span>Use open-ended questions that capture authentic customer language. (Yes/no questions don't reveal the insights needed for effective copy.)</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2 mt-1">→</span>Send surveys with direct subject lines like "Can you help me with some quick questions?" - Or use your brand moderated Facebook Group, Subreddit, etc.</li>
+  <span className="text-red-500 mr-2 mt-1">→</span>Send surveys with direct subject lines like "Can you help me with some quick questions?" - Or use your brand-moderated Facebook Group, Subreddit, etc.</li>
             </ul>
           </div>
+
+          <div>
+  <p className="font-medium text-black"><strong>Increasing Response Rates:</strong></p>
+  <ul className="mt-2 space-y-1">
+    <li className="text-black flex items-start">
+      <span className="text-red-500 mr-2 mt-1">→</span>
+      These are marketing and customer experience questions - so maintain framing as helping you improve: "Help us serve you better"
+    </li>
+    <li className="text-black flex items-start">
+      <span className="text-red-500 mr-2 mt-1">→</span>
+      Emphasize continuous improvement: "We're always working to enhance our customer experience"
+    </li>
+    <li className="text-black flex items-start">
+      <span className="text-red-500 mr-2 mt-1">→</span>
+      If needed, consider small incentives: discount codes, early access, exclusive content, etc.
+    </li>
+    <li className="text-black flex items-start">
+      <span className="text-red-500 mr-2 mt-1">→</span>
+      Use personal language when sending it over: "I'd love your thoughts" vs. "We request feedback"
+    </li>
+    <li className="text-black flex items-start">
+      <span className="text-red-500 mr-2 mt-1">→</span>
+      Mention the minimal time commitment upfront: "Takes 5-7 minutes"
+    </li>
+  </ul>
+</div>
           
           <div>
             <p className="font-medium text-black"><strong>What to do with the responses?</strong></p>
