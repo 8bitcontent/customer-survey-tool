@@ -174,33 +174,38 @@ const SurveyCreatorTool = () => {
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
   function postHeight() {
-    const height = document.documentElement.scrollHeight;
-    window.parent.postMessage(
-      {
-        type: 'resize',
-        height: height,
-      },
-      '*'
-    );
+    // Wait for all content to render
+    setTimeout(() => {
+      const height = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight,
+        document.documentElement.offsetHeight,
+        document.body.offsetHeight
+      );
+      
+      window.parent.postMessage({ type: 'resize', height }, '*');
+    }, 100);
   }
 
-  // Fire immediately and after short delays to ensure proper sizing
+  // Initial sizing
   postHeight();
-  setTimeout(postHeight, 100);
-  setTimeout(postHeight, 500);
+  
+  // Handle dynamic content changes
+  const observer = new MutationObserver(postHeight);
+  observer.observe(document.body, { 
+    childList: true, 
+    subtree: true, 
+    attributes: true 
+  });
 
+  // Handle window events
   window.addEventListener('load', postHeight);
   window.addEventListener('resize', postHeight);
 
-  const observer = new MutationObserver(() => {
-    setTimeout(postHeight, 50);
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-
   return () => {
+    observer.disconnect();
     window.removeEventListener('load', postHeight);
     window.removeEventListener('resize', postHeight);
-    observer.disconnect();
   };
 }, []);
 
@@ -395,6 +400,15 @@ setTimeout(() => {
     window.parent.postMessage({ type: 'resize', height: finalHeight }, '*');
   }, 300);
 }, 100);
+setTimeout(recalculateHeight, 200);
+};
+
+// Force height recalculation after content changes
+const recalculateHeight = () => {
+  setTimeout(() => {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ type: 'resize', height }, '*');
+  }, 150);
 };
 
   // Helper function to get random questions from a category
