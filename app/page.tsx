@@ -518,20 +518,24 @@ const copyToClipboard = async () => {
     { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
   ].map(area => (
     <div key={area.key} className="relative">
-      <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-        <div className="flex items-center space-x-3">
-          <Checkbox
-            checked={businessInfo.uncertaintyAreas.includes(area.key)}
-            onCheckedChange={() => toggleUncertaintyArea(area.key)}
-          />
+      <div className="flex items-center space-x-4 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+        <Checkbox
+          checked={businessInfo.uncertaintyAreas.includes(area.key)}
+          onCheckedChange={() => toggleUncertaintyArea(area.key)}
+        />
+        <div className="flex items-center space-x-3 flex-1">
           <span className="text-lg">{area.icon}</span>
           <span className="text-sm text-black">{area.label}</span>
         </div>
         
         <button
-          onClick={() => toggleDropdown(area.key)}
-          className="p-1 rounded-full border-2 hover:bg-red-50 flex-shrink-0"
-          style={{ borderColor: '#ff5757', color: '#ff5757' }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleDropdown(area.key);
+          }}
+          className="text-gray-400 hover:text-gray-600 p-1 rounded"
+          style={{ color: '#ff5757' }}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -541,10 +545,12 @@ const copyToClipboard = async () => {
       
       {openDropdown === area.key && (
         <div 
-          className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 left-0 right-0"
+          className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
           style={{ 
             backgroundColor: '#ff5757', 
-            borderColor: '#ff5757'
+            borderColor: '#ff5757',
+            left: '0',
+            right: '0'
           }}
         >
           <p className="text-sm font-bold text-white">
