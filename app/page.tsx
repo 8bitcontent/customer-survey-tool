@@ -174,12 +174,15 @@ const SurveyCreatorTool = () => {
   // Auto-resize functionality for iframe embedding
   useEffect(() => {
     function postHeight() {
-      const height = document.documentElement.scrollHeight;
-      window.parent.postMessage({
-  type: 'resize',
-  height: document.body.scrollHeight
-}, '*');
-    }
+  const height = document.documentElement.scrollHeight;
+  window.parent.postMessage(
+    {
+      type: 'resize',
+      height: height,
+    },
+    '*'
+  );
+}
 
     window.addEventListener('load', postHeight);
     window.addEventListener('resize', postHeight);
@@ -503,7 +506,7 @@ const copyToClipboard = async () => {
 };
 
   return (
-  <div className="min-h-screen bg-white pt-2 pb-6">
+  <div className="h-auto bg-white pt-2 pb-6">
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <Card>
         <CardHeader>
