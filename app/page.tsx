@@ -397,9 +397,12 @@ const getRandomQuestions = (questionArray: string[], count: number) => {
       ? prev.uncertaintyAreas.filter(a => a !== area)
       : [...prev.uncertaintyAreas, area];
     
-    // Clear questions if user has no selections yet
-    if (selectedQuestions.length === 0) {
-      setGeneratedQuestions([]);
+    // Only clear unselected questions from the available pool
+    if (generatedQuestions.length > 0) {
+      const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+      if (unselectedQuestions.length > 0) {
+        setGeneratedQuestions(selectedQuestions); // Keep only selected ones visible
+      }
     }
     
     return {
