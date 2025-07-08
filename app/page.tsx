@@ -508,54 +508,52 @@ const copyToClipboard = async () => {
   <label className="block text-sm font-medium mb-4 text-black">What would you like to learn about your customers? (Select all that apply)</label>
   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
   {[
-  { key: 'demographics', label: 'Demographics & Role Details', icon: <Target className="w-5 h-5 text-gray-600" />, tooltip: 'Understand who your customers are and their role in the buying process. Critical for targeting the right audience.' },
-  { key: 'pain-points', label: 'Pain Points & Challenges', icon: <Lightbulb className="w-5 h-5 text-gray-600" />, tooltip: 'Discover what problems keep customers awake at night. These insights drive your strongest marketing messages.' },
-  { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: <Target className="w-5 h-5 text-gray-600" />, tooltip: 'Learn what outcomes customers want to achieve. This reveals why they buy and how they measure success.' },
-  { key: 'purchasing', label: 'Purchasing Behavior', icon: <Users className="w-5 h-5 text-gray-600" />, tooltip: 'Understand how customers research and make buying decisions. Essential for optimizing your sales process.' },
-  { key: 'hesitations', label: 'Hesitations & Concerns', icon: <Lightbulb className="w-5 h-5 text-gray-600" />, tooltip: 'Identify what stops customers from buying. Address these concerns to remove conversion barriers.' },
-  { key: 'language', label: 'Language & Voice', icon: <Users className="w-5 h-5 text-gray-600" />, tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy.' },
-  { key: 'triggers', label: 'Purchase Triggers', icon: <Target className="w-5 h-5 text-gray-600" />, tooltip: 'Find out what events push customers to take action. These moments reveal when prospects become buyers.' },
-  { key: 'competitors', label: 'Competitors & Alternatives', icon: <Users className="w-5 h-5 text-gray-600" />, tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
-].map(area => (
-  <div key={area.key} className="relative">
-    <div className="flex items-center space-x-4 p-3 border rounded-lg hover:bg-gray-50">
-      <Checkbox
-        checked={businessInfo.uncertaintyAreas.includes(area.key)}
-        onCheckedChange={() => toggleUncertaintyArea(area.key)}
-      />
-      <div className="flex items-center space-x-3 flex-1">
-        <div className="flex items-center">{area.icon}</div>
-        <span className="text-sm text-black flex-1">{area.label}</span>
+    { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are and their role in the buying process. Critical for targeting the right audience.' },
+    { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover what problems keep customers awake at night. These insights drive your strongest marketing messages.' },
+    { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Learn what outcomes customers want to achieve. This reveals why they buy and how they measure success.' },
+    { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research and make buying decisions. Essential for optimizing your sales process.' },
+    { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying. Address these concerns to remove conversion barriers.' },
+    { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy.' },
+    { key: 'triggers', label: 'Purchase Triggers', icon: '⚡', tooltip: 'Find out what events push customers to take action. These moments reveal when prospects become buyers.' },
+    { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
+  ].map(area => (
+    <div key={area.key} className="relative">
+      <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
+        <div className="flex items-center space-x-3">
+          <Checkbox
+            checked={businessInfo.uncertaintyAreas.includes(area.key)}
+            onCheckedChange={() => toggleUncertaintyArea(area.key)}
+          />
+          <span className="text-lg">{area.icon}</span>
+          <span className="text-sm text-black">{area.label}</span>
+        </div>
         
         <button
           onClick={() => toggleDropdown(area.key)}
-          className="text-gray-400 hover:text-gray-600 p-1 rounded"
-          style={{ color: '#ff5757' }}
+          className="p-1 rounded-full border-2 hover:bg-red-50 flex-shrink-0"
+          style={{ borderColor: '#ff5757', color: '#ff5757' }}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </button>
       </div>
+      
+      {openDropdown === area.key && (
+        <div 
+          className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 left-0 right-0"
+          style={{ 
+            backgroundColor: '#ff5757', 
+            borderColor: '#ff5757'
+          }}
+        >
+          <p className="text-sm font-bold text-white">
+            {area.tooltip}
+          </p>
+        </div>
+      )}
     </div>
-    
-    {openDropdown === area.key && (
-      <div 
-        className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
-        style={{ 
-          backgroundColor: '#ff5757', 
-          borderColor: '#ff5757',
-          left: '0',
-          right: '0'
-        }}
-      >
-        <p className="text-sm font-bold text-white">
-          {area.tooltip}
-        </p>
-      </div>
-    )}
-  </div>
-))}
+  ))}
 </div>
 </div> 
 
