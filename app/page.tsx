@@ -171,31 +171,38 @@ const SurveyCreatorTool = () => {
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  // Auto-resize functionality for iframe embedding
-  useEffect(() => {
-    function postHeight() {
-  const height = document.documentElement.scrollHeight;
-  window.parent.postMessage(
-    {
-      type: 'resize',
-      height: height,
-    },
-    '*'
-  );
-}
+// Auto-resize functionality for iframe embedding
+useEffect(() => {
+  function postHeight() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage(
+      {
+        type: 'resize',
+        height: height,
+      },
+      '*'
+    );
+  }
 
-    window.addEventListener('load', postHeight);
-    window.addEventListener('resize', postHeight);
+  // Fire immediately and after short delays to ensure proper sizing
+  postHeight();
+  setTimeout(postHeight, 100);
+  setTimeout(postHeight, 500);
 
-    const observer = new MutationObserver(postHeight);
-    observer.observe(document.body, { childList: true, subtree: true });
+  window.addEventListener('load', postHeight);
+  window.addEventListener('resize', postHeight);
 
-    return () => {
-      window.removeEventListener('load', postHeight);
-      window.removeEventListener('resize', postHeight);
-      observer.disconnect();
-    };
-  }, []);
+  const observer = new MutationObserver(() => {
+    setTimeout(postHeight, 50);
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  return () => {
+    window.removeEventListener('load', postHeight);
+    window.removeEventListener('resize', postHeight);
+    observer.disconnect();
+  };
+}, []);
 
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
@@ -551,7 +558,7 @@ const copyToClipboard = async () => {
   <div className="mt-4">
     <label className="block text-sm font-medium mb-2 text-black">Product/Service Description</label>
     <Input 
-      placeholder="Brief description of what you offer"
+      placeholder="Brief description of your offer"
       value={businessInfo.productService}
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
     />
