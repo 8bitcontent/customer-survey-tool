@@ -802,8 +802,8 @@ const copyToClipboard = async () => {
     <p className="text-gray-700 mb-3">
       Need help using these customer insights to improve your website and content marketing strategy?
     </p>
-    <a href="https://www.8bitcontent.com/contact" target="_blank" className="block text-xl font-bold text-red-600 hover:text-red-700 hover:underline">
-      Reach out to us at 8-Bit Content for a quick intro!
+    <a href="https://www.8bitcontent.com/contact" target="_blank" className="block text-xl text-red-500 hover:text-red-600 hover:underline">
+      Reach out to us for a quick intro!
     </a>
   </div>
 </div>
