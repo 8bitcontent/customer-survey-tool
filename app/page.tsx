@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Temporary inline components (we'll use proper ones later)
 const Card = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
@@ -160,6 +160,26 @@ const SurveyCreatorTool = () => {
   const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  // Auto-resize functionality for iframe embedding
+  useEffect(() => {
+    function postHeight() {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({ type: 'resize', height }, '*');
+    }
+
+    window.addEventListener('load', postHeight);
+    window.addEventListener('resize', postHeight);
+
+    const observer = new MutationObserver(postHeight);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      window.removeEventListener('load', postHeight);
+      window.removeEventListener('resize', postHeight);
+      observer.disconnect();
+    };
+  }, []);
 
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
