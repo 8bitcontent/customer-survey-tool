@@ -365,6 +365,12 @@ setGeneratedQuestions(limitedQuestions);
 setTimeout(() => {
   const height = document.documentElement.scrollHeight;
   window.parent.postMessage({ type: 'resize', height }, '*');
+
+  // Fire again after additional delay to ensure paint
+  setTimeout(() => {
+    const finalHeight = document.documentElement.scrollHeight;
+    window.parent.postMessage({ type: 'resize', height: finalHeight }, '*');
+  }, 300);
 }, 100);
 };
 
@@ -484,7 +490,7 @@ const copyToClipboard = async () => {
 };
 
   return (
-  <div className="min-h-screen bg-gray-50 py-8">
+  <div className="min-h-screen bg-white py-8">
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <Card>
         <CardHeader>
