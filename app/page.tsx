@@ -506,7 +506,7 @@ const copyToClipboard = async () => {
         <CardHeader>
           <CardTitle className="text-2xl font-bold flex items-center gap-2 mb-6" style={{color: '#ff5757'}}>
   <img src="/8BitContentCoralRed.svg" alt="8-Bit Content Logo" className="w-16 h-16" />
-  <h1>Free Customer Research Survey Creator</h1>
+  <strong><h1>Free Customer Research Survey Creator</h1></strong>
 </CardTitle>
 <div className="text-left space-y-3">
   <p className="text-gray-600 text-lg">
