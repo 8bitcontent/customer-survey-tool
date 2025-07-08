@@ -202,11 +202,25 @@ useEffect(() => {
   window.addEventListener('load', postHeight);
   window.addEventListener('resize', postHeight);
 
+// Add mobile-specific handling
+const handleMobileResize = () => {
+  if (window.innerWidth <= 768) {
+    setTimeout(() => {
+      const height = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight + 100
+      );
+      window.parent.postMessage({ type: 'resize', height }, '*');
+    }, 300);
+  }
+};
   return () => {
-    observer.disconnect();
-    window.removeEventListener('load', postHeight);
-    window.removeEventListener('resize', postHeight);
-  };
+  observer.disconnect();
+  window.removeEventListener('load', postHeight);
+  window.removeEventListener('resize', postHeight);
+  window.removeEventListener('orientationchange', handleMobileResize);
+  window.removeEventListener('touchend', handleMobileResize);
+};
 }, []);
 
   // Question templates focused on customer discovery and ICP development
