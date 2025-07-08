@@ -175,7 +175,10 @@ const SurveyCreatorTool = () => {
   useEffect(() => {
     function postHeight() {
       const height = document.documentElement.scrollHeight;
-      window.parent.postMessage({ type: 'resize', height }, '*');
+      window.parent.postMessage({
+  type: 'resize',
+  height: document.body.scrollHeight
+}, '*');
     }
 
     window.addEventListener('load', postHeight);
