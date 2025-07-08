@@ -404,7 +404,9 @@ const getRandomQuestions = (questionArray: string[], count: number) => {
 };
 
 const toggleDropdown = (key: string) => {
- const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  console.log('toggleDropdown called with key:', key);
+  console.log('current openDropdown:', openDropdown);
+  setOpenDropdown(openDropdown === key ? null : key);
 };
 
   const exportSurvey = () => {
