@@ -667,17 +667,41 @@ const copyToClipboard = async () => {
             <p className="font-medium text-black"><strong>How to get quality survey responses?</strong></p>
             <ul className="mt-2 space-y-1">
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Ask customers who bought from you within the last 6 months.</strong> Recent buyers are more likely to remember their decision-making process and respond.</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Ask customers who bought from you within the last 6 months.</strong> Recent buyers are more likely to remember their decision-making process and respond.
+  </span>
+</li>
              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Keep surveys to 7-10 questions maximum.</strong> Longer surveys kill response rates.</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Keep surveys to 7-10 questions maximum.</strong> Longer surveys kill response rates.
+    </span>
+</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Use open-ended questions that capture authentic customer language.</strong> (Yes/no questions don't reveal the insights needed for effective copy.)</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Use open-ended questions that capture authentic customer language.</strong> (Yes/no questions don't reveal the insights needed for effective copy.)
+    </span>
+</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Send surveys with direct subject lines like "Can you help me with some quick questions?"</strong> - Or use your brand-moderated Facebook Group, Subreddit, etc. And always mention the time commitment upfront: "Takes 5-7 minutes."</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Send surveys with direct subject lines like "Can you help me with some quick questions?"</strong> - Or use your brand-moderated Facebook Group, Subreddit, etc. And always mention the time commitment upfront: "Takes 5-7 minutes."
+    </span>
+</li>
   <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Frame it as helping you improve:</strong> "We're always working to better serve customers like you and improve our products/services based on real feedback."</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Frame it as helping you improve:</strong> "We're always working to better serve customers like you and improve our products/services based on real feedback."
+    </span>
+</li>
    <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>If needed, consider small incentives:</strong> Discount codes, early access, exclusive content, etc.</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>If needed, consider small incentives:</strong> Discount codes, early access, exclusive content, etc.
+    </span>
+</li>
             </ul>
           </div>
 
@@ -685,13 +709,29 @@ const copyToClipboard = async () => {
             <p className="font-medium text-black"><strong>What to do with the responses?</strong></p>
             <ul className="mt-2 space-y-1">
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Look for recurring language patterns in customer responses.</strong> The words they repeat become your messaging goldmine.</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Look for recurring language patterns in customer responses.</strong> The words they repeat become your messaging goldmine.
+    </span>
+</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Identify common trigger events that pushed customers to buy.</strong> These can reveal high-value insights.</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Identify common trigger events that pushed customers to buy.</strong> These can reveal high-value insights.
+    </span>
+</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Note demographic patterns among your best customers.</strong> This data helps you tailor content to similar prospects.</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Note demographic patterns among your best customers.</strong> This data helps you tailor content to similar prospects.
+    </span>
+</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span><strong>Inject their exact words into your copy and content:</strong> Website headlines, product descriptions, marketing emails, and more.</li>
+  <span className="text-red-500 mr-2">→</span>
+  <span>
+    <strong>Inject their exact words into your copy and content:</strong> Website headlines, product descriptions, marketing emails, and more.
+    </span>
+</li>
             </ul>
           </div>
         </CardContent>
