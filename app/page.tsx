@@ -521,7 +521,7 @@ const copyToClipboard = async () => {
   ].map(area => (
     <div key={area.key} className="relative">
       <div 
-        className="flex items-start justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[80px]"
+        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
         onClick={() => toggleDropdown(area.key)}
       >
         <div className="flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
