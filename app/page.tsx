@@ -723,7 +723,7 @@ const copyToClipboard = async () => {
         </CardHeader>
         <CardContent className="text-sm space-y-3">
           <div>
-            <p className="font-medium text-black"><strong>How to get quality survey responses?</strong></p>
+            <p className="font-medium text-black"><strong><h3>How to get quality survey responses?</h3></strong></p>
             <ul className="mt-2 space-y-1">
               <li className="text-black flex items-start">
   <span className="text-red-500 mr-2">→</span>
@@ -765,7 +765,7 @@ const copyToClipboard = async () => {
           </div>
 
           <div>
-            <p className="font-medium text-black"><strong>What to do with the responses?</strong></p>
+            <p className="font-medium text-black"><strong><h3>What to do with the responses?</h3></strong></p>
             <ul className="mt-2 space-y-1">
               <li className="text-black flex items-start">
   <span className="text-red-500 mr-2">→</span>
@@ -803,7 +803,7 @@ const copyToClipboard = async () => {
   href="https://www.8bitcontent.com/contact-us"
   target="_blank"
   rel="noopener noreferrer"
-  className="block text-xl font-bold text-red-600 hover:text-red-700 hover:underline"
+  className="block text-xl text-red-500 hover:text-red-600 hover:underline"
 >
     Reach out to us at 8-Bit Content for a quick intro!
   </a>
