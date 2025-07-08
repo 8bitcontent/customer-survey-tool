@@ -505,8 +505,7 @@ const copyToClipboard = async () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold flex items-center gap-2 mb-6" style={{color: '#ff5757'}}>
-  <img src="/8BitContentCoralRed.svg" alt="8-Bit Content Logo" className="w-16 h-16" />
-  <strong><h1>Free Customer Research Survey Creator</h1></strong>
+  <strong>Your Free Customer Research Survey Generator</strong>
 </CardTitle>
 <div className="text-left space-y-3">
   <p className="text-gray-600 text-lg">
@@ -795,18 +794,18 @@ const copyToClipboard = async () => {
           </div>
         </CardContent>
       </Card>
-      <div className="text-left p-6 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100">
-  <p className="text-gray-700 mb-3">
-    Need help using these customer insights to improve your website and content marketing strategy?
-  </p>
-  <a
-  href="https://www.8bitcontent.com/contact-us"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="block text-xl text-red-500 hover:text-red-600 hover:underline"
->
-    Reach out to us at 8-Bit Content for a quick intro!
+      <div className="text-left p-6 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100 flex items-center gap-4">
+  <a href="https://www.8bitcontent.com" target="_blank" className="inline-block flex-shrink-0">
+    <img src="/8BitContentCoralRed.svg" alt="8-Bit Content Logo" className="w-16 h-16" />
   </a>
+  <div>
+    <p className="text-gray-700 mb-3">
+      Need help using these customer insights to improve your website and content marketing strategy?
+    </p>
+    <a href="https://www.8bitcontent.com/contact" target="_blank" className="block text-xl font-bold text-red-600 hover:text-red-700 hover:underline">
+      Reach out to us at 8-Bit Content for a quick intro!
+    </a>
+  </div>
 </div>
     </div>
   </div>
