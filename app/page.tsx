@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { JSX } from 'react';
 
 // Temporary inline components (we'll use proper ones later)
 const Card = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
@@ -10,8 +11,17 @@ const CardHeader = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col space-y-1.5 p-6">{children}</div>
 );
 
-const CardTitle = ({ children, className = "", style }: { children: React.ReactNode, className?: string, style?: React.CSSProperties }) => (
-  <h3 className={`text-2xl font-semibold leading-none tracking-tight ${className}`} style={style}>{children}</h3>
+type CardTitleProps = {
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+  as?: keyof JSX.IntrinsicElements; // allows 'div', 'h2', etc.
+};
+
+const CardTitle = ({ children, className = '', style, as: Tag = 'div' }: CardTitleProps) => (
+  <Tag className={`text-2xl font-semibold leading-none tracking-tight ${className}`} style={style}>
+    {children}
+  </Tag>
 );
 
 const CardContent = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
@@ -496,7 +506,7 @@ const copyToClipboard = async () => {
         <CardHeader>
           <CardTitle className="text-2xl font-bold flex items-center gap-2 mb-6" style={{color: '#ff5757'}}>
   <img src="/8BitContentCoralRed.svg" alt="8-Bit Content Logo" className="w-16 h-16" />
-  <strong>Customer Research Survey Creator</strong>
+  <h1>Free Customer Research Survey Creator</h1>
 </CardTitle>
 <div className="text-left space-y-3">
   <p className="text-gray-600 text-lg">
@@ -630,7 +640,7 @@ const copyToClipboard = async () => {
       {generatedQuestions.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-black">Recommended Questions</CardTitle>
+            <CardTitle as="h2" className="text-black">Recommended Questions</CardTitle>
             <p className="text-sm text-gray-600">
               Select questions you want to include in your survey. And don't worry, your selected questions will remain even after you generate more options.
             </p>
@@ -691,7 +701,7 @@ const copyToClipboard = async () => {
       {selectedQuestions.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-black">Your Customer Survey Preview</CardTitle>
+            <CardTitle as="h2" className="text-black">Your Customer Survey Preview</CardTitle>
             <p className="text-sm text-gray-600">This survey will help you identify your ideal customer profile and understand their motivations</p>
           </CardHeader>
           <CardContent>
@@ -709,7 +719,7 @@ const copyToClipboard = async () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg text-black">Marketing & Customer Experience Survey Best Practices</CardTitle>
+          <CardTitle as="h2" className="text-black">Marketing & Customer Experience Survey Best Practices</CardTitle>
         </CardHeader>
         <CardContent className="text-sm space-y-3">
           <div>
