@@ -736,7 +736,7 @@ const copyToClipboard = async () => {
           </div>
         </CardContent>
       </Card>
-      <div className="text-center p-6 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100">
+      <div className="text-left p-6 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100">
   <p className="text-gray-700 mb-3">
     Need help using these customer insights to improve your website and content marketing strategy?
   </p>
