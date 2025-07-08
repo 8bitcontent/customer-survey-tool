@@ -159,6 +159,7 @@ const SurveyCreatorTool = () => {
 
   const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
@@ -402,6 +403,10 @@ const getRandomQuestions = (questionArray: string[], count: number) => {
   });
 };
 
+const toggleDropdown = (key: string) => {
+ const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+};
+
   const exportSurvey = () => {
     const intro = `Customer Discovery Survey
     
@@ -512,17 +517,45 @@ const copyToClipboard = async () => {
   { key: 'triggers', label: 'Purchase Triggers', icon: <Target className="w-5 h-5 text-gray-600" />, tooltip: 'Find out what events push customers to take action. These moments reveal when prospects become buyers.' },
   { key: 'competitors', label: 'Competitors & Alternatives', icon: <Users className="w-5 h-5 text-gray-600" />, tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
 ].map(area => (
-  <div key={area.key} className="flex items-center space-x-4 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer" title={area.tooltip}>
+  <div key={area.key} className="relative">
+    <div className="flex items-center space-x-4 p-3 border rounded-lg hover:bg-gray-50">
       <Checkbox
         checked={businessInfo.uncertaintyAreas.includes(area.key)}
         onCheckedChange={() => toggleUncertaintyArea(area.key)}
       />
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-3 flex-1">
         <div className="flex items-center">{area.icon}</div>
-        <span className="text-sm text-black">{area.label}</span>
+        <span className="text-sm text-black flex-1">{area.label}</span>
+        
+        <button
+          onClick={() => toggleDropdown(area.key)}
+          className="text-gray-400 hover:text-gray-600 p-1 rounded"
+          style={{ color: '#ff5757' }}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
       </div>
     </div>
-  ))}
+    
+    {openDropdown === area.key && (
+      <div 
+        className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
+        style={{ 
+          backgroundColor: '#ff5757', 
+          borderColor: '#ff5757',
+          left: '0',
+          right: '0'
+        }}
+      >
+        <p className="text-sm font-bold text-white">
+          {area.tooltip}
+        </p>
+      </div>
+    )}
+  </div>
+))}
 </div>
 </div> 
 
