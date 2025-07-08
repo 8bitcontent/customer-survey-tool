@@ -362,6 +362,10 @@ const updatedQuestions = [...generatedQuestions, ...newUniqueQuestions];
 const limitedQuestions = updatedQuestions.slice(0, 15);
 
 setGeneratedQuestions(limitedQuestions);
+setTimeout(() => {
+  const height = document.documentElement.scrollHeight;
+  window.parent.postMessage({ type: 'resize', height }, '*');
+}, 100);
 };
 
   // Helper function to get random questions from a category
