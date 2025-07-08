@@ -276,7 +276,14 @@ const generateQuestions = () => {
   
   if (!businessType || !productService) return;
 
-  let questionPool: string[] = [];
+// Clear everything if no categories selected
+if (uncertaintyAreas.length === 0) {
+  setGeneratedQuestions([]);
+  setSelectedQuestions([]);
+  return;
+}
+
+let questionPool: string[] = [];
   
   // Add questions from selected categories
   if (uncertaintyAreas.includes('demographics')) {
@@ -385,13 +392,22 @@ const getRandomQuestions = (questionArray: string[], count: number) => {
   };
 
   const toggleUncertaintyArea = (area: string) => {
-    setBusinessInfo(prev => ({
+  setBusinessInfo(prev => {
+    const newAreas = prev.uncertaintyAreas.includes(area)
+      ? prev.uncertaintyAreas.filter(a => a !== area)
+      : [...prev.uncertaintyAreas, area];
+    
+    // Clear questions if user has no selections yet
+    if (selectedQuestions.length === 0) {
+      setGeneratedQuestions([]);
+    }
+    
+    return {
       ...prev,
-      uncertaintyAreas: prev.uncertaintyAreas.includes(area)
-        ? prev.uncertaintyAreas.filter(a => a !== area)
-        : [...prev.uncertaintyAreas, area]
-    }));
-  };
+      uncertaintyAreas: newAreas
+    };
+  });
+};
 
   const toggleQuestionSelection = (question: string) => {
   setSelectedQuestions(prev => {
@@ -572,7 +588,7 @@ const copyToClipboard = async () => {
       style={{backgroundColor: '#ff5757', borderColor: '#ff5757'}}
     >
       <RefreshCw className="w-4 h-4 mr-2" />
-      {businessInfo.uncertaintyAreas.length === 0 ? 'Select categories first' : 'Generate Discovery Questions'}
+      {businessInfo.uncertaintyAreas.length === 0 ? 'Select categories first' : 'Generate Key Questions'}
     </Button>
   </div>
 </CardContent>
