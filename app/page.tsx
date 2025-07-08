@@ -600,7 +600,7 @@ const copyToClipboard = async () => {
       {generatedQuestions.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-black">Available Questions</CardTitle>
+            <CardTitle className="text-black">Recommended Questions</CardTitle>
             <p className="text-sm text-gray-600">
               Select questions you want to include in your survey. And don't worry, your selected questions will remain even after you generate more options.
             </p>
@@ -661,7 +661,7 @@ const copyToClipboard = async () => {
       {selectedQuestions.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-black">Customer Discovery Survey Preview</CardTitle>
+            <CardTitle className="text-black">Your Customer Survey Preview</CardTitle>
             <p className="text-sm text-gray-600">This survey will help you identify your ideal customer profile and understand their motivations</p>
           </CardHeader>
           <CardContent>
@@ -679,7 +679,7 @@ const copyToClipboard = async () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg text-black">Customer Discovery Best Practices</CardTitle>
+          <CardTitle className="text-lg text-black">Marketing & Customer Experience Survey Best Practices</CardTitle>
         </CardHeader>
         <CardContent className="text-sm space-y-3">
           <div>
