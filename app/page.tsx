@@ -446,15 +446,15 @@ const copyToClipboard = async () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center flex items-center justify-center gap-2 mb-6" style={{color: '#ff5757'}}>
-  <img src="/8BitContentCoralRed.svg" alt="8-Bit Content Logo" className="w-8 h-8" />
+  <img src="/8BitContentCoralRed.svg" alt="8-Bit Content Logo" className="w-12 h-12" />
   <strong>Customer Research Survey Creator</strong>
 </CardTitle>
 <div className="text-left space-y-3">
   <p className="text-gray-600 text-lg">
-    <strong>Get strategic survey questions that uncover your customers' real motivations, pain points, and decision triggers. Use their exact words to create copy and content that gets found and resonates.</strong>
+     <strong>Get strategic survey questions that uncover your customers' real motivations, pain points, and decision triggers.<br />Use their exact words to create copy and content that gets found and resonates.</strong>
   </p>
   <p className="text-base text-gray-500">
-    <em>Built using proven insights and frameworks from customer research and conversion experts like Jennifer Havice, Tony Ulwick, Peep Laja, and others.</em>
+    <em>Built using proven insights and frameworks from customer research and conversion experts like Jennifer Havice, Tony Ulwick, Peep Laja, & others.</em>
   </p>
 </div>
         </CardHeader>
@@ -667,17 +667,17 @@ const copyToClipboard = async () => {
             <p className="font-medium text-black"><strong>How to get quality survey responses?</strong></p>
             <ul className="mt-2 space-y-1">
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Ask customers who bought from you within the last 6 months. Recent buyers are more likely to remember their decision-making process and respond.</li>
+  <span className="text-red-500 mr-2">→</span><strong>Ask customers who bought from you within the last 6 months.</strong> Recent buyers are more likely to remember their decision-making process and respond.</li>
              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Keep surveys to 7-10 questions maximum. Longer surveys kill response rates.</li>
+  <span className="text-red-500 mr-2">→</span><strong>Keep surveys to 7-10 questions maximum.</strong> Longer surveys kill response rates.</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Use open-ended questions that capture authentic customer language. (Yes/no questions don't reveal the insights needed for effective copy.)</li>
+  <span className="text-red-500 mr-2">→</span><strong>Use open-ended questions that capture authentic customer language.</strong> (Yes/no questions don't reveal the insights needed for effective copy.)</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Send surveys with direct subject lines like "Can you help me with some quick questions?" - Or use your brand-moderated Facebook Group, Subreddit, etc. And always mention the time commitment upfront: "Takes 5-7 minutes."</li>
+  <span className="text-red-500 mr-2">→</span><strong>Send surveys with direct subject lines like "Can you help me with some quick questions?"</strong> - Or use your brand-moderated Facebook Group, Subreddit, etc. And always mention the time commitment upfront: "Takes 5-7 minutes."</li>
   <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Maintain framing as helping you improve: "We're always working to better serve customers like you and improve our products/services based on real feedback."</li>
+  <span className="text-red-500 mr-2">→</span><strong>Frame it as helping you improve:</strong> "We're always working to better serve customers like you and improve our products/services based on real feedback."</li>
    <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>If needed, consider small incentives: discount codes, early access, exclusive content, etc.</li>
+  <span className="text-red-500 mr-2">→</span><strong>If needed, consider small incentives:</strong> Discount codes, early access, exclusive content, etc.</li>
             </ul>
           </div>
 
@@ -685,13 +685,13 @@ const copyToClipboard = async () => {
             <p className="font-medium text-black"><strong>What to do with the responses?</strong></p>
             <ul className="mt-2 space-y-1">
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Look for recurring language patterns in customer responses. The words they repeat become your messaging goldmine.</li>
+  <span className="text-red-500 mr-2">→</span><strong>Look for recurring language patterns in customer responses.</strong> The words they repeat become your messaging goldmine.</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Identify common trigger events that pushed customers to buy. These can reveal high-value insights.</li>
+  <span className="text-red-500 mr-2">→</span><strong>Identify common trigger events that pushed customers to buy.</strong> These can reveal high-value insights.</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Note demographic patterns among your best customers. This data helps you tailor content to similar prospects.</li>
+  <span className="text-red-500 mr-2">→</span><strong>Note demographic patterns among your best customers.</strong> This data helps you tailor content to similar prospects.</li>
               <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>Inject their exact words into your website headlines, product descriptions, marketing emails, and more.</li>
+  <span className="text-red-500 mr-2">→</span><strong>Inject their exact words into your copy and content:</strong> Website headlines, product descriptions, marketing emails, and more.</li>
             </ul>
           </div>
         </CardContent>
