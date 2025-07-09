@@ -349,17 +349,28 @@ let questionPool: string[] = [];
       .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
   });
 
-  // Remove duplicates from new questions AND existing questions
-  const allExistingQuestions = [...generatedQuestions, ...selectedQuestions];
-  const newUniqueQuestions = customizedQuestions.filter(q => !allExistingQuestions.includes(q));
+// Remove duplicates from new questions AND existing questions
+const allExistingQuestions = [...generatedQuestions, ...selectedQuestions];
+const newUniqueQuestions = customizedQuestions.filter(q => !allExistingQuestions.includes(q));
+
+// If all questions are selected and no new unique questions, refresh unselected ones
+if (selectedQuestions.length === generatedQuestions.length && newUniqueQuestions.length === 0) {
+  // Get unselected questions from current pool
+  const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
   
-  // Add new unique questions to existing pool
-const updatedQuestions = [...generatedQuestions, ...newUniqueQuestions];
-
-// Limit total available questions to 15
-const limitedQuestions = updatedQuestions.slice(0, 15);
-
-setGeneratedQuestions(limitedQuestions);
+  // Replace unselected questions with new random ones
+  const remainingQuestions = customizedQuestions.filter(q => !selectedQuestions.includes(q));
+  const newRandomQuestions = getRandomQuestions(remainingQuestions, unselectedQuestions.length || 1);
+  
+  // Update the pool: keep selected questions + add new random ones
+  const updatedQuestions = [...selectedQuestions, ...newRandomQuestions].slice(0, 15);
+  setGeneratedQuestions(updatedQuestions);
+} else {
+  // Normal behavior: add new unique questions
+  const updatedQuestions = [...generatedQuestions, ...newUniqueQuestions];
+  const limitedQuestions = updatedQuestions.slice(0, 15);
+  setGeneratedQuestions(limitedQuestions);
+}
 setTimeout(() => {
   const height = document.documentElement.scrollHeight;
   window.parent.postMessage({ type: 'resize', height }, '*');
