@@ -175,12 +175,11 @@ const SurveyCreatorTool = () => {
 useEffect(() => {
  function postHeight() {
   const baseHeight = document.documentElement.scrollHeight;
-  // Add buffer for mobile devices
-  const height = window.innerWidth <= 768 ? baseHeight + 150 : baseHeight;
+  // Reduce mobile buffer from 150px to 50px
+  const height = window.innerWidth <= 768 ? baseHeight + 50 : baseHeight;
   
   console.log('Calculated height:', height, 'Mobile:', window.innerWidth <= 768);
   
-  // Try multiple methods to communicate height
   try {
     window.parent.postMessage({ type: 'resize', height }, '*');
     window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
@@ -203,7 +202,7 @@ useEffect(() => {
         html.clientHeight,
         html.scrollHeight,
         html.offsetHeight
-      ) + 200; // Add 200px buffer for mobile
+      ) + 50; // Add 50px buffer for mobile
       
       console.log('Mobile height with buffer:', height);
       window.parent.postMessage({ type: 'resize', height }, '*');
@@ -229,7 +228,8 @@ let mobileObserver = null;
 if (window.innerWidth <= 768) {
   mobileObserver = new MutationObserver(() => {
     setTimeout(() => {
-      const height = document.documentElement.scrollHeight + 200;
+      const baseHeight = document.documentElement.scrollHeight;
+      const height = Math.min(baseHeight + 50, baseHeight * 1.1); // Limit to 10% extra
       window.parent.postMessage({ type: 'resize', height }, '*');
     }, 200);
   });
