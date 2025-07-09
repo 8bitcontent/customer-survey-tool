@@ -174,27 +174,18 @@ const SurveyCreatorTool = () => {
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
   function postHeight() {
-  // Get multiple height measurements for debugging
-  const bodyScrollHeight = document.body.scrollHeight;
-  const bodyOffsetHeight = document.body.offsetHeight;
-  const htmlScrollHeight = document.documentElement.scrollHeight;
-  const htmlOffsetHeight = document.documentElement.offsetHeight;
+  // Use body measurements instead of html - they're more accurate
+  const bodyHeight = document.body.scrollHeight;
+  const htmlHeight = document.documentElement.scrollHeight;
   
-  console.log('Height measurements:', {
-    bodyScrollHeight,
-    bodyOffsetHeight, 
-    htmlScrollHeight,
-    htmlOffsetHeight,
-    windowInnerHeight: window.innerHeight
-  });
-  
-  const baseHeight = document.documentElement.scrollHeight;
+  // Use the smaller, more accurate measurement
+  const baseHeight = Math.min(bodyHeight, htmlHeight);
   const height = window.innerWidth <= 768 ? baseHeight + 20 : baseHeight;
   
-  console.log('Final calculated height:', height, 'Mobile:', window.innerWidth <= 768);
+  console.log('Heights - Body:', bodyHeight, 'HTML:', htmlHeight, 'Using:', baseHeight, 'Final:', height);
   
   // Only send reasonable heights
-  if (height > 0 && height < 5000) {
+  if (height > 0 && height < 4000) {
     try {
       window.parent.postMessage({ type: 'resize', height }, '*');
       window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
