@@ -639,7 +639,7 @@ const copyToClipboard = async () => {
           <CardHeader>
             <CardTitle as="h2" className="text-black">Recommended Questions</CardTitle>
             <p className="text-sm text-gray-600">
-              Select questions you want to include in your survey. Click 'Add More Questions' to refresh unselected questions. But to avoid decision fatigue we try to 
+              Select up to 15 questions for your survey.<br />Click ‘Add More Questions’ to refresh the unselected ones. Your selected questions will stay saved.
             </p>
           </CardHeader>
           <CardContent>
@@ -700,7 +700,7 @@ const copyToClipboard = async () => {
         <Card>
           <CardHeader>
             <CardTitle as="h2" className="text-black">Your Customer Survey Preview</CardTitle>
-            <p className="text-sm text-gray-600">This survey will help you identify your ideal customer profile and understand their motivations</p>
+            <p className="text-sm text-gray-600">Copy or export your selected questions to Google Forms or your preferred survey tool.</p>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
