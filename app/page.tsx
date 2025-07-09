@@ -174,15 +174,27 @@ const SurveyCreatorTool = () => {
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
   function postHeight() {
-  // Use body measurements instead of html - they're more accurate
-  const bodyHeight = document.body.scrollHeight;
-  const htmlHeight = document.documentElement.scrollHeight;
+  let height;
   
-  // Use the smaller, more accurate measurement
-  const baseHeight = Math.min(bodyHeight, htmlHeight);
-  const height = window.innerWidth <= 768 ? baseHeight + 20 : baseHeight;
-  
-  console.log('Heights - Body:', bodyHeight, 'HTML:', htmlHeight, 'Using:', baseHeight, 'Final:', height);
+  if (window.innerWidth <= 768) {
+    // Mobile: Use a more conservative approach
+    const cards = document.querySelectorAll('[class*="Card"], .space-y-6 > *');
+    let totalHeight = 100; // Start with base padding
+    
+    cards.forEach(card => {
+      totalHeight += card.offsetHeight + 24; // Add card height + margin
+    });
+    
+    height = Math.min(totalHeight, 3000); // Cap at 3000px for mobile
+    console.log('Mobile calculated height:', height, 'Card count:', cards.length);
+  } else {
+    // Desktop: Use the body measurement
+    const bodyHeight = document.body.scrollHeight;
+    const htmlHeight = document.documentElement.scrollHeight;
+    const baseHeight = Math.min(bodyHeight, htmlHeight);
+    height = baseHeight;
+    console.log('Desktop calculated height:', height);
+  }
   
   // Only send reasonable heights
   if (height > 0 && height < 4000) {
