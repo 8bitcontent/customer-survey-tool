@@ -177,28 +177,24 @@ useEffect(() => {
   let height;
   
   if (window.innerWidth <= 768) {
-    // Mobile: Use a more conservative approach
-    const cards = document.querySelectorAll('[class*="Card"], .space-y-6 > *');
-    let totalHeight = 100; // Start with base padding
-    
-   cards.forEach(card => {
-  if (card instanceof HTMLElement) {
-    totalHeight += (card.offsetHeight || card.clientHeight || 0) + 24;
-  }
-});
-    
-    height = Math.min(totalHeight, 3000); // Cap at 3000px for mobile
-    console.log('Mobile calculated height:', height, 'Card count:', cards.length);
+    // Mobile: Use viewport-based calculation
+    const content = document.querySelector('.max-w-2xl');
+    if (content instanceof HTMLElement) {
+      height = content.scrollHeight + 100; // Add padding
+    } else {
+      height = document.body.scrollHeight;
+    }
+    height = Math.min(height, 2500); // Cap mobile height
+    console.log('Mobile height:', height);
   } else {
-    // Desktop: Use the body measurement
+    // Desktop: Use body measurement
     const bodyHeight = document.body.scrollHeight;
     const htmlHeight = document.documentElement.scrollHeight;
-    const baseHeight = Math.min(bodyHeight, htmlHeight);
-    height = baseHeight;
-    console.log('Desktop calculated height:', height);
+    height = Math.min(bodyHeight, htmlHeight);
+    console.log('Desktop height:', height);
   }
   
-  // Only send reasonable heights
+  // Send the height
   if (height > 0 && height < 4000) {
     try {
       window.parent.postMessage({ type: 'resize', height }, '*');
@@ -207,7 +203,7 @@ useEffect(() => {
       console.error('PostMessage failed:', e);
     }
   } else {
-    console.error('Unreasonable height calculated:', height);
+    console.error('Unreasonable height:', height);
   }
 }
 
