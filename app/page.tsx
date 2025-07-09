@@ -173,91 +173,46 @@ const SurveyCreatorTool = () => {
 
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
- function postHeight() {
-  const baseHeight = document.documentElement.scrollHeight;
-  // Reduce mobile buffer from 150px to 50px
-  const height = window.innerWidth <= 768 ? baseHeight + 50 : baseHeight;
-  
-  console.log('Calculated height:', height, 'Mobile:', window.innerWidth <= 768);
-  
-  try {
-    window.parent.postMessage({ type: 'resize', height }, '*');
-    window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
-  } catch (e) {
-    console.error('PostMessage failed:', e);
-  }
-}
-
-  // Add mobile-specific handling
-  const handleMobileResize = () => {
-  if (window.innerWidth <= 768) {
-    setTimeout(() => {
-      // Get the actual content height with mobile buffer
-      const body = document.body;
-      const html = document.documentElement;
-      
-      const height = Math.max(
-        body.scrollHeight,
-        body.offsetHeight,
-        html.clientHeight,
-        html.scrollHeight,
-        html.offsetHeight
-      ) + 50; // Add 50px buffer for mobile
-      
-      console.log('Mobile height with buffer:', height);
+  function postHeight() {
+    const baseHeight = document.documentElement.scrollHeight;
+    // Minimal buffer for mobile
+    const height = window.innerWidth <= 768 ? baseHeight + 20 : baseHeight;
+    
+    console.log('Calculated height:', height, 'Mobile:', window.innerWidth <= 768);
+    
+    try {
       window.parent.postMessage({ type: 'resize', height }, '*');
-    }, 300); // Longer delay for mobile
+      window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
+    } catch (e) {
+      console.error('PostMessage failed:', e);
+    }
   }
-};
 
   // Initial sizing
   postHeight();
   
-  // Handle dynamic content changes
-const observer = new MutationObserver(postHeight);
-observer.observe(document.body, { 
-  childList: true, 
-  subtree: true, 
-  attributes: true 
-});
-
-// Declare mobile observer variable
-let mobileObserver = null;
-
-// Add mobile-specific content observer
-if (window.innerWidth <= 768) {
-  mobileObserver = new MutationObserver(() => {
-    setTimeout(() => {
-      const baseHeight = document.documentElement.scrollHeight;
-      const height = Math.min(baseHeight + 50, baseHeight * 1.1); // Limit to 10% extra
-      window.parent.postMessage({ type: 'resize', height }, '*');
-    }, 200);
+  // Single observer for all content changes
+  const observer = new MutationObserver(() => {
+    setTimeout(postHeight, 100);
   });
   
-  mobileObserver.observe(document.body, { 
+  observer.observe(document.body, { 
     childList: true, 
-    subtree: true,
-    attributes: true,
-    characterData: true 
+    subtree: true, 
+    attributes: true 
   });
-}
 
   // Handle window events
   window.addEventListener('load', postHeight);
   window.addEventListener('resize', postHeight);
-  
-  // ADD MISSING MOBILE EVENT LISTENERS
-  window.addEventListener('orientationchange', handleMobileResize);
+  window.addEventListener('orientationchange', postHeight);
 
   return () => {
-  observer.disconnect();
-  if (window.innerWidth <= 768 && mobileObserver) {
-    mobileObserver.disconnect();
-  }
-  window.removeEventListener('load', postHeight);
-  window.removeEventListener('resize', postHeight);
-  window.removeEventListener('orientationchange', handleMobileResize);
-};
+    observer.disconnect();
+    window.removeEventListener('load', postHeight);
+    window.removeEventListener('resize', postHeight);
+    window.removeEventListener('orientationchange', postHeight);
+  };
 }, []);
 
   // Question templates focused on customer discovery and ICP development
