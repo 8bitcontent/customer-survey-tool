@@ -174,24 +174,13 @@ const SurveyCreatorTool = () => {
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
 function postHeight() {
-  // Simple, reliable height calculation
-  const bodyHeight = document.body.offsetHeight;
-  const contentHeight = document.body.scrollHeight;
+  // Ultra-simple: just use what the browser reports
+  const height = document.documentElement.getBoundingClientRect().height;
   
-  // Use the larger of the two measurements
-  let height = Math.max(bodyHeight, contentHeight);
+  console.log('Simple height calculation:', height);
   
-  // Add small buffer for safety
-  height += 50;
-  
-  console.log('Body offset:', bodyHeight, 'Body scroll:', contentHeight, 'Final:', height);
-  
-  // Send the height (remove the unreasonable height check for now)
-  try {
+  if (height > 100) {
     window.parent.postMessage({ type: 'resize', height }, '*');
-    window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
-  } catch (e) {
-    console.error('PostMessage failed:', e);
   }
 }
 
