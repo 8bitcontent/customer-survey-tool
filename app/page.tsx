@@ -534,17 +534,15 @@ const copyToClipboard = async () => {
   </div>
 
   <div className="mt-4">
-    <label className="block text-sm font-medium mb-2 text-black">Current Customer Knowledge</label>
-    <Select onValueChange={(value: string) => setBusinessInfo(prev => ({...prev, currentCustomerKnowledge: value}))}>
-        <SelectValue placeholder="How well do you know your customers?" />
-      <SelectContent>
-        <SelectItem value="very-little">Very little - just starting out</SelectItem>
-        <SelectItem value="some-ideas">Some ideas but need validation</SelectItem>
-        <SelectItem value="fairly-good">Fairly good understanding</SelectItem>
-        <SelectItem value="very-good">Very good, looking for deeper insights</SelectItem>
-      </SelectContent>
-    </Select>
-  </div>
+  <label className="block text-sm font-medium mb-2 text-black">Current Customer Knowledge</label>
+  <Select onValueChange={(value: string) => setBusinessInfo(prev => ({...prev, currentCustomerKnowledge: value}))}>
+    <option value="" disabled selected>How well do you know your customers?</option>
+    <option value="very-little">Very little - just starting out</option>
+    <option value="some-ideas">Some ideas but need validation</option>
+    <option value="fairly-good">Fairly good understanding</option>
+    <option value="very-good">Very good, looking for deeper insights</option>
+  </Select>
+</div>
 
   <div className="mt-4">
   <label className="block text-sm font-medium mb-4 text-black">What would you like to learn about your customers? (Select all that apply)</label>
@@ -609,7 +607,12 @@ const copyToClipboard = async () => {
       onClick={generateQuestions}
       className="w-full"
       disabled={!businessInfo.businessType || !businessInfo.productService || businessInfo.uncertaintyAreas.length === 0}
-      style={{backgroundColor: '#ff5757', borderColor: '#ff5757'}}
+      style={{
+  backgroundColor: '#ff5757', 
+  borderColor: '#ff5757',
+  color: 'white !important',
+  fontWeight: 'bold'
+}}
     >
       <RefreshCw className="w-4 h-4 mr-2" />
       {businessInfo.uncertaintyAreas.length === 0 ? 'Select categories first' : 'Generate Key Questions'}
