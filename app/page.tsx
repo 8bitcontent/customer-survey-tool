@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { JSX } from 'react';
 
 // Temporary inline components (we'll use proper ones later)
@@ -170,46 +170,6 @@ const SurveyCreatorTool = () => {
   const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
-// Auto-resize functionality for iframe embedding
-useEffect(() => {
-function postHeight() {
-  // Ultra-simple: just use what the browser reports
-  const height = document.documentElement.getBoundingClientRect().height;
-  
-  console.log('Simple height calculation:', height);
-  
-  if (height > 100) {
-    window.parent.postMessage({ type: 'resize', height }, '*');
-  }
-}
-
-  // Initial sizing
-  postHeight();
-  
-  // Single observer for all content changes
-  const observer = new MutationObserver(() => {
-    setTimeout(postHeight, 100);
-  });
-  
-  observer.observe(document.body, { 
-    childList: true, 
-    subtree: true, 
-    attributes: true 
-  });
-
-  // Handle window events
-  window.addEventListener('load', postHeight);
-  window.addEventListener('resize', postHeight);
-  window.addEventListener('orientationchange', postHeight);
-
-  return () => {
-    observer.disconnect();
-    window.removeEventListener('load', postHeight);
-    window.removeEventListener('resize', postHeight);
-    window.removeEventListener('orientationchange', postHeight);
-  };
-}, []);
 
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
