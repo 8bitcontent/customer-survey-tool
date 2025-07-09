@@ -181,9 +181,11 @@ useEffect(() => {
     const cards = document.querySelectorAll('[class*="Card"], .space-y-6 > *');
     let totalHeight = 100; // Start with base padding
     
-    cards.forEach(card => {
-      totalHeight += card.offsetHeight + 24; // Add card height + margin
-    });
+   cards.forEach(card => {
+  if (card instanceof HTMLElement) {
+    totalHeight += (card.offsetHeight || card.clientHeight || 0) + 24;
+  }
+});
     
     height = Math.min(totalHeight, 3000); // Cap at 3000px for mobile
     console.log('Mobile calculated height:', height, 'Card count:', cards.length);
