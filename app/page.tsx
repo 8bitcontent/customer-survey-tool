@@ -604,19 +604,19 @@ const copyToClipboard = async () => {
 
   <div className="pt-4">
     <Button 
-      onClick={generateQuestions}
-      className="w-full"
-      disabled={!businessInfo.businessType || !businessInfo.productService || businessInfo.uncertaintyAreas.length === 0}
-      style={{
-  backgroundColor: '#ff5757', 
-  borderColor: '#ff5757',
-  color: 'white !important',
-  fontWeight: 'bold'
-}}
-    >
-      <RefreshCw className="w-4 h-4 mr-2" />
-      {businessInfo.uncertaintyAreas.length === 0 ? 'Select categories first' : 'Generate Key Questions'}
-    </Button>
+  onClick={generateQuestions}
+  className="w-full text-white font-bold"
+  disabled={!businessInfo.businessType || !businessInfo.productService || businessInfo.uncertaintyAreas.length === 0}
+  style={{
+    backgroundColor: '#ff5757', 
+    borderColor: '#ff5757',
+    color: 'white',
+    fontWeight: 'bold'
+  }}
+>
+  <RefreshCw className="w-4 h-4 mr-2" />
+  {businessInfo.uncertaintyAreas.length === 0 ? 'Select categories first' : 'Generate Key Questions'}
+</Button>
   </div>
 </CardContent>
       </Card>
