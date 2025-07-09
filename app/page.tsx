@@ -174,16 +174,39 @@ const SurveyCreatorTool = () => {
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
   function postHeight() {
-  const height = document.documentElement.scrollHeight;
-  
-  // Try multiple methods to communicate height
-  try {
-    window.parent.postMessage({ type: 'resize', height }, '*');
-    window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
-  } catch (e) {
-    console.error('PostMessage failed:', e);
+    const height = document.documentElement.scrollHeight;
+    console.log('Desktop height:', height); // Debug log
+    
+    // Try multiple methods to communicate height
+    try {
+      window.parent.postMessage({ type: 'resize', height }, '*');
+      window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
+    } catch (e) {
+      console.error('PostMessage failed:', e);
+    }
   }
-}
+
+  // Add mobile-specific handling
+  const handleMobileResize = () => {
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        // Get the actual content height more accurately
+        const body = document.body;
+        const html = document.documentElement;
+        
+        const height = Math.max(
+          body.scrollHeight,
+          body.offsetHeight,
+          html.clientHeight,
+          html.scrollHeight,
+          html.offsetHeight
+        );
+        
+        console.log('Mobile height:', height); // Debug log
+        window.parent.postMessage({ type: 'resize', height }, '*');
+      }, 100);
+    }
+  };
 
   // Initial sizing
   postHeight();
@@ -199,33 +222,16 @@ useEffect(() => {
   // Handle window events
   window.addEventListener('load', postHeight);
   window.addEventListener('resize', postHeight);
+  
+  // ADD MISSING MOBILE EVENT LISTENERS
+  window.addEventListener('orientationchange', handleMobileResize);
 
-// Add mobile-specific handling
-const handleMobileResize = () => {
-  if (window.innerWidth <= 768) {
-    setTimeout(() => {
-      // Get the actual content height more accurately
-      const body = document.body;
-      const html = document.documentElement;
-      
-      const height = Math.max(
-        body.scrollHeight,
-        body.offsetHeight,
-        html.clientHeight,
-        html.scrollHeight,
-        html.offsetHeight
-      );
-      
-      window.parent.postMessage({ type: 'resize', height }, '*');
-    }, 100); // Faster response
-  }
-};
   return () => {
-  observer.disconnect();
-  window.removeEventListener('load', postHeight);
-  window.removeEventListener('resize', postHeight);
-  window.removeEventListener('orientationchange', handleMobileResize);
-};
+    observer.disconnect();
+    window.removeEventListener('load', postHeight);
+    window.removeEventListener('resize', postHeight);
+    window.removeEventListener('orientationchange', handleMobileResize);
+  };
 }, []);
 
   // Question templates focused on customer discovery and ICP development
@@ -338,6 +344,14 @@ const handleMobileResize = () => {
     ]
   };
 
+// Force height recalculation after content changes
+const recalculateHeight = () => {
+  setTimeout(() => {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ type: 'resize', height }, '*');
+  }, 150);
+};
+
 const generateQuestions = () => {
   const { businessType, industry, productService, uncertaintyAreas } = businessInfo;
   
@@ -412,22 +426,7 @@ setGeneratedQuestions(limitedQuestions);
 setTimeout(() => {
   const height = document.documentElement.scrollHeight;
   window.parent.postMessage({ type: 'resize', height }, '*');
-
-  // Fire again after additional delay to ensure paint
-  setTimeout(() => {
-    const finalHeight = document.documentElement.scrollHeight;
-    window.parent.postMessage({ type: 'resize', height: finalHeight }, '*');
-  }, 300);
-}, 100);
-setTimeout(recalculateHeight, 200);
-};
-
-// Force height recalculation after content changes
-const recalculateHeight = () => {
-  setTimeout(() => {
-    const height = document.documentElement.scrollHeight;
-    window.parent.postMessage({ type: 'resize', height }, '*');
-  }, 150);
+}, 200);
 };
 
   // Helper function to get random questions from a category
