@@ -174,18 +174,16 @@ const SurveyCreatorTool = () => {
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
   function postHeight() {
-    // Wait for all content to render
-    setTimeout(() => {
-      const height = Math.max(
-        document.documentElement.scrollHeight,
-        document.body.scrollHeight,
-        document.documentElement.offsetHeight,
-        document.body.offsetHeight
-      );
-      
-      window.parent.postMessage({ type: 'resize', height }, '*');
-    }, 100);
+  const height = document.documentElement.scrollHeight;
+  
+  // Try multiple methods to communicate height
+  try {
+    window.parent.postMessage({ type: 'resize', height }, '*');
+    window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
+  } catch (e) {
+    console.error('PostMessage failed:', e);
   }
+}
 
   // Initial sizing
   postHeight();
