@@ -174,19 +174,37 @@ const SurveyCreatorTool = () => {
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
   function postHeight() {
-    const baseHeight = document.documentElement.scrollHeight;
-    // Minimal buffer for mobile
-    const height = window.innerWidth <= 768 ? baseHeight + 20 : baseHeight;
-    
-    console.log('Calculated height:', height, 'Mobile:', window.innerWidth <= 768);
-    
+  // Get multiple height measurements for debugging
+  const bodyScrollHeight = document.body.scrollHeight;
+  const bodyOffsetHeight = document.body.offsetHeight;
+  const htmlScrollHeight = document.documentElement.scrollHeight;
+  const htmlOffsetHeight = document.documentElement.offsetHeight;
+  
+  console.log('Height measurements:', {
+    bodyScrollHeight,
+    bodyOffsetHeight, 
+    htmlScrollHeight,
+    htmlOffsetHeight,
+    windowInnerHeight: window.innerHeight
+  });
+  
+  const baseHeight = document.documentElement.scrollHeight;
+  const height = window.innerWidth <= 768 ? baseHeight + 20 : baseHeight;
+  
+  console.log('Final calculated height:', height, 'Mobile:', window.innerWidth <= 768);
+  
+  // Only send reasonable heights
+  if (height > 0 && height < 5000) {
     try {
       window.parent.postMessage({ type: 'resize', height }, '*');
       window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
     } catch (e) {
       console.error('PostMessage failed:', e);
     }
+  } else {
+    console.error('Unreasonable height calculated:', height);
   }
+}
 
   // Initial sizing
   postHeight();
