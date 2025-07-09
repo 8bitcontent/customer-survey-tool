@@ -670,9 +670,10 @@ const copyToClipboard = async () => {
             
             <div className="flex space-x-2">
               <Button onClick={copyToClipboard} variant="outline" style={{borderColor: '#ff5757', color: '#ff5757'}}>
-                <Copy className="w-4 h-4 mr-2" />
-                Copy Selected ({selectedQuestions.length})
-              </Button>
+  <Copy className="w-4 h-4 mr-2" />
+  <span className="hidden sm:inline">Copy Selected ({selectedQuestions.length})</span>
+  <span className="sm:hidden">Copy ({selectedQuestions.length})</span>
+</Button>
               <Button onClick={exportSurvey} variant="outline" style={{borderColor: '#ff5757', color: '#ff5757'}}>
                 <Download className="w-4 h-4 mr-2" />
                 Export Survey
