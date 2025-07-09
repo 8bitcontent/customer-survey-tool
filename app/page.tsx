@@ -281,6 +281,25 @@ const SurveyCreatorTool = () => {
     ]
   };
 
+// Helper function to shuffle array
+  const shuffleArray = (array: string[]) => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  };
+
+  // Helper function to get random questions from a category
+const getRandomQuestions = (questionArray: string[], count: number) => {
+  if (!questionArray || !Array.isArray(questionArray)) {
+    return [];
+  }
+  const shuffled = shuffleArray([...questionArray]);
+  return shuffled.slice(0, count);
+};
+
 // Force height recalculation after content changes
 const recalculateHeight = () => {
   setTimeout(() => {
@@ -349,52 +368,36 @@ let questionPool: string[] = [];
       .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
   });
 
-// Remove duplicates from new questions AND existing questions
-const allExistingQuestions = [...generatedQuestions, ...selectedQuestions];
-const newUniqueQuestions = customizedQuestions.filter(q => !allExistingQuestions.includes(q));
+// Always refresh unselected questions when button is clicked
+const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
 
-// If all questions are selected and no new unique questions, refresh unselected ones
-if (selectedQuestions.length === generatedQuestions.length && newUniqueQuestions.length === 0) {
-  // Get unselected questions from current pool
-  const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+if (unselectedQuestions.length > 0) {
+  // Get fresh random questions to replace unselected ones
+  const freshQuestions = getRandomQuestions(customizedQuestions, unselectedQuestions.length);
   
-  // Replace unselected questions with new random ones
-  const remainingQuestions = customizedQuestions.filter(q => !selectedQuestions.includes(q));
-  const newRandomQuestions = getRandomQuestions(remainingQuestions, unselectedQuestions.length || 1);
+  // Replace unselected questions with fresh ones, keep selected ones in place
+  let freshIndex = 0;
+  const updatedQuestions = generatedQuestions.map(q => {
+    if (selectedQuestions.includes(q)) {
+      return q; // Keep selected questions
+    } else {
+      return freshQuestions[freshIndex++]; // Replace with fresh question
+    }
+  });
   
-  // Update the pool: keep selected questions + add new random ones
-  const updatedQuestions = [...selectedQuestions, ...newRandomQuestions].slice(0, 15);
   setGeneratedQuestions(updatedQuestions);
 } else {
-  // Normal behavior: add new unique questions
-  const updatedQuestions = [...generatedQuestions, ...newUniqueQuestions];
-  const limitedQuestions = updatedQuestions.slice(0, 15);
-  setGeneratedQuestions(limitedQuestions);
+  // If all questions are selected, just add more to the pool
+  const allExisting = [...generatedQuestions, ...selectedQuestions];
+  const newQuestions = customizedQuestions.filter(q => !allExisting.includes(q));
+  const moreQuestions = [...generatedQuestions, ...newQuestions].slice(0, 15);
+  setGeneratedQuestions(moreQuestions);
 }
+
 setTimeout(() => {
   const height = document.documentElement.scrollHeight;
   window.parent.postMessage({ type: 'resize', height }, '*');
-}, 200);
-};
-
-  // Helper function to get random questions from a category
-const getRandomQuestions = (questionArray: string[], count: number) => {
-  if (!questionArray || !Array.isArray(questionArray)) {
-    return [];
-  }
-  const shuffled = shuffleArray([...questionArray]);
-  return shuffled.slice(0, count);
-};
-
-  // Helper function to shuffle array
-  const shuffleArray = (array: string[]) => {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
-  };
+}, 200)};
 
   const getRelevantArea = (industry: string) => {
     const areaMap: { [key: string]: string } = {
