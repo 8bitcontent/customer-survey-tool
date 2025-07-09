@@ -206,12 +206,14 @@ useEffect(() => {
 const handleMobileResize = () => {
   if (window.innerWidth <= 768) {
     setTimeout(() => {
-      const height = Math.max(
+      // Get actual content height without extra padding
+      const height = Math.min(
         document.documentElement.scrollHeight,
-        document.body.scrollHeight + 100
+        document.body.scrollHeight,
+        2000 // Cap maximum height at 2000px
       );
       window.parent.postMessage({ type: 'resize', height }, '*');
-    }, 300);
+    }, 200); // Reduced from 300ms
   }
 };
   return () => {
@@ -219,7 +221,6 @@ const handleMobileResize = () => {
   window.removeEventListener('load', postHeight);
   window.removeEventListener('resize', postHeight);
   window.removeEventListener('orientationchange', handleMobileResize);
-  window.removeEventListener('touchend', handleMobileResize);
 };
 }, []);
 
