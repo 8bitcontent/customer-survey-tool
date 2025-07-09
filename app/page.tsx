@@ -639,7 +639,7 @@ const copyToClipboard = async () => {
           <CardHeader>
             <CardTitle as="h2" className="text-black">Recommended Questions</CardTitle>
             <p className="text-sm text-gray-600">
-              Select up to 15 questions for your survey.<br />Click ‘Add More Questions’ to refresh the unselected ones. Your selected questions will stay saved.
+              <strong>Select up to 15 questions for your survey.</strong><br />Click ‘Add More Questions’ to refresh the unselected ones. Your selected questions will stay saved.
             </p>
           </CardHeader>
           <CardContent>
