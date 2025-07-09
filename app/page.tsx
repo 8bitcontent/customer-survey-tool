@@ -173,37 +173,25 @@ const SurveyCreatorTool = () => {
 
 // Auto-resize functionality for iframe embedding
 useEffect(() => {
-  function postHeight() {
-  let height;
+function postHeight() {
+  // Simple, reliable height calculation
+  const bodyHeight = document.body.offsetHeight;
+  const contentHeight = document.body.scrollHeight;
   
-  if (window.innerWidth <= 768) {
-    // Mobile: Use viewport-based calculation
-    const content = document.querySelector('.max-w-2xl');
-    if (content instanceof HTMLElement) {
-      height = content.scrollHeight + 100; // Add padding
-    } else {
-      height = document.body.scrollHeight;
-    }
-    height = Math.min(height, 2500); // Cap mobile height
-    console.log('Mobile height:', height);
-  } else {
-    // Desktop: Use body measurement
-    const bodyHeight = document.body.scrollHeight;
-    const htmlHeight = document.documentElement.scrollHeight;
-    height = Math.min(bodyHeight, htmlHeight);
-    console.log('Desktop height:', height);
-  }
+  // Use the larger of the two measurements
+  let height = Math.max(bodyHeight, contentHeight);
   
-  // Send the height
-  if (height > 0 && height < 4000) {
-    try {
-      window.parent.postMessage({ type: 'resize', height }, '*');
-      window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
-    } catch (e) {
-      console.error('PostMessage failed:', e);
-    }
-  } else {
-    console.error('Unreasonable height:', height);
+  // Add small buffer for safety
+  height += 50;
+  
+  console.log('Body offset:', bodyHeight, 'Body scroll:', contentHeight, 'Final:', height);
+  
+  // Send the height (remove the unreasonable height check for now)
+  try {
+    window.parent.postMessage({ type: 'resize', height }, '*');
+    window.parent.postMessage({ type: 'resize', height }, 'https://www.8bitcontent.com');
+  } catch (e) {
+    console.error('PostMessage failed:', e);
   }
 }
 
