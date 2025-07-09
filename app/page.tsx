@@ -372,25 +372,24 @@ let questionPool: string[] = [];
 const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
 
 if (unselectedQuestions.length > 0) {
-  // Get fresh random questions to replace unselected ones
-  const freshQuestions = getRandomQuestions(customizedQuestions, unselectedQuestions.length);
+  // Get fresh random questions that aren't duplicates
+  const usedQuestions = [...generatedQuestions, ...selectedQuestions];
+  const availableQuestions = customizedQuestions.filter(q => !usedQuestions.includes(q));
   
-  // Replace unselected questions with fresh ones, keep selected ones in place
-  let freshIndex = 0;
-  const updatedQuestions = generatedQuestions.map(q => {
-    if (selectedQuestions.includes(q)) {
-      return q; // Keep selected questions
-    } else {
-      return freshQuestions[freshIndex++]; // Replace with fresh question
-    }
-  });
+  // If we need more questions than available, get random ones from all questions
+  const freshQuestions = availableQuestions.length >= unselectedQuestions.length 
+    ? availableQuestions.slice(0, unselectedQuestions.length)
+    : [...availableQuestions, ...customizedQuestions.filter(q => !selectedQuestions.includes(q))].slice(0, unselectedQuestions.length);
+  
+  // Stack selected questions at top, then new questions
+  const updatedQuestions = [...selectedQuestions, ...freshQuestions];
   
   setGeneratedQuestions(updatedQuestions);
 } else {
-  // If all questions are selected, just add more to the pool
+  // If all questions are selected, add more unique questions
   const allExisting = [...generatedQuestions, ...selectedQuestions];
   const newQuestions = customizedQuestions.filter(q => !allExisting.includes(q));
-  const moreQuestions = [...generatedQuestions, ...newQuestions].slice(0, 15);
+  const moreQuestions = [...selectedQuestions, ...newQuestions].slice(0, 15);
   setGeneratedQuestions(moreQuestions);
 }
 
@@ -640,7 +639,7 @@ const copyToClipboard = async () => {
           <CardHeader>
             <CardTitle as="h2" className="text-black">Recommended Questions</CardTitle>
             <p className="text-sm text-gray-600">
-              Select questions you want to include in your survey. And don't worry, your selected questions will remain even after you generate more options.
+              Select questions you want to include in your survey. Click 'Add More Questions' to refresh unselected questions. But to avoid decision fatigue we try to 
             </p>
           </CardHeader>
           <CardContent>
