@@ -394,21 +394,70 @@ const recalculateHeight = () => {
 const generateQuestions = () => {
   const { industry, productService, uncertaintyAreas } = businessInfo;
   
- if (!productService) return;
+  if (!productService) return;
 
-  // If using a template, regenerate template questions
+  // If using a template, handle smart refill
   if (selectedTemplate) {
     const template = surveyTemplates[selectedTemplate];
-    const customizedQuestions = template.questions.map(q => {
-  return q.replace('[product/service]', `"${productService}"` || 'product/service');
-});
     
-    setGeneratedQuestions(customizedQuestions);
-    setSelectedQuestions(customizedQuestions);
-    return;
+    // Get unselected questions (these are the gaps to fill)
+    const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+    
+    if (unselectedQuestions.length > 0) {
+      // Determine which category this template maps to for additional questions
+      const templateCategoryMap: { [key: string]: string[] } = {
+  'new-business': ['painPointsDiscovery', 'motivationsDrivers', 'hesitationsBarriers'],
+  'existing-product': ['languageVoice', 'motivationsDrivers', 'purchasingBehavior'],
+  'competitive-research': ['competitors', 'purchasingBehavior', 'hesitationsBarriers'],
+  'content-strategy': ['languageVoice', 'painPointsDiscovery', 'motivationsDrivers']
+};
+      
+      const relevantCategories = templateCategoryMap[selectedTemplate as keyof typeof templateCategoryMap] || ['painPointsDiscovery'];
+      
+      // Get additional questions from relevant categories
+      let additionalQuestions: string[] = [];
+      relevantCategories.forEach(category => {
+        const categoryQuestions = discoveryQuestions[category as keyof typeof discoveryQuestions] || [];
+        const availableQuestions = categoryQuestions.filter(q => 
+          !generatedQuestions.includes(q) && 
+          !selectedQuestions.includes(q)
+        );
+        additionalQuestions.push(...getRandomQuestions(availableQuestions, 3));
+      });
+      
+      // Customize the additional questions
+      const customizedAdditional = additionalQuestions.map(q => {
+        return q
+          .replace('[product/service]', `"${productService}"` || 'product/service')
+          .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+          .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+      });
+      
+      // Replace unselected questions with new ones
+      const replacementQuestions = customizedAdditional.slice(0, unselectedQuestions.length);
+      const updatedQuestions = [...selectedQuestions, ...replacementQuestions];
+      
+      setGeneratedQuestions(updatedQuestions);
+      return;
+    } else {
+      // If all questions are selected, just regenerate the template
+      const customizedQuestions = template.questions.map(q => {
+        return q.replace('[product/service]', `"${productService}"` || 'product/service');
+      });
+      
+      setGeneratedQuestions(customizedQuestions);
+      setSelectedQuestions(customizedQuestions);
+      return;
+    }
   }
 
-let questionPool: string[] = [];
+  // Rest of your existing custom selection logic...
+  let questionPool: string[] = [];
+  
+  // Add questions from selected categories
+  if (uncertaintyAreas.includes('demographics')) {
+    questionPool.push(...getRandomQuestions(discoveryQuestions.demographicsPsychographics, 4));
+  }
   
   // Add questions from selected categories
   if (uncertaintyAreas.includes('demographics')) {
@@ -866,11 +915,16 @@ const copyToClipboard = async () => {
   onClick={generateQuestions} 
   variant="outline" 
   size="sm"
-  className="text-xs whitespace-nowrap"
+  className="text-xs px-2 py-1"
   style={{borderColor: '#ff5757', color: '#ff5757'}}
 >
-  <RefreshCw className="w-3 h-3 mr-1" />
-  Add More Questions
+  <RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
+  <span className="hidden sm:inline">
+    {selectedTemplate ? 'Fill Gaps' : 'Add More Questions'}
+  </span>
+  <span className="sm:hidden">
+    {selectedTemplate ? 'Fill' : 'Add More'}
+  </span>
 </Button>
             </div>
 
