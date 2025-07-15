@@ -397,59 +397,135 @@ const generateQuestions = () => {
   if (!productService) return;
 
   // If using a template, handle smart refill
-  if (selectedTemplate) {
-    const template = surveyTemplates[selectedTemplate];
+if (selectedTemplate) {
+  const template = surveyTemplates[selectedTemplate];
+  
+  // Get unselected questions (these are the gaps to fill)
+  const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+  
+  if (unselectedQuestions.length > 0) {
+    // Determine which category this template maps to for additional questions
+    const templateCategoryMap: { [key: string]: string[] } = {
+      'new-business': ['painPointsDiscovery', 'motivationsDrivers', 'hesitationsBarriers'],
+      'existing-product': ['languageVoice', 'motivationsDrivers', 'purchasingBehavior'],
+      'competitive-research': ['competitors', 'purchasingBehavior', 'hesitationsBarriers'],
+      'content-strategy': ['languageVoice', 'painPointsDiscovery', 'motivationsDrivers']
+    };
     
-    // Get unselected questions (these are the gaps to fill)
-    const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+    const relevantCategories = templateCategoryMap[selectedTemplate as keyof typeof templateCategoryMap] || ['painPointsDiscovery'];
     
-    if (unselectedQuestions.length > 0) {
-      // Determine which category this template maps to for additional questions
-      const templateCategoryMap: { [key: string]: string[] } = {
-  'new-business': ['painPointsDiscovery', 'motivationsDrivers', 'hesitationsBarriers'],
-  'existing-product': ['languageVoice', 'motivationsDrivers', 'purchasingBehavior'],
-  'competitive-research': ['competitors', 'purchasingBehavior', 'hesitationsBarriers'],
-  'content-strategy': ['languageVoice', 'painPointsDiscovery', 'motivationsDrivers']
-};
-      
-      const relevantCategories = templateCategoryMap[selectedTemplate as keyof typeof templateCategoryMap] || ['painPointsDiscovery'];
-      
-      // Get additional questions from relevant categories
-      let additionalQuestions: string[] = [];
-      relevantCategories.forEach(category => {
-        const categoryQuestions = discoveryQuestions[category as keyof typeof discoveryQuestions] || [];
-        const availableQuestions = categoryQuestions.filter(q => 
-          !generatedQuestions.includes(q) && 
-          !selectedQuestions.includes(q)
-        );
-        additionalQuestions.push(...getRandomQuestions(availableQuestions, 3));
-      });
-      
-      // Customize the additional questions
-      const customizedAdditional = additionalQuestions.map(q => {
-        return q
+    // Get additional questions from relevant categories
+    let additionalQuestions: string[] = [];
+    relevantCategories.forEach(category => {
+      const categoryQuestions = discoveryQuestions[category as keyof typeof discoveryQuestions] || [];
+      const availableQuestions = categoryQuestions.filter(q => {
+        // Customize the question first to check for duplicates properly
+        const customizedQ = q
           .replace('[product/service]', `"${productService}"` || 'product/service')
           .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
           .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+        
+        // Check if this customized question already exists
+        return !generatedQuestions.includes(customizedQ) && 
+               !selectedQuestions.includes(customizedQ);
+      });
+      additionalQuestions.push(...getRandomQuestions(availableQuestions, 5));
+    });
+    
+    // Customize the additional questions
+    const customizedAdditional = additionalQuestions.map(q => {
+      return q
+        .replace('[product/service]', `"${productService}"` || 'product/service')
+        .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+        .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+    });
+    
+    // Remove any duplicates from customized additional questions
+    const uniqueAdditional = customizedAdditional.filter((q, index, arr) => 
+      arr.indexOf(q) === index && 
+      !selectedQuestions.includes(q) && 
+      !generatedQuestions.includes(q)
+    );
+    
+    // Replace unselected questions with new unique ones
+    const replacementQuestions = uniqueAdditional.slice(0, unselectedQuestions.length);
+    let updatedQuestions = [...selectedQuestions, ...replacementQuestions];
+    
+    // Ensure minimum 5 questions
+    if (updatedQuestions.length < 5) {
+  const needMore = 5 - updatedQuestions.length;
+  const allAvailableQuestions = Object.values(discoveryQuestions).flat();
+  const moreQuestions = getRandomQuestions(
+    allAvailableQuestions.filter(q => {
+      const customizedQ = q
+        .replace('[product/service]', `"${productService}"` || 'product/service')
+        .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+        .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+      return !updatedQuestions.includes(customizedQ);
+    }), 
+    needMore
+  );
+  
+  const customizedMore = moreQuestions.map(q => {
+    return q
+      .replace('[product/service]', `"${productService}"` || 'product/service')
+      .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+      .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+  });
+  
+  setGeneratedQuestions([...updatedQuestions, ...customizedMore]);
+}
+  } else {
+    // If all questions are selected, ensure we have at least 5
+    const currentQuestions = [...selectedQuestions];
+    
+    if (currentQuestions.length < 5) {
+      // Add more questions from template categories
+      const templateCategoryMap: { [key: string]: string[] } = {
+        'new-business': ['painPointsDiscovery', 'motivationsDrivers'],
+        'existing-product': ['languageVoice', 'purchasingBehavior'],
+        'competitive-research': ['competitors', 'hesitationsBarriers'],
+        'content-strategy': ['languageVoice', 'painPointsDiscovery']
+      };
+      
+      const relevantCategories = templateCategoryMap[selectedTemplate as keyof typeof templateCategoryMap] || ['painPointsDiscovery'];
+      
+      let additionalQuestions: string[] = [];
+      relevantCategories.forEach(category => {
+        const categoryQuestions = discoveryQuestions[category as keyof typeof discoveryQuestions] || [];
+        const availableQuestions = categoryQuestions.filter(q => {
+          const customizedQ = q.replace('[product/service]', `"${productService}"` || 'product/service');
+          return !currentQuestions.includes(customizedQ);
+        });
+        additionalQuestions.push(...getRandomQuestions(availableQuestions, 3));
       });
       
-      // Replace unselected questions with new ones
-      const replacementQuestions = customizedAdditional.slice(0, unselectedQuestions.length);
-      const updatedQuestions = [...selectedQuestions, ...replacementQuestions];
-      
-      setGeneratedQuestions(updatedQuestions);
-      return;
-    } else {
-      // If all questions are selected, just regenerate the template
-      const customizedQuestions = template.questions.map(q => {
+      const customizedAdditional = additionalQuestions.map(q => {
         return q.replace('[product/service]', `"${productService}"` || 'product/service');
       });
       
-      setGeneratedQuestions(customizedQuestions);
-      setSelectedQuestions(customizedQuestions);
+      const uniqueAdditional = customizedAdditional.filter((q, index, arr) => 
+        arr.indexOf(q) === index && !currentQuestions.includes(q)
+      );
+      
+      const needMore = 5 - currentQuestions.length;
+      const finalQuestions = [...currentQuestions, ...uniqueAdditional.slice(0, needMore)];
+      
+      setGeneratedQuestions(finalQuestions);
+      setSelectedQuestions(finalQuestions);
       return;
     }
+    
+    // Just regenerate the same template
+    const customizedQuestions = template.questions.map(q => {
+      return q.replace('[product/service]', `"${productService}"` || 'product/service');
+    });
+    
+    setGeneratedQuestions(customizedQuestions);
+    setSelectedQuestions(customizedQuestions);
+    return;
   }
+}
 
   // Rest of your existing custom selection logic...
   let questionPool: string[] = [];
