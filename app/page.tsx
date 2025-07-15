@@ -663,56 +663,69 @@ const copyToClipboard = async () => {
     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-medium text-blue-900">🚀 Quick Start Templates</h3>
-        <div className="flex gap-2">
-          {selectedTemplate && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSelectedTemplate('');
-                setGeneratedQuestions([]);
-                setSelectedQuestions([]);
-                setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
-              }}
-              className="text-red-600 border-red-300"
-            >
-              Clear Template
-            </Button>
-          )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowTemplateOptions(!showTemplateOptions)}
-            className="text-blue-600 border-blue-300"
-          >
-            {showTemplateOptions ? 'Hide Templates' : 'Show Templates'}
-          </Button>
-        </div>
+        <div className="flex flex-col sm:flex-row gap-2">
+  {selectedTemplate && (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => {
+        setSelectedTemplate('');
+        setGeneratedQuestions([]);
+        setSelectedQuestions([]);
+        setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+      }}
+      className="text-red-600 border-red-300 text-xs"
+    >
+      Clear Template
+    </Button>
+  )}
+  <Button
+    variant="outline"
+    size="sm"
+    onClick={() => setShowTemplateOptions(!showTemplateOptions)}
+    className="text-blue-600 border-blue-300 text-xs"
+  >
+    {showTemplateOptions ? 'Hide Templates' : 'Show Templates'}
+  </Button>
+</div>
       </div>
       
       {showTemplateOptions && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {Object.entries(surveyTemplates).map(([key, template]) => (
   <div
-    key={key}
-    className={`p-3 border rounded-lg cursor-pointer transition-all ${
-      selectedTemplate === key 
-        ? 'bg-blue-100 border-blue-400' 
-        : 'bg-white border-gray-200 hover:border-blue-300'
-    }`}
-    onClick={() => handleTemplateSelection(key)}
-  >
-    <div className="flex items-start space-x-2">
-      <span className="text-lg">{template.icon}</span>
-      <div>
-        <h4 className="font-medium text-sm text-black">{template.title}</h4>
-        <p className="text-xs text-gray-600 mt-1">{template.description}</p>
-        <p className="text-xs text-blue-600 mt-1">
-          {template.questions.length} questions
-        </p>
-      </div>
+  key={key}
+  className={`p-3 border rounded-lg cursor-pointer transition-all ${
+    selectedTemplate === key 
+      ? 'bg-blue-100 border-blue-400' 
+      : 'bg-white border-gray-200 hover:border-blue-300'
+  }`}
+  onClick={() => handleTemplateSelection(key)}
+>
+  <div className="flex items-start space-x-2">
+    <span className="text-lg">{template.icon}</span>
+    <div className="flex-1">
+      <h4 className="font-medium text-sm text-black">{template.title}</h4>
+      <p className="text-xs text-gray-600 mt-1">{template.description}</p>
+      <p className="text-xs text-blue-600 mt-1">
+        {template.questions.length} questions
+      </p>
+      {selectedTemplate === key && (
+        <div className="mt-3 pt-3 border-t border-blue-200">
+          <p className="text-xs font-medium text-blue-800 mb-2">Questions in this template:</p>
+          <ul className="text-xs text-gray-700 space-y-1">
+            {template.questions.map((question, index) => (
+              <li key={index} className="flex items-start">
+                <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
+                <span>{question}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   </div>
+</div>
 ))}
         </div>
       )}
@@ -787,9 +800,9 @@ const copyToClipboard = async () => {
   <div className="pt-4">
     <Button 
   onClick={generateQuestions}
-  className="w-full text-white font-bold"
+  className="w-full text-white font-bold text-sm sm:text-base py-3"
   disabled={!businessInfo.productService || 
-         (selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0)}
+           (selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0)}
   style={{
     backgroundColor: '#ff5757', 
     borderColor: '#ff5757',
@@ -797,13 +810,15 @@ const copyToClipboard = async () => {
     fontWeight: 'bold'
   }}
 >
-  <RefreshCw className="w-4 h-4 mr-2" />
-  {selectedTemplate 
-    ? `Generate ${surveyTemplates[selectedTemplate].title} Survey`
-    : businessInfo.uncertaintyAreas.length === 0 
-      ? 'Select template or categories first' 
-      : 'Generate Custom Questions'
-  }
+  <RefreshCw className="w-4 h-4 mr-2 flex-shrink-0" />
+  <span className="truncate">
+    {selectedTemplate 
+      ? `Generate ${surveyTemplates[selectedTemplate].title}`
+      : businessInfo.uncertaintyAreas.length === 0 
+        ? 'Select template or categories first' 
+        : 'Generate Custom Questions'
+    }
+  </span>
 </Button>
   </div>
 </CardContent>
@@ -848,15 +863,15 @@ const copyToClipboard = async () => {
                 <span className="text-sm font-medium text-black">Select All Questions</span>
               </div>
               <Button 
-                onClick={generateQuestions} 
-                variant="outline" 
-                size="sm"
-                className="text-xs"
-                style={{borderColor: '#ff5757', color: '#ff5757'}}
-              >
-                <RefreshCw className="w-3 h-3 mr-1" />
-                Add More Questions
-              </Button>
+  onClick={generateQuestions} 
+  variant="outline" 
+  size="sm"
+  className="text-xs whitespace-nowrap"
+  style={{borderColor: '#ff5757', color: '#ff5757'}}
+>
+  <RefreshCw className="w-3 h-3 mr-1" />
+  Add More Questions
+</Button>
             </div>
 
             <div className="space-y-3 mb-4">
