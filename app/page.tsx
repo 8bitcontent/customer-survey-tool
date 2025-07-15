@@ -441,8 +441,8 @@ let questionPool: string[] = [];
   }
   
   if (uncertaintyAreas.includes('triggers')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.categoryEntryPoints, 4));
-  }
+  questionPool.push(...getRandomQuestions(discoveryQuestions.motivationsDrivers, 4));
+}
 
   if (uncertaintyAreas.includes('competitors')) {
     questionPool.push(...getRandomQuestions(discoveryQuestions.competitors, 4));
@@ -761,13 +761,13 @@ const copyToClipboard = async () => {
       {/* Your existing uncertainty areas grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are and their role in the buying process. Critical for targeting the right audience.' },
-          { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover what problems keep customers awake at night. These insights drive your strongest marketing messages.' },
-          { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Learn what outcomes customers want to achieve. This reveals why they buy and how they measure success.' },
-          { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research and make buying decisions. Essential for optimizing your sales process.' },
-          { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying. Address these concerns to remove conversion barriers.' },
-          { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy.' },
-          { key: 'triggers', label: 'Purchase Triggers', icon: '⚡', tooltip: 'Find out what events push customers to take action. These moments reveal when prospects become buyers.' },
+          { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are, their role, and what drives their professional decisions. Critical for targeting and personalization.' },
+          { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover the specific problems and frustrations that drive customers to seek solutions. These insights become your strongest marketing messages.' },
+          { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Understand what outcomes customers want to achieve and how they measure success. Reveals why they buy and what they value most.' },
+          { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research, evaluate, and make buying decisions. Essential for optimizing your sales process and messaging.' },
+          { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying and address concerns that create friction. Critical for removing conversion barriers.' },
+          { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy and messaging.' },
+          { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what specific events and motivations drive customers to take action. Essential for timing and targeting your outreach.' }
           { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
         ].map(area => (
           <div key={area.key} className="relative">
