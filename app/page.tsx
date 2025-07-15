@@ -696,14 +696,31 @@ const copyToClipboard = async () => {
     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-medium text-blue-900">🚀 Quick Start Templates</h3>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setShowTemplateOptions(!showTemplateOptions)}
-          className="text-blue-600 border-blue-300"
-        >
-          {showTemplateOptions ? 'Hide Templates' : 'Show Templates'}
-        </Button>
+        <div className="flex gap-2">
+          {selectedTemplate && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSelectedTemplate('');
+                setGeneratedQuestions([]);
+                setSelectedQuestions([]);
+                setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+              }}
+              className="text-red-600 border-red-300"
+            >
+              Clear Template
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowTemplateOptions(!showTemplateOptions)}
+            className="text-blue-600 border-blue-300"
+          >
+            {showTemplateOptions ? 'Hide Templates' : 'Show Templates'}
+          </Button>
+        </div>
       </div>
       
       {showTemplateOptions && (
