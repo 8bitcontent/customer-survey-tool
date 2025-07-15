@@ -767,7 +767,7 @@ const copyToClipboard = async () => {
           { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research, evaluate, and make buying decisions. Essential for optimizing your sales process and messaging.' },
           { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying and address concerns that create friction. Critical for removing conversion barriers.' },
           { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy and messaging.' },
-          { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what specific events and motivations drive customers to take action. Essential for timing and targeting your outreach.' }
+          { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what specific events and motivations drive customers to take action. Essential for timing and targeting your outreach.' },
           { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
         ].map(area => (
           <div key={area.key} className="relative">
