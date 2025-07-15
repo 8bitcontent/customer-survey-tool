@@ -2,8 +2,20 @@
 import React, { useState } from 'react';
 import { JSX } from 'react';
 
+// Add the TypeScript interfaces here (after the imports)
+interface SurveyTemplate {
+  title: string;
+  description: string;
+  icon: string;
+  questions: string[];
+}
+
+interface SurveyTemplates {
+  [key: string]: SurveyTemplate;
+}
+
 // Temporary inline components (we'll use proper ones later)
-const Card = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
+const Card: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className = "" }) => (
   <div className={`bg-white rounded-lg border shadow-sm ${className}`}>{children}</div>
 );
 
@@ -170,6 +182,8 @@ const SurveyCreatorTool = () => {
   const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState('');
+const [showTemplateOptions, setShowTemplateOptions] = useState(false);
 
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
@@ -299,6 +313,59 @@ const SurveyCreatorTool = () => {
     ]
   };
 
+  // Survey templates for one-click generation
+const surveyTemplates: SurveyTemplates = {
+  'new-business': {
+    title: 'New Business (No Existing Customers)',
+    description: 'Perfect for validating your target market and understanding potential customers',
+    icon: '🚀',
+    questions: [
+      "What problem are you currently facing that you're looking to solve?",
+      "What solutions have you tried before, and what didn't work about them?",
+      "When you research solutions like this, what do you typically search for?",
+      "What would have to happen for a solution to be worth the investment?",
+      "What concerns do you typically have when evaluating new solutions?"
+    ]
+  },
+  'existing-product': {
+    title: 'Existing Product (Current Customers)',
+    description: 'Learn from your customers why they chose you and how to get more like them',
+    icon: '✅',
+    questions: [
+      "What problem were you trying to solve before finding our solution?",
+      "What alternatives did you consider before choosing us?",
+      "What almost stopped you from moving forward with us?",
+      "How would you describe our solution to a colleague in your own words?",
+      "What specific outcome has made this purchase worth it for you?"
+    ]
+  },
+  'competitive-research': {
+    title: 'Competitive Research (Market Analysis)',
+    description: 'Understand your competitive landscape and positioning opportunities',
+    icon: '🏆',
+    questions: [
+      "What alternatives did you consider before choosing us?",
+      "What made you choose us over other options in the market?",
+      "What do you think we do better than our competitors?",
+      "What features do our competitors offer that you wish we provided?",
+      "How do you typically compare different solutions in our category?",
+      "What would make you switch to a competitor?"
+    ]
+  },
+  'content-strategy': {
+    title: 'Content Strategy (Messaging Focus)',
+    description: 'Get language, messaging, and voice insights for better copy and content',
+    icon: '💬',
+    questions: [
+      "How would you describe the problem we solve to someone who's never heard of it?",
+      "If you were recommending us to a colleague, what would you say?",
+      "What words would you use to describe our solution?",
+      "What was the trigger event that made you start looking for help?",
+      "What tone or communication style resonates most with you when discussing solutions like ours?"
+    ]
+  }
+};
+
 // Helper function to shuffle array
   const shuffleArray = (array: string[]) => {
     const newArray = [...array];
@@ -331,12 +398,20 @@ const generateQuestions = () => {
   
   if (!businessType || !productService) return;
 
-// Clear everything if no categories selected
-if (uncertaintyAreas.length === 0) {
-  setGeneratedQuestions([]);
-  setSelectedQuestions([]);
-  return;
-}
+  // If using a template, regenerate template questions
+  if (selectedTemplate) {
+    const template = surveyTemplates[selectedTemplate];
+    const customizedQuestions = template.questions.map(q => {
+      return q
+        .replace('[product/service]', `"${productService}"` || 'product/service')
+        .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+        .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+    });
+    
+    setGeneratedQuestions(customizedQuestions);
+    setSelectedQuestions(customizedQuestions);
+    return;
+  }
 
 let questionPool: string[] = [];
   
@@ -465,6 +540,42 @@ setTimeout(() => {
   });
 };
 
+// Add the handleTemplateSelection function here (after line 522)
+const handleTemplateSelection = (templateKey: string) => {
+  const template = surveyTemplates[templateKey];
+  
+  if (selectedTemplate === templateKey) {
+    // Deselect if clicking the same template
+    setSelectedTemplate('');
+    setGeneratedQuestions([]);
+    setSelectedQuestions([]);
+    setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+  } else {
+    // Select new template
+    setSelectedTemplate(templateKey);
+    
+    // Customize questions with business-specific terms
+    const customizedQuestions = template.questions.map(q => {
+      return q
+        .replace('[product/service]', `"${businessInfo.productService}"` || 'product/service')
+        .replace('[relevant area]', `"${getRelevantArea(businessInfo.industry)}"`)
+        .replace('[relevant process]', `"${getRelevantProcess(businessInfo.industry)}"`);
+    });
+    
+    setGeneratedQuestions(customizedQuestions);
+    setSelectedQuestions(customizedQuestions); // Auto-select all template questions
+    
+    // Clear custom uncertainty areas when using template
+    setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+  }
+  
+  // Trigger height recalculation
+  setTimeout(() => {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ type: 'resize', height }, '*');
+  }, 200);
+};
+
   const toggleQuestionSelection = (question: string) => {
   setSelectedQuestions(prev => {
     if (prev.includes(question)) {
@@ -576,68 +687,125 @@ const copyToClipboard = async () => {
 </div>
 
   <div className="mt-4">
-  <label className="block text-sm font-medium mb-4 text-black">What would you like to learn about your customers? (Select all that apply)</label>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {[
-    { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are and their role in the buying process. Critical for targeting the right audience.' },
-    { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover what problems keep customers awake at night. These insights drive your strongest marketing messages.' },
-    { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Learn what outcomes customers want to achieve. This reveals why they buy and how they measure success.' },
-    { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research and make buying decisions. Essential for optimizing your sales process.' },
-    { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying. Address these concerns to remove conversion barriers.' },
-    { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy.' },
-    { key: 'triggers', label: 'Purchase Triggers', icon: '⚡', tooltip: 'Find out what events push customers to take action. These moments reveal when prospects become buyers.' },
-    { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
-  ].map(area => (
-    <div key={area.key} className="relative">
-      <div 
-        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
-        onClick={() => toggleDropdown(area.key)}
-      >
-        <div className="flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
-          <Checkbox
-            checked={businessInfo.uncertaintyAreas.includes(area.key)}
-            onCheckedChange={() => toggleUncertaintyArea(area.key)}
-          />
-          <span className="text-lg">{area.icon}</span>
-          <span className="text-sm text-black">{area.label}</span>
-        </div>
-        
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+  <div className="mb-6">
+    <label className="block text-sm font-medium mb-3 text-black">
+      Choose Your Research Focus
+    </label>
+    
+    {/* Quick Start Templates */}
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-medium text-blue-900">🚀 Quick Start Templates</h3>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowTemplateOptions(!showTemplateOptions)}
+          className="text-blue-600 border-blue-300"
+        >
+          {showTemplateOptions ? 'Hide Templates' : 'Show Templates'}
+        </Button>
       </div>
       
-      {openDropdown === area.key && (
-        <>
-          <div 
-            className="fixed inset-0 z-5"
-            onClick={() => setOpenDropdown(null)}
-          />
-          <div 
-            className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
-            style={{ 
-              backgroundColor: '#ff5757', 
-              borderColor: '#ff5757',
-              left: '0',
-              right: '0'
-            }}
-          >
-            <p className="text-sm font-bold text-white">
-              {area.tooltip}
-            </p>
-          </div>
-        </>
+      {showTemplateOptions && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {Object.entries(surveyTemplates).map(([key, template]) => (
+  <div
+    key={key}
+    className={`p-3 border rounded-lg cursor-pointer transition-all ${
+      selectedTemplate === key 
+        ? 'bg-blue-100 border-blue-400' 
+        : 'bg-white border-gray-200 hover:border-blue-300'
+    }`}
+    onClick={() => handleTemplateSelection(key)}
+  >
+    <div className="flex items-start space-x-2">
+      <span className="text-lg">{template.icon}</span>
+      <div>
+        <h4 className="font-medium text-sm text-black">{template.title}</h4>
+        <p className="text-xs text-gray-600 mt-1">{template.description}</p>
+        <p className="text-xs text-blue-600 mt-1">
+          {template.questions.length} questions
+        </p>
+      </div>
+    </div>
+  </div>
+))}
+        </div>
       )}
     </div>
-  ))}
+
+    {/* Custom Selection */}
+    <div className="border border-gray-200 rounded-lg p-4">
+      <h3 className="font-medium text-black mb-3">🛠️ Custom Selection</h3>
+      <p className="text-sm text-gray-600 mb-4">
+        Or choose specific areas you want to research:
+      </p>
+      
+      {/* Your existing uncertainty areas grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are and their role in the buying process. Critical for targeting the right audience.' },
+          { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover what problems keep customers awake at night. These insights drive your strongest marketing messages.' },
+          { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Learn what outcomes customers want to achieve. This reveals why they buy and how they measure success.' },
+          { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research and make buying decisions. Essential for optimizing your sales process.' },
+          { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying. Address these concerns to remove conversion barriers.' },
+          { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy.' },
+          { key: 'triggers', label: 'Purchase Triggers', icon: '⚡', tooltip: 'Find out what events push customers to take action. These moments reveal when prospects become buyers.' },
+          { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
+        ].map(area => (
+          <div key={area.key} className="relative">
+            <div 
+              className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
+              onClick={() => toggleDropdown(area.key)}
+            >
+              <div className="flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
+                <Checkbox
+                  checked={businessInfo.uncertaintyAreas.includes(area.key)}
+                  onCheckedChange={() => toggleUncertaintyArea(area.key)}
+                />
+                <span className="text-lg">{area.icon}</span>
+                <span className="text-sm text-black">{area.label}</span>
+              </div>
+              
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+            
+            {openDropdown === area.key && (
+              <>
+                <div 
+                  className="fixed inset-0 z-5"
+                  onClick={() => setOpenDropdown(null)}
+                />
+                <div 
+                  className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
+                  style={{ 
+                    backgroundColor: '#ff5757', 
+                    borderColor: '#ff5757',
+                    left: '0',
+                    right: '0'
+                  }}
+                >
+                  <p className="text-sm font-bold text-white">
+                    {area.tooltip}
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
 </div>
-</div> 
 
   <div className="pt-4">
     <Button 
   onClick={generateQuestions}
   className="w-full text-white font-bold"
-  disabled={!businessInfo.businessType || !businessInfo.productService || businessInfo.uncertaintyAreas.length === 0}
+  disabled={!businessInfo.businessType || !businessInfo.productService || 
+           (selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0)}
   style={{
     backgroundColor: '#ff5757', 
     borderColor: '#ff5757',
@@ -646,20 +814,40 @@ const copyToClipboard = async () => {
   }}
 >
   <RefreshCw className="w-4 h-4 mr-2" />
-  {businessInfo.uncertaintyAreas.length === 0 ? 'Select categories first' : 'Generate Key Questions'}
+  {selectedTemplate 
+    ? `Generate ${surveyTemplates[selectedTemplate].title} Survey`
+    : businessInfo.uncertaintyAreas.length === 0 
+      ? 'Select template or categories first' 
+      : 'Generate Custom Questions'
+  }
 </Button>
   </div>
 </CardContent>
       </Card>
 
       {generatedQuestions.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle as="h2" className="text-black">Recommended Questions</CardTitle>
-            <p className="text-sm text-gray-600">
-              <strong>Select up to 15 questions for your survey.</strong><br />Click ‘Add More Questions’ to refresh the unselected ones. Your selected questions will stay saved.
-            </p>
-          </CardHeader>
+  <Card>
+    <CardHeader>
+      <CardTitle as="h2" className="text-black">
+        {selectedTemplate 
+          ? `${surveyTemplates[selectedTemplate].icon} ${surveyTemplates[selectedTemplate].title}`
+          : 'Recommended Questions'
+        }
+      </CardTitle>
+      <p className="text-sm text-gray-600">
+        {selectedTemplate ? (
+          <>
+            <strong>Template: {surveyTemplates[selectedTemplate].description}</strong><br />
+            All questions are pre-selected. You can deselect any you don't need.
+          </>
+        ) : (
+          <>
+            <strong>Select up to 15 questions for your survey.</strong><br />
+            Click 'Add More Questions' to refresh the unselected ones.
+          </>
+        )}
+      </p>
+    </CardHeader>
           <CardContent>
             <div className="flex justify-between items-center mb-4 p-3 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-2">
