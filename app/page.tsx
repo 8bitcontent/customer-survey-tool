@@ -172,12 +172,10 @@ const Lightbulb = ({ className }: { className?: string }) => (
 
 const SurveyCreatorTool = () => {
   const [businessInfo, setBusinessInfo] = useState({
-    businessType: '',
-    industry: '',
-    productService: '',
-    currentCustomerKnowledge: '',
-    uncertaintyAreas: [] as string[]
-  });
+  industry: '',
+  productService: '',
+  uncertaintyAreas: [] as string[]
+});
 
   const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
@@ -394,19 +392,16 @@ const recalculateHeight = () => {
 };
 
 const generateQuestions = () => {
-  const { businessType, industry, productService, uncertaintyAreas } = businessInfo;
+  const { industry, productService, uncertaintyAreas } = businessInfo;
   
-  if (!businessType || !productService) return;
+ if (!productService) return;
 
   // If using a template, regenerate template questions
   if (selectedTemplate) {
     const template = surveyTemplates[selectedTemplate];
     const customizedQuestions = template.questions.map(q => {
-      return q
-        .replace('[product/service]', `"${productService}"` || 'product/service')
-        .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-        .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
-    });
+  return q.replace('[product/service]', `"${productService}"` || 'product/service');
+});
     
     setGeneratedQuestions(customizedQuestions);
     setSelectedQuestions(customizedQuestions);
@@ -556,11 +551,8 @@ const handleTemplateSelection = (templateKey: string) => {
     
     // Customize questions with business-specific terms
     const customizedQuestions = template.questions.map(q => {
-      return q
-        .replace('[product/service]', `"${businessInfo.productService}"` || 'product/service')
-        .replace('[relevant area]', `"${getRelevantArea(businessInfo.industry)}"`)
-        .replace('[relevant process]', `"${getRelevantProcess(businessInfo.industry)}"`);
-    });
+  return q.replace('[product/service]', `"${businessInfo.productService}"` || 'product/service');
+});
     
     setGeneratedQuestions(customizedQuestions);
     setSelectedQuestions(customizedQuestions); // Auto-select all template questions
@@ -642,31 +634,16 @@ const copyToClipboard = async () => {
         </CardHeader>
         <CardContent className="space-y-8">
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div>
-      <label className="block text-sm font-medium mb-2 text-black">Business Type</label>
-      <Select onValueChange={(value: string) => setBusinessInfo(prev => ({...prev, businessType: value}))} className="">
-        <option value="">Select business type</option>
-<option value="B2B SaaS">B2B SaaS</option>
-<option value="B2C E-commerce">B2C E-commerce</option>
-<option value="Service Business">Service Business</option>
-<option value="Consulting">Consulting</option>
-<option value="Agency">Agency</option>
-<option value="Physical Product">Physical Product</option>
-<option value="Course/Education">Course/Education</option>
-      </Select>
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium mb-2 text-black">Industry</label>
-      <Input 
-        placeholder="e.g., marketing, healthcare, finance"
-        value={businessInfo.industry}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
-      />
-    </div>
+  <div>
+    <label className="block text-sm font-medium mb-2 text-black">Industry</label>
+    <Input 
+      placeholder="e.g., marketing, healthcare, finance"
+      value={businessInfo.industry}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
+    />
   </div>
 
-  <div className="mt-4">
+  <div>
     <label className="block text-sm font-medium mb-2 text-black">Product/Service Description</label>
     <Input 
       placeholder="Brief description of your offer"
@@ -674,16 +651,6 @@ const copyToClipboard = async () => {
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
     />
   </div>
-
-  <div className="mt-4">
-  <label className="block text-sm font-medium mb-2 text-black">Current Customer Knowledge</label>
-  <Select onValueChange={(value: string) => setBusinessInfo(prev => ({...prev, currentCustomerKnowledge: value}))}>
-    <option value="" disabled selected>How well do you know your customers?</option>
-    <option value="very-little">Very little - just starting out</option>
-    <option value="some-ideas">Some ideas but need validation</option>
-    <option value="fairly-good">Fairly good understanding</option>
-    <option value="very-good">Very good, looking for deeper insights</option>
-  </Select>
 </div>
 
   <div className="mt-4">
@@ -767,8 +734,8 @@ const copyToClipboard = async () => {
           { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research, evaluate, and make buying decisions. Essential for optimizing your sales process and messaging.' },
           { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying and address concerns that create friction. Critical for removing conversion barriers.' },
           { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy and messaging.' },
-          { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what specific events and motivations drive customers to take action. Essential for timing and targeting your outreach.' },
-          { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider. Learn how to position against competition and DIY solutions.' }
+          { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what events and motivations push customers to take action. Reveals when prospects become active buyers.' },
+          { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider and why they choose you. Learn how to position against competition and alternatives.' }
         ].map(area => (
           <div key={area.key} className="relative">
             <div 
@@ -821,8 +788,8 @@ const copyToClipboard = async () => {
     <Button 
   onClick={generateQuestions}
   className="w-full text-white font-bold"
-  disabled={!businessInfo.businessType || !businessInfo.productService || 
-           (selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0)}
+  disabled={!businessInfo.productService || 
+         (selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0)}
   style={{
     backgroundColor: '#ff5757', 
     borderColor: '#ff5757',
