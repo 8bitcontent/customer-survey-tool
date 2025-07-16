@@ -413,75 +413,56 @@ const generateQuestions = () => {
     console.log('Unselected questions:', unselectedQuestions);
     
     if (unselectedQuestions.length > 0) {
-      console.log('Found gaps to fill, proceeding...');
-    // Map each template to relevant question categories for smart replacement
-    const templateCategoryMap: { [key: string]: string[] } = {
-      'new-business': ['painPointsDiscovery', 'motivationsDrivers', 'hesitationsBarriers'],
-      'existing-product': ['languageVoice', 'motivationsDrivers', 'purchasingBehavior'], 
-      'competitive-research': ['competitors', 'purchasingBehavior', 'hesitationsBarriers'],
-      'content-strategy': ['languageVoice', 'painPointsDiscovery', 'motivationsDrivers']
-    };
+  console.log('Found gaps to fill, proceeding...');
+  
+  // Get ALL available questions from all categories
+  const allQuestions = Object.values(discoveryQuestions).flat();
+  
+  // Filter out questions already in use
+  const availableQuestions = allQuestions.filter(q => {
+    const customizedQ = q.replace('[product/service]', `"${productService}"` || 'product/service');
+    return !selectedQuestions.includes(customizedQ) && 
+           !generatedQuestions.includes(customizedQ);
+  });
+  
+  console.log('Available replacement questions:', availableQuestions.length);
+  
+  // Get random replacement questions
+  const replacementCount = Math.min(unselectedQuestions.length, availableQuestions.length);
+  const replacementQuestions = getRandomQuestions(availableQuestions, replacementCount);
+  
+  // Customize the replacement questions
+  const customizedReplacements = replacementQuestions.map(q => {
+    return q.replace('[product/service]', `"${productService}"` || 'product/service');
+  });
+  
+  console.log('Replacement questions:', customizedReplacements);
+  
+  // Create new question list: keep selected questions + add new replacements
+  let updatedQuestions = [...selectedQuestions, ...customizedReplacements];
+  
+  // Keep your existing minimum 5 questions logic (lines 459-481)
+  if (updatedQuestions.length < 5) {
+    const needMore = 5 - updatedQuestions.length;
     
-    const relevantCategories = templateCategoryMap[selectedTemplate as keyof typeof templateCategoryMap] || ['painPointsDiscovery'];
-    
-    // Build a pool of replacement questions from relevant categories
-    let replacementPool: string[] = [];
-    relevantCategories.forEach(category => {
-      const categoryQuestions = discoveryQuestions[category as keyof typeof discoveryQuestions] || [];
-      replacementPool.push(...categoryQuestions);
+    // Get more questions from any remaining available ones
+    const moreAvailable = allQuestions.filter(q => {
+      const customizedQ = q.replace('[product/service]', `"${productService}"` || 'product/service');
+      return !updatedQuestions.includes(customizedQ);
     });
     
-    // Filter out questions that are already in use (selected or currently generated)
-    const availableReplacements = replacementPool.filter(q => {
-      const customizedQ = q
-        .replace('[product/service]', `"${productService}"` || 'product/service')
-        .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-        .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
-      
-      return !selectedQuestions.includes(customizedQ) && 
-             !generatedQuestions.includes(customizedQ);
+    const moreQuestions = getRandomQuestions(moreAvailable, needMore);
+    const customizedMore = moreQuestions.map(q => {
+      return q.replace('[product/service]', `"${productService}"` || 'product/service');
     });
     
-    // Get random replacement questions
-    const replacementQuestions = getRandomQuestions(availableReplacements, unselectedQuestions.length);
-    
-    // Customize the replacement questions
-    const customizedReplacements = replacementQuestions.map(q => {
-      return q
-        .replace('[product/service]', `"${productService}"` || 'product/service')
-        .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-        .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
-    });
-    
-    // Create new question list: keep selected questions + add new replacements
-    const updatedQuestions = [...selectedQuestions, ...customizedReplacements];
-    
-    // Ensure minimum 5 questions
-    if (updatedQuestions.length < 5) {
-      const needMore = 5 - updatedQuestions.length;
-      
-      // Get more questions from any remaining available ones
-      const moreAvailable = replacementPool.filter(q => {
-        const customizedQ = q
-          .replace('[product/service]', `"${productService}"` || 'product/service')
-          .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-          .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
-        return !updatedQuestions.includes(customizedQ);
-      });
-      
-      const moreQuestions = getRandomQuestions(moreAvailable, needMore);
-      const customizedMore = moreQuestions.map(q => {
-        return q
-          .replace('[product/service]', `"${productService}"` || 'product/service')
-          .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-          .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
-      });
-      
-      updatedQuestions.push(...customizedMore);
-    }
-    
-    setGeneratedQuestions(updatedQuestions);
-    return;
+    updatedQuestions.push(...customizedMore);
+  }
+  
+  console.log('Final updated questions:', updatedQuestions);
+  
+  setGeneratedQuestions(updatedQuestions);
+  return;
     
    } else {
       console.log('No gaps to fill');
