@@ -801,30 +801,29 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Find the questions section that's already visible
+    // Simple scroll to the questions section
     setTimeout(() => {
-      // Look for the specific elements that are already on the page
-      const selectAllText = Array.from(document.querySelectorAll('span')).find(
-        span => span.textContent?.includes('Select All Questions')
+      // Find the questions card by looking for the template title
+      const questionCard = Array.from(document.querySelectorAll('h2')).find(
+        h => h.textContent?.includes('New Business') || 
+             h.textContent?.includes('Existing Product') ||
+             h.textContent?.includes('Competitive Research') ||
+             h.textContent?.includes('Content Strategy')
       );
       
-      if (selectAllText) {
-        // Scroll to the controls area
-        const controlsContainer = selectAllText.closest('.bg-gray-50');
-        if (controlsContainer) {
-          controlsContainer.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-          
-          // Brief visual highlight
-          (controlsContainer as HTMLElement).style.backgroundColor = '#fef2f2';
-          setTimeout(() => {
-            (controlsContainer as HTMLElement).style.backgroundColor = '#f9fafb';
-          }, 1500);
-        }
+      if (questionCard) {
+        questionCard.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      } else {
+        // Fallback: scroll down by fixed amount
+        window.scrollTo({
+          top: window.scrollY + 600,
+          behavior: 'smooth'
+        });
       }
-    }, 100);
+    }, 50);
   }}
   variant="outline"
   size="sm"
