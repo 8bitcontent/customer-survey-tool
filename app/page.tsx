@@ -208,11 +208,14 @@ const [showPreview, setShowPreview] = useState(false);
       "What’s the most frustrating part of your [content creation/customer engagement/sales process] that impacts your results?",
       "If you could wave a magic wand and fix one thing about [relevant area], what would it be?",
       "What problems do you face that you haven't found a good solution for yet?",
+      "What adjacent problems do you face that we don't currently solve?",
       "What's the biggest obstacle preventing you from achieving your goals?",
       "What would you say is your number one business challenge right now?",
       "What aspect of [relevant area] takes up the most time in your day?",
       "What's the most expensive problem you're currently dealing with?",
       "On a scale of 1-10, how severe is this challenge for your team?",
+      "What part of working with us could be improved?",
+      "What's the biggest frustration you've experienced with our service?",
       "How do these challenges affect your team’s performance or business outcomes (e.g., revenue, customer satisfaction)?",
       "What process in your work do you wish was completely automated?"
     ],
@@ -225,8 +228,10 @@ const [showPreview, setShowPreview] = useState(false);
       "What are you hoping to be able to do that you can't do now?",
       "What outcome would make this purchase worth every penny?",
       "If you could accomplish one thing this quarter, what would it be?",
+      "How long did it take you to see value from our solution?",
       "What capability are you missing that would transform your results?",
       "What would achieving your goal mean for you personally?",
+      "What features do you use most often and why?",
       "What would prevent you from achieving this job with our solution?",
       "How would achieving this job impact you personally (e.g., less stress, more recognition) or your team’s perception in the organization?",
       "Before finding our solution, what workarounds or tools were you using to get this job done, and what were their limitations?",
@@ -240,6 +245,7 @@ const [showPreview, setShowPreview] = useState(false);
       "Why was solving this problem important to you personally?",
       "What consequences were you trying to avoid?",
       "What opportunities were you hoping to unlock?",
+      "What finally pushed you over the edge to take action?",
       "How does solving this problem align with your long-term business or career goals?",
       "What finally pushed you over the edge to take action?",
       "What external factors (e.g., competitor actions, industry trends, peer recommendations) influenced your decision to seek a solution?",
@@ -251,7 +257,9 @@ const [showPreview, setShowPreview] = useState(false);
     purchasingBehavior: [
       "How do you typically research and evaluate solutions like ours?",
       "Who else was involved in the decision to work with us?",
+      "What information would have shortened your decision-making process?",
       "What alternatives did you consider before choosing us?",
+      "What would have made the sales process easier for you?",
       "Which online platforms (e.g., Google, LinkedIn, industry forums) do you use to research solutions like ours?",
       "What was the most important factor (e.g., cost, features, ease of use) in choosing our solution over others?",
       "What budget constraints or approval processes influenced your purchasing decision?",
@@ -265,7 +273,11 @@ const [showPreview, setShowPreview] = useState(false);
       "What almost stopped you from moving forward with us?",
       "What were your biggest concerns or fears about choosing our solution, and how were they addressed?",
       "What questions did you need answered before feeling comfortable?",
+      "Were there any concerns about our pricing before purchasing?",
       "What would have made the decision easier for you?",
+      "What red flags do you typically watch out for when evaluating vendors?",
+      "What could make you switch to a competitor?",
+      "What was the biggest obstacle during implementation?",
       "What concerns did you have about implementing or adopting our solution (e.g., time, training, integration)?",
       "What do people in your position typically worry about with solutions like ours?",
       "How did you overcome any emotional hesitations (e.g., fear of change, risk of failure) about choosing our solution?",
@@ -276,11 +288,14 @@ const [showPreview, setShowPreview] = useState(false);
       "How would you describe our solution to a colleague in your own words?",
       "What words would you use to describe the problem we solve?",
       "If you were recommending us to someone, what would you say?",
+      "How would you describe your experience from first contact to implementation?",
       "What tone or style (e.g., technical, conversational, inspirational) resonates most when we communicate about our solution?",
       "How do you explain what we do to people who aren't familiar with it?",
       "What language resonates with you when talking about this type of solution?",
       "How do you typically share recommendations about solutions like ours (e.g., email, social media, in-person)?",
       "What's the elevator pitch you'd give for our solution?",
+      "What messaging resonated most with you in our recent communications?",
+      "How would you describe our solution to someone who's never heard of it?",
       "How would you describe the before and after of using our solution?",
       "What analogy or metaphor would you use to explain our solution’s value to a colleague?"
     ],
@@ -289,22 +304,27 @@ const [showPreview, setShowPreview] = useState(false);
       "What typically happens right before you start looking for help with [relevant area]?",
       "What events or circumstances make this a priority for you?",
       "When during the year/quarter/month do you most need this type of solution?",
+      "What prompted you to engage with our recent [campaign/launch/offer]?",
       "What has to go wrong for you to start actively seeking a solution?",
       "What specific event or failure (e.g., a failed campaign, lost sale) prompted you to seek a solution like ours?",
       "What specific triggers (e.g., budget approval, new project, leadership directive) prompt you to research tools like ours?",
       "Are there specific times of the year or business cycles when this need becomes more urgent?",
       "At what point do you realize you need outside help?",
+      "Were there any new trends in your industry that created new needs for solutions like ours?",
       "What warning signs tell you it's time to find a better solution?"
     ],
     competitors: [
       "What alternatives did you consider before choosing us?",
       "Who do you see as our main competitors?",
-      "What specific features or benefits did our competitors lack that led you to choose us?",
+      "Were there any specific features or benefits that our competitors lacked that led you to choose us?",
       "What made you choose us over other options in the market?",
       "Are there any emerging tools, technologies, or in-house solutions you considered as alternatives to ours?",
       "What do you think we do better than our competitors?",
+      "What do you think would make this solution worth paying more for?",
+      "What features do our competitors offer that you wish we provided?",
       "What specific features or experiences do our competitors offer that you wish we provided?",
       "How did you first hear about our competitors?",
+      "What other departments or teams could benefit from our solution?",
       "What would make you switch to a competitor?",
       "How do you typically compare different solutions in our category?",
       "Before considering paid solutions, what free or DIY methods did you try?",
@@ -432,15 +452,15 @@ const generateQuestions = () => {
       } else {
         // Get questions from specific category
         const categoryMap: { [key: string]: string[] } = {
-          'demographics': discoveryQuestions.demographicsPsychographics,
-          'pain-points': discoveryQuestions.painPointsDiscovery,
-          'jobs-to-be-done': discoveryQuestions.jobsToBeDone,
-          'purchasing': discoveryQuestions.purchasingBehavior,
-          'hesitations': discoveryQuestions.hesitationsBarriers,
-          'language': discoveryQuestions.languageVoice,
-          'triggers': discoveryQuestions.motivationsDrivers,
-          'competitors': discoveryQuestions.competitors
-        };
+  'demographics': discoveryQuestions.demographicsPsychographics,
+  'pain-points': discoveryQuestions.painPointsDiscovery,
+  'jobs-to-be-done': discoveryQuestions.jobsToBeDone,
+  'purchasing': discoveryQuestions.purchasingBehavior,
+  'hesitations': discoveryQuestions.hesitationsBarriers,
+  'language': discoveryQuestions.languageVoice,
+  'triggers': [...discoveryQuestions.motivationsDrivers, ...discoveryQuestions.categoryEntryPoints], // Combined both arrays
+  'competitors': discoveryQuestions.competitors
+};
         replacementPool = categoryMap[fillGapsCategory] || [];
       }
       
@@ -522,8 +542,8 @@ const generateQuestions = () => {
   }
   
   if (uncertaintyAreas.includes('triggers')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.motivationsDrivers, 4));
-  }
+  questionPool.push(...getRandomQuestions([...discoveryQuestions.motivationsDrivers, ...discoveryQuestions.categoryEntryPoints], 4));
+}
 
   if (uncertaintyAreas.includes('competitors')) {
     questionPool.push(...getRandomQuestions(discoveryQuestions.competitors, 4));
@@ -711,7 +731,7 @@ const copyToClipboard = async () => {
      <strong>Get strategic survey questions that uncover your customers' real motivations, pain points, and decision triggers.<br />Use their words to create content and copy that connects and converts.</strong>
   </p>
   <p className="text-base text-gray-500">
-    <em>Inspired by proven frameworks from customer research and conversion experts like Jennifer Havice, Tony Ulwick, Peep Laja, & others.</em>
+    <em>Inspired by proven frameworks from customer research and conversion experts like Jennifer Havice, Tony Ulwick, Peep Laja, & others. Try our templates or scroll down to create your own!</em>
   </p>
 </div>
         </CardHeader>
@@ -972,88 +992,41 @@ const copyToClipboard = async () => {
               Want to add more questions or replace some template questions? Choose a category to get additional options:
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-              {[
-                { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are, their role, and what drives their professional decisions. Critical for targeting and personalization.' },
-                { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover the specific problems and frustrations that drive customers to seek solutions. These insights become your strongest marketing messages.' },
-                { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Understand what outcomes customers want to achieve and how they measure success. Reveals why they buy and what they value most.' },
-                { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research, evaluate, and make buying decisions. Essential for optimizing your sales process and messaging.' },
-                { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying and address concerns that create friction. Critical for removing conversion barriers.' },
-                { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy and messaging.' },
-                { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what events and motivations push customers to take action. Reveals when prospects become active buyers.' },
-                { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider and why they choose you. Learn how to position against competition and alternatives.' }
-              ].map(area => (
-                <div key={area.key} className="relative">
-                  <div 
-                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
-                    onClick={() => toggleDropdown(area.key)}
-                  >
-                    <div className="flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        checked={businessInfo.uncertaintyAreas.includes(area.key)}
-                        onCheckedChange={() => toggleUncertaintyArea(area.key)}
-                      />
-                      <span className="text-lg">{area.icon}</span>
-                      <span className="text-sm text-black">{area.label}</span>
-                    </div>
-                    
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                  
-                  {openDropdown === area.key && (
-                    <>
-                      <div 
-                        className="fixed inset-0 z-5"
-                        onClick={() => setOpenDropdown(null)}
-                      />
-                      <div 
-                        className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
-                        style={{ 
-                          backgroundColor: '#ff5757', 
-                          borderColor: '#ff5757',
-                          left: '0',
-                          right: '0'
-                        }}
-                      >
-                        <p className="text-sm font-bold text-white">
-                          {area.tooltip}
-                        </p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
+            <div className="mb-4">
+  <p className="text-sm text-gray-600 mb-3">
+    💡 <strong>How it works:</strong> Deselect any template questions you don't want, choose a category below, then click "Fill Gaps" to replace them with new questions from that category.
+  </p>
+</div>
 
-            <div className="flex items-center space-x-2">
-              <Select onValueChange={setFillGapsCategory}>
-                <SelectValue placeholder="Replace unselected questions with..." />
-                <SelectContent>
-                  <SelectItem value="any">Any category</SelectItem>
-                  <SelectItem value="demographics">Demographics & Role</SelectItem>
-                  <SelectItem value="pain-points">Pain Points</SelectItem>
-                  <SelectItem value="jobs-to-be-done">Goals & Jobs</SelectItem>
-                  <SelectItem value="purchasing">Purchasing Behavior</SelectItem>
-                  <SelectItem value="hesitations">Hesitations</SelectItem>
-                  <SelectItem value="language">Language & Voice</SelectItem>
-                  <SelectItem value="triggers">Motivations</SelectItem>
-                  <SelectItem value="competitors">Competitors</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <Button 
-                onClick={generateQuestions}
-                variant="outline" 
-                size="sm"
-                className="text-xs px-3 py-1"
-                style={{borderColor: '#ff5757', color: '#ff5757'}}
-              >
-                <RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
-                Fill Gaps
-              </Button>
-            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-2">
+  <div className="flex-1 w-full sm:w-auto min-w-0">
+    <Select onValueChange={setFillGapsCategory}>
+      <SelectValue placeholder="Replace unselected questions with..." />
+      <SelectContent>
+        <SelectItem value="any">🎯 Any category</SelectItem>
+        <SelectItem value="demographics">👤 Demographics & Role - Who your customers are</SelectItem>
+        <SelectItem value="pain-points">💡 Pain Points - Problems that drive them to seek solutions</SelectItem>
+        <SelectItem value="jobs-to-be-done">🎯 Goals & Jobs - Outcomes they want to achieve</SelectItem>
+        <SelectItem value="purchasing">👥 Purchasing Behavior - How they research and buy</SelectItem>
+        <SelectItem value="hesitations">⚠️ Hesitations - What stops them from buying</SelectItem>
+        <SelectItem value="language">💬 Language & Voice - Words they use to describe problems</SelectItem>
+        <SelectItem value="triggers">⚡ Motivations - Events that push them to take action</SelectItem>
+        <SelectItem value="competitors">🏆 Competitors - Alternatives they consider</SelectItem>
+      </SelectContent>
+    </Select>
+  </div>
+  
+  <Button 
+    onClick={generateQuestions}
+    variant="outline" 
+    size="sm"
+    className="text-xs px-3 py-1 w-full sm:w-auto whitespace-nowrap"
+    style={{borderColor: '#ff5757', color: '#ff5757'}}
+  >
+    <RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
+    Fill Gaps
+  </Button>
+</div>
           </div>
         </div>
       )}
