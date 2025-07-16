@@ -745,138 +745,115 @@ const copyToClipboard = async () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {Object.entries(surveyTemplates).map(([key, template]) => (
           <div
-            key={key}
-            className={`p-3 border rounded-lg cursor-pointer transition-all ${
-              selectedTemplate === key 
-                ? 'bg-blue-100 border-blue-400' 
-                : 'bg-white border-gray-200 hover:border-blue-300'
-            }`}
-            onClick={() => handleTemplateSelection(key)}
-          >
-            <div className="flex items-start space-x-2">
-              <span className="text-lg">{template.icon}</span>
-              <div className="flex-1">
-  <h4 className="font-medium text-sm text-black break-words">{template.title}</h4>
-  <p className="text-xs text-gray-600 mt-1 break-words">{template.description}</p>
-  <p className="text-xs text-blue-600 mt-1">
-    {template.questions.length} questions
-  </p>
-  {selectedTemplate === key && (
-    <div className="mt-3 pt-3 border-t border-blue-200">
-      <p className="text-xs font-medium text-blue-800 mb-2">Questions in this template:</p>
-      <ul className="text-xs text-gray-700 space-y-1 mb-3">
-        {template.questions.map((question, index) => (
-          <li key={index} className="flex items-start">
-            <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
-            <span className="break-words">{question}</span>
-          </li>
-        ))}
-      </ul>
-    
-    {/* Action Buttons */}
-<div className="flex flex-col sm:flex-row gap-2 mt-3">
-  <Button
-    onClick={async () => {
-      const surveyText = `${template.title}\n\nQuestions:\n` + 
-        template.questions.map((q, i) => `${i + 1}. ${q}`).join('\n\n');
-      try {
-        await navigator.clipboard.writeText(surveyText);
-        alert('Template questions copied to clipboard!');
-      } catch {
-        alert('Copy failed, but you can manually select and copy the text.');
-      }
-    }}
-    variant="outline"
-    size="sm"
-    className="text-xs flex-1 sm:flex-none"
-    style={{borderColor: '#3b82f6', color: '#3b82f6'}}
-  >
-    <Copy className="w-3 h-3 mr-1 flex-shrink-0" />
-    Copy Questions
-  </Button>
-  
-  <Button
-    onClick={() => {
-  // Multiple fallback methods for scrolling
-  try {
-    // Method 1: Try data attribute selector for Advanced Customization
-    let advancedSection = document.querySelector('[data-section="advanced"]') as HTMLElement;
-    
-    // Method 2: Try by text content if data attribute fails
-    if (!advancedSection) {
-      const headings = document.querySelectorAll('h3');
-      for (let heading of headings) {
-        if (heading.textContent?.includes('Advanced Customization')) {
-          advancedSection = heading.parentElement as HTMLElement;
-          break;
-        }
-      }
-    }
-    
-    // Method 3: Try finding by the industry input field
-    if (!advancedSection) {
-      const industryLabel = document.querySelector('label[for="industry"]') as HTMLElement;
-      if (industryLabel) {
-        advancedSection = industryLabel.closest('div[data-section="advanced"]') as HTMLElement;
-      }
-    }
-    
-    if (advancedSection) {
-      advancedSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-      
-      // Give visual feedback
-      setTimeout(() => {
-        if (advancedSection) {
-          advancedSection.style.backgroundColor = '#fef2f2';
-          setTimeout(() => {
-            if (advancedSection) {
-              advancedSection.style.backgroundColor = '';
-            }
-          }, 2000);
-        }
-      }, 500);
-    } else {
-      // Fallback: scroll down by estimated distance to Advanced section
-      window.scrollTo({
-        top: window.scrollY + 600,
-        behavior: 'smooth'
-      });
-    }
-    
-  } catch (error) {
-    console.log('Scroll error:', error);
-    // Final fallback
-    window.scrollTo({
-      top: window.scrollY + 600,
-      behavior: 'smooth'
-    });
-  }
-}}
-    variant="outline"
-    size="sm"
-    className="text-xs flex-1 sm:flex-none"
-    style={{borderColor: '#ff5757', color: '#ff5757'}}
-  >
-    <Target className="w-3 h-3 mr-1 flex-shrink-0" />
-    <span className="truncate">Customize Further</span>
-  </Button>
-</div>
-  </div>
-)}
-              </div>
-            </div>
+  key={key}
+  className={`p-3 border rounded-lg cursor-pointer transition-all overflow-hidden ${
+    selectedTemplate === key 
+      ? 'bg-blue-100 border-blue-400' 
+      : 'bg-white border-gray-200 hover:border-blue-300'
+  }`}
+  onClick={() => handleTemplateSelection(key)}
+>
+  <div className="flex items-start space-x-2 min-w-0">
+    <span className="text-lg flex-shrink-0">{template.icon}</span>
+    <div className="flex-1 min-w-0">
+      <h4 className="font-medium text-sm text-black truncate">{template.title}</h4>
+      <p className="text-xs text-gray-600 mt-1 overflow-hidden" style={{
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical' as const
+}}>{template.description}</p>
+      <p className="text-xs text-blue-600 mt-1">
+        {template.questions.length} questions
+      </p>
+      {selectedTemplate === key && (
+        <div className="mt-3 pt-3 border-t border-blue-200">
+          <p className="text-xs font-medium text-blue-800 mb-2">Questions in this template:</p>
+          <ul className="text-xs text-gray-700 space-y-1 mb-3">
+            {template.questions.map((question, index) => (
+              <li key={index} className="flex items-start">
+                <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
+                <span className="break-words min-w-0 flex-1">{question}</span>
+              </li>
+            ))}
+          </ul>
+          
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-2 mt-3">
+            <Button
+              onClick={async () => {
+                const surveyText = `${template.title}\n\nQuestions:\n` + 
+                  template.questions.map((q, i) => `${i + 1}. ${q}`).join('\n\n');
+                try {
+                  await navigator.clipboard.writeText(surveyText);
+                  alert('Template questions copied to clipboard!');
+                } catch {
+                  alert('Copy failed, but you can manually select and copy the text.');
+                }
+              }}
+              variant="outline"
+              size="sm"
+              className="text-xs flex-1 sm:flex-none"
+              style={{borderColor: '#3b82f6', color: '#3b82f6'}}
+            >
+              <Copy className="w-3 h-3 mr-1 flex-shrink-0" />
+              Copy Questions
+            </Button>
+            
+            <Button
+              onClick={() => {
+                // Scroll to Advanced Customization section
+                setTimeout(() => {
+                  const advancedHeading = Array.from(document.querySelectorAll('h3')).find(
+                    h => h.textContent?.includes('Advanced Customization')
+                  );
+                  
+                  if (advancedHeading) {
+                    advancedHeading.scrollIntoView({ 
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                    
+                    // Visual feedback
+                    const section = advancedHeading.closest('div') as HTMLElement;
+                    if (section) {
+                      section.style.backgroundColor = '#fef2f2';
+                      setTimeout(() => {
+                        section.style.backgroundColor = '';
+                      }, 2000);
+                    }
+                  } else {
+                    // Fallback scroll
+                    window.scrollTo({
+                      top: window.scrollY + 800,
+                      behavior: 'smooth'
+                    });
+                  }
+                }, 100);
+              }}
+              variant="outline"
+              size="sm"
+              className="text-xs flex-1 sm:flex-none"
+              style={{borderColor: '#ff5757', color: '#ff5757'}}
+            >
+              <Target className="w-3 h-3 mr-1 flex-shrink-0" />
+              <span className="truncate">Customize Further</span>
+            </Button>
           </div>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
         ))}
       </div>
     </div>
   </div>
 
   {/* Advanced Options - NOW LOWER */}
-<div className="border-t pt-6" data-section="advanced" id="advanced-customization">
-  <h3 className="text-lg font-medium text-black mb-4">🛠️ Advanced Customization</h3>
+<div className="border-t pt-6">
+  <h3 className="text-lg font-medium text-black mb-4" id="advanced-customization">
+    🛠️ Advanced Customization
+  </h3>
   <p className="text-sm text-gray-600 mb-6">
     Want more control? Customize your survey questions by adding business details and selecting specific research areas:
   </p>
