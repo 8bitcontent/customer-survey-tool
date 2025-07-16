@@ -392,18 +392,28 @@ const recalculateHeight = () => {
 };
 
 const generateQuestions = () => {
+  console.log('generateQuestions called');
   const { industry, productService, uncertaintyAreas } = businessInfo;
   
-  if (!productService) return;
+  if (!productService) {
+    console.log('No product service, returning');
+    return;
+  }
 
-// If using a template, handle smart refill
-if (selectedTemplate) {
-  const template = surveyTemplates[selectedTemplate];
-  
-  // Get unselected questions (these are the gaps to fill)
-  const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
-  
-  if (unselectedQuestions.length > 0) {
+  // If using a template, handle smart refill
+  if (selectedTemplate) {
+    console.log('Template selected:', selectedTemplate);
+    console.log('Generated questions:', generatedQuestions);
+    console.log('Selected questions:', selectedQuestions);
+    
+    const template = surveyTemplates[selectedTemplate];
+    
+    // Get unselected questions (these are the gaps to fill)
+    const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+    console.log('Unselected questions:', unselectedQuestions);
+    
+    if (unselectedQuestions.length > 0) {
+      console.log('Found gaps to fill, proceeding...');
     // Map each template to relevant question categories for smart replacement
     const templateCategoryMap: { [key: string]: string[] } = {
       'new-business': ['painPointsDiscovery', 'motivationsDrivers', 'hesitationsBarriers'],
@@ -473,7 +483,8 @@ if (selectedTemplate) {
     setGeneratedQuestions(updatedQuestions);
     return;
     
-  } else {
+   } else {
+      console.log('No gaps to fill');
     // If all questions are selected, just regenerate the original template
     const customizedQuestions = template.questions.map(q => {
       return q.replace('[product/service]', `"${productService}"` || 'product/service');
@@ -946,7 +957,10 @@ const copyToClipboard = async () => {
                 <span className="text-sm font-medium text-black">Select All Questions</span>
               </div>
               <Button 
-  onClick={generateQuestions} 
+  onClick={() => {
+    console.log('Fill gaps button clicked');
+    generateQuestions();
+  }} 
   variant="outline" 
   size="sm"
   className="text-xs px-2 py-1"
