@@ -614,6 +614,11 @@ setTimeout(() => {
       ? prev.uncertaintyAreas.filter(a => a !== area)
       : [...prev.uncertaintyAreas, area];
     
+    // Clear template when user starts selecting custom areas
+    if (newAreas.length > 0 && selectedTemplate) {
+      setSelectedTemplate('');
+    }
+    
     // Only clear unselected questions from the available pool
     if (generatedQuestions.length > 0) {
       const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
