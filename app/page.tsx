@@ -801,22 +801,30 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Simply scroll down by a fixed amount to where the questions section will be
-    window.scrollTo({
-      top: window.scrollY + 700,
-      behavior: 'smooth'
-    });
-    
-    // Add a small delay to ensure the section is visible, then try to find it
+    // Find the questions section that's already visible
     setTimeout(() => {
-      const questionSection = document.querySelector('[data-questions-section]');
-      if (questionSection) {
-        questionSection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
+      // Look for the specific elements that are already on the page
+      const selectAllText = Array.from(document.querySelectorAll('span')).find(
+        span => span.textContent?.includes('Select All Questions')
+      );
+      
+      if (selectAllText) {
+        // Scroll to the controls area
+        const controlsContainer = selectAllText.closest('.bg-gray-50');
+        if (controlsContainer) {
+          controlsContainer.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+          
+          // Brief visual highlight
+          (controlsContainer as HTMLElement).style.backgroundColor = '#fef2f2';
+          setTimeout(() => {
+            (controlsContainer as HTMLElement).style.backgroundColor = '#f9fafb';
+          }, 1500);
+        }
       }
-    }, 300);
+    }, 100);
   }}
   variant="outline"
   size="sm"
