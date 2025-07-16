@@ -801,29 +801,53 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Simple scroll to the questions section
+    // Scroll to the questions section that appears after template selection
     setTimeout(() => {
-      // Find the questions card by looking for the template title
-      const questionCard = Array.from(document.querySelectorAll('h2')).find(
-        h => h.textContent?.includes('New Business') || 
-             h.textContent?.includes('Existing Product') ||
-             h.textContent?.includes('Competitive Research') ||
-             h.textContent?.includes('Content Strategy')
+      // Look for the questions section by finding the "Select All Questions" text
+      const selectAllSpan = Array.from(document.querySelectorAll('span')).find(
+        span => span.textContent?.trim() === 'Select All Questions'
       );
       
-      if (questionCard) {
-        questionCard.scrollIntoView({ 
+      if (selectAllSpan) {
+        // Find the parent card containing the questions
+        const questionCard = selectAllSpan.closest('.bg-white');
+        if (questionCard) {
+          questionCard.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+          
+          // Brief visual highlight on the controls area
+          const controlsArea = selectAllSpan.closest('.bg-gray-50') as HTMLElement;
+          if (controlsArea) {
+            controlsArea.style.backgroundColor = '#fef2f2';
+            setTimeout(() => {
+              controlsArea.style.backgroundColor = '#f9fafb';
+            }, 1500);
+          }
+          return;
+        }
+      }
+      
+      // Fallback: look for the template title in the questions section
+      const templateTitle = Array.from(document.querySelectorAll('h2')).find(
+        h => h.textContent?.includes('Existing Product') && 
+             h.closest('.bg-white')?.querySelector('input[type="checkbox"]')
+      );
+      
+      if (templateTitle) {
+        templateTitle.scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
         });
       } else {
-        // Fallback: scroll down by fixed amount
+        // Final fallback: scroll down by estimated distance
         window.scrollTo({
-          top: window.scrollY + 600,
+          top: window.scrollY + 700,
           behavior: 'smooth'
         });
       }
-    }, 50);
+    }, 100);
   }}
   variant="outline"
   size="sm"
