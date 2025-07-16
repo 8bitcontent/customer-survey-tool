@@ -806,16 +806,16 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-  setTimeout(() => {
-    const questionsSection = document.querySelector('[data-questions-section]');
-    if (questionsSection) {
-      questionsSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  }, 100);
-}}
+    setTimeout(() => {
+      const questionsSection = document.querySelector('.scroll-target-questions');
+      if (questionsSection) {
+        questionsSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }, 100);
+  }}
   variant="outline"
   size="sm"
   className="text-xs w-full"
@@ -962,7 +962,7 @@ const copyToClipboard = async () => {
       </Card>
 
       {(generatedQuestions.length > 0 || selectedQuestions.length > 0) && (
-  <Card data-questions-section>
+  <Card className="scroll-target-questions">
     <CardHeader>
       <CardTitle as="h2" className="text-black">
         {selectedTemplate 
