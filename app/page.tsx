@@ -42,7 +42,7 @@ const CardContent = ({ children, className = "" }: { children: React.ReactNode, 
 
 const Button = ({ children, onClick, variant = "default", size = "default", disabled = false, className = "", style }: {
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; // Made event parameter required
   variant?: "default" | "outline";
   size?: "default" | "sm";
   disabled?: boolean;
@@ -805,20 +805,19 @@ const copyToClipboard = async () => {
             </Button>
             
             <Button
-  onClick={() => {
-    // Just scroll to the questions section - don't regenerate anything
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Force the template to stay selected using selectedTemplate state
+    setSelectedTemplate(selectedTemplate); // Use selectedTemplate instead of key
+    
     setTimeout(() => {
       const questionsSection = document.getElementById('questions-section-target');
       if (questionsSection) {
         questionsSection.scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
-        });
-      } else {
-        // Fallback - scroll to approximate position
-        window.scrollTo({
-          top: window.scrollY + 800,
-          behavior: 'smooth'
         });
       }
     }, 100);
