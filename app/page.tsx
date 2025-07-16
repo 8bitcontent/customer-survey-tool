@@ -788,28 +788,72 @@ const copyToClipboard = async () => {
     }}
     variant="outline"
     size="sm"
-    className="text-xs"
-    style={{borderColor: '#ff5757', color: '#ff5757'}}
+    className="text-xs flex-1 sm:flex-none"
+    style={{borderColor: '#3b82f6', color: '#3b82f6'}}
   >
-    <Copy className="w-3 h-3 mr-1" />
+    <Copy className="w-3 h-3 mr-1 flex-shrink-0" />
     Copy Questions
   </Button>
   
   <Button
     onClick={() => {
-      // Scroll to advanced customization section
-      const advancedSection = document.querySelector('[data-section="advanced"]');
-      if (advancedSection) {
-        advancedSection.scrollIntoView({ behavior: 'smooth' });
+      // Multiple fallback methods for scrolling
+      try {
+        // Method 1: Try data attribute selector
+        let advancedSection = document.querySelector('[data-section="advanced"]');
+        
+        // Method 2: Try by text content if data attribute fails
+        if (!advancedSection) {
+          const headings = document.querySelectorAll('h3');
+          for (let heading of headings) {
+            if (heading.textContent?.includes('Advanced Customization')) {
+              advancedSection = heading.parentElement;
+              break;
+            }
+          }
+        }
+        
+        // Method 3: Scroll to a fixed distance if selectors fail
+        if (advancedSection) {
+          advancedSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        } else {
+          // Fallback: scroll down by estimated distance
+          window.scrollTo({
+            top: window.scrollY + 800,
+            behavior: 'smooth'
+          });
+        }
+        
+        // Give visual feedback
+setTimeout(() => {
+  const section = document.querySelector('[data-section="advanced"]') as HTMLElement;
+  if (section) {
+    section.style.backgroundColor = '#fef2f2';
+    setTimeout(() => {
+      section.style.backgroundColor = '';
+    }, 2000);
+  }
+}, 500);
+        
+      } catch (error) {
+        console.log('Scroll error:', error);
+        // Final fallback
+        window.scrollTo({
+          top: window.scrollY + 800,
+          behavior: 'smooth'
+        });
       }
     }}
     variant="outline"
     size="sm"
-    className="text-xs"
-    style={{borderColor: '#3b82f6', color: '#3b82f6'}}
+    className="text-xs flex-1 sm:flex-none"
+    style={{borderColor: '#ff5757', color: '#ff5757'}}
   >
-    <Target className="w-3 h-3 mr-1" />
-    Customize Further
+    <Target className="w-3 h-3 mr-1 flex-shrink-0" />
+    <span className="truncate">Customize Further</span>
   </Button>
 </div>
   </div>
@@ -823,11 +867,11 @@ const copyToClipboard = async () => {
   </div>
 
   {/* Advanced Options - NOW LOWER */}
-  <div className="border-t pt-6">
-    <h3 className="text-lg font-medium text-black mb-4">🛠️ Advanced Customization</h3>
-    <p className="text-sm text-gray-600 mb-6">
-      Want more control? Customize your survey questions by adding business details and selecting specific research areas:
-    </p>
+<div className="border-t pt-6" data-section="advanced" id="advanced-customization">
+  <h3 className="text-lg font-medium text-black mb-4">🛠️ Advanced Customization</h3>
+  <p className="text-sm text-gray-600 mb-6">
+    Want more control? Customize your survey questions by adding business details and selecting specific research areas:
+  </p>
     
     {/* Business Info Fields */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
