@@ -593,10 +593,8 @@ setTimeout(() => {
       ? prev.uncertaintyAreas.filter(a => a !== area)
       : [...prev.uncertaintyAreas, area];
     
-    // Clear template when user starts selecting custom areas
-    if (newAreas.length > 0 && selectedTemplate) {
-      setSelectedTemplate('');
-    }
+    // DON'T clear template when user starts selecting custom areas
+    // Let users combine template + custom areas
     
     // Only clear unselected questions from the available pool
     if (generatedQuestions.length > 0) {
@@ -801,53 +799,14 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Scroll to the questions section that appears after template selection
+    // Just scroll - don't change any state
     setTimeout(() => {
-      // Look for the questions section by finding the "Select All Questions" text
-      const selectAllSpan = Array.from(document.querySelectorAll('span')).find(
-        span => span.textContent?.trim() === 'Select All Questions'
-      );
-      
-      if (selectAllSpan) {
-        // Find the parent card containing the questions
-        const questionCard = selectAllSpan.closest('.bg-white');
-        if (questionCard) {
-          questionCard.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-          
-          // Brief visual highlight on the controls area
-          const controlsArea = selectAllSpan.closest('.bg-gray-50') as HTMLElement;
-          if (controlsArea) {
-            controlsArea.style.backgroundColor = '#fef2f2';
-            setTimeout(() => {
-              controlsArea.style.backgroundColor = '#f9fafb';
-            }, 1500);
-          }
-          return;
-        }
-      }
-      
-      // Fallback: look for the template title in the questions section
-      const templateTitle = Array.from(document.querySelectorAll('h2')).find(
-        h => h.textContent?.includes('Existing Product') && 
-             h.closest('.bg-white')?.querySelector('input[type="checkbox"]')
-      );
-      
-      if (templateTitle) {
-        templateTitle.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      } else {
-        // Final fallback: scroll down by estimated distance
-        window.scrollTo({
-          top: window.scrollY + 700,
-          behavior: 'smooth'
-        });
-      }
-    }, 100);
+      // Scroll down to where the questions section should be
+      window.scrollTo({
+        top: window.scrollY + 800,
+        behavior: 'smooth'
+      });
+    }, 50);
   }}
   variant="outline"
   size="sm"
