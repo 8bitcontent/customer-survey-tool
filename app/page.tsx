@@ -337,7 +337,7 @@ const [showPreview, setShowPreview] = useState(false);
 const surveyTemplates: SurveyTemplates = {
   'new-business': {
     title: 'New Business (No Existing Customers)',
-    description: 'Perfect for validating your target market and understanding potential customers',
+    description: 'Validate your target market and understand potential customers before you have customer data to analyze',
     icon: '🚀',
     questions: [
       "What problem are you currently facing that you're looking to solve?",
@@ -349,7 +349,7 @@ const surveyTemplates: SurveyTemplates = {
   },
   'existing-product': {
     title: 'Existing Product (Current Customers)',
-    description: 'Learn from your customers why they chose you and how to get more like them',
+    description: 'Learn from your customers why they chose you and how to attract more customers like them',
     icon: '✅',
     questions: [
       "What problem were you trying to solve before finding our solution?",
@@ -361,7 +361,7 @@ const surveyTemplates: SurveyTemplates = {
   },
   'competitive-research': {
     title: 'Competitive Research (Market Analysis)',
-    description: 'Understand your competitive landscape and positioning opportunities',
+    description: 'Understand your competitive landscape and identify positioning opportunities against alternatives',
     icon: '🏆',
     questions: [
       "What alternatives did you consider before choosing us?",
@@ -374,7 +374,7 @@ const surveyTemplates: SurveyTemplates = {
   },
   'content-strategy': {
     title: 'Content Strategy (Messaging Focus)',
-    description: 'Get language, messaging, and voice insights for better copy and content',
+    description: 'Capture the exact language, messaging, and voice insights customers use for better copy and content',
     icon: '💬',
     questions: [
       "How would you describe the problem we solve to someone who's never heard of it?",
@@ -382,6 +382,90 @@ const surveyTemplates: SurveyTemplates = {
       "What words would you use to describe our solution?",
       "What was the trigger event that made you start looking for help?",
       "What tone or communication style resonates most with you when discussing solutions like ours?"
+    ]
+  },
+  'customer-satisfaction': {
+    title: 'Customer Satisfaction & Experience',
+    description: 'Measure satisfaction levels and identify specific experience improvement opportunities',
+    icon: '😊',
+    questions: [
+      "What part of working with us exceeded your expectations?",
+      "What was your first impression of our company/solution?",
+      "What's the biggest frustration you've experienced with our service?",
+      "What part of working with us could be improved?",
+      "What would make you more likely to choose us again?"
+    ]
+  },
+  'churn-retention': {
+    title: 'Churn Risk & Retention',
+    description: 'Identify at-risk customers and understand what drives retention versus customer departure',
+    icon: '📉',
+    questions: [
+      "What would make you switch to a competitor?",
+      "What concerns do you have about our solution that we haven't addressed?",
+      "What would make you more likely to renew/continue?",
+      "What almost stopped you from moving forward with us initially?",
+      "What's missing that would make this solution more valuable to you?"
+    ]
+  },
+  'referral-advocacy': {
+    title: 'Referral & Word-of-Mouth',
+    description: 'Understand advocacy drivers and optimize how customers describe and recommend your solution',
+    icon: '🤝',
+    questions: [
+      "How would you describe our solution to a colleague in your own words?",
+      "What's the elevator pitch you'd give for our solution?",
+      "What would make you more likely to recommend us to others?",
+      "What hesitations would you address if referring someone to us?",
+      "How would you describe the before and after of using our solution?"
+    ]
+  },
+  'pricing-value': {
+    title: 'Pricing & Value Assessment',
+    description: 'Understand how customers perceive value relative to cost and their pricing sensitivity',
+    icon: '💰',
+    questions: [
+      "What would make this purchase worth every penny?",
+      "What concerns did you have about our pricing before purchasing?",
+      "How do you typically justify purchases like this to others?",
+      "What would make this solution worth paying more for?",
+      "What budget constraints influenced your purchasing decision?"
+    ]
+  },
+  'implementation-onboarding': {
+    title: 'Implementation & Onboarding',
+    description: 'Optimize customer success processes and reduce time-to-value for new customers',
+    icon: '🚀',
+    questions: [
+      "What concerns did you have about implementing our solution?",
+      "What was the biggest obstacle during implementation?",
+      "How long did it take you to see value from our solution?",
+      "What would have made the onboarding process easier for you?",
+      "What additional support would have helped during setup?"
+    ]
+  },
+  'feature-development': {
+    title: 'Feature Development & Product',
+    description: 'Guide product roadmap decisions with customer-driven insights about feature usage and gaps',
+    icon: '⚡',
+    questions: [
+      "What are the top 3 benefits you receive from our solution?",
+      "What features do our competitors offer that you wish we provided?",
+      "What capability are you missing that would transform your results?",
+      "What features do you use most often and why?",
+      "What would you change about our solution if you could wave a magic wand?"
+    ]
+  },
+  'sales-optimization': {
+    title: 'Sales Process Optimization',
+    description: 'Improve sales effectiveness and reduce sales cycle length by understanding the buying journey',
+    icon: '📈',
+    questions: [
+      "What information would have shortened your decision-making process?",
+      "Who else was involved in the decision to work with us?",
+      "What would have made the sales process easier for you?",
+      "What red flags do you typically watch out for when evaluating vendors?",
+      "What finally pushed you over the edge to take action?"
     ]
   }
 };
