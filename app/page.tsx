@@ -183,6 +183,7 @@ const SurveyCreatorTool = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
 const [showTemplateOptions, setShowTemplateOptions] = useState(false);
 const [fillGapsCategory, setFillGapsCategory] = useState('any');
+const [showPreview, setShowPreview] = useState(false);
 
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
@@ -761,18 +762,58 @@ const copyToClipboard = async () => {
                   {template.questions.length} questions
                 </p>
                 {selectedTemplate === key && (
-                  <div className="mt-3 pt-3 border-t border-blue-200">
-                    <p className="text-xs font-medium text-blue-800 mb-2">Questions in this template:</p>
-                    <ul className="text-xs text-gray-700 space-y-1">
-                      {template.questions.map((question, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
-                          <span>{question}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+  <div className="mt-3 pt-3 border-t border-blue-200">
+    <p className="text-xs font-medium text-blue-800 mb-2">Questions in this template:</p>
+    <ul className="text-xs text-gray-700 space-y-1 mb-3">
+      {template.questions.map((question, index) => (
+        <li key={index} className="flex items-start">
+          <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
+          <span>{question}</span>
+        </li>
+      ))}
+    </ul>
+    
+    {/* Action Buttons */}
+<div className="flex flex-col sm:flex-row gap-2 mt-3">
+  <Button
+    onClick={async () => {
+      const surveyText = `${template.title}\n\nQuestions:\n` + 
+        template.questions.map((q, i) => `${i + 1}. ${q}`).join('\n\n');
+      try {
+        await navigator.clipboard.writeText(surveyText);
+        alert('Template questions copied to clipboard!');
+      } catch {
+        alert('Copy failed, but you can manually select and copy the text.');
+      }
+    }}
+    variant="outline"
+    size="sm"
+    className="text-xs"
+    style={{borderColor: '#ff5757', color: '#ff5757'}}
+  >
+    <Copy className="w-3 h-3 mr-1" />
+    Copy Questions
+  </Button>
+  
+  <Button
+    onClick={() => {
+      // Scroll to advanced customization section
+      const advancedSection = document.querySelector('[data-section="advanced"]');
+      if (advancedSection) {
+        advancedSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }}
+    variant="outline"
+    size="sm"
+    className="text-xs"
+    style={{borderColor: '#3b82f6', color: '#3b82f6'}}
+  >
+    <Target className="w-3 h-3 mr-1" />
+    Customize Further
+  </Button>
+</div>
+  </div>
+)}
               </div>
             </div>
           </div>
@@ -1005,23 +1046,53 @@ style={{borderColor: '#ff5757', color: '#ff5757'}}
       )}
 
       {selectedQuestions.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle as="h2" className="text-black">Your Customer Survey Preview</CardTitle>
-            <p className="text-sm text-gray-600">Copy or export your selected questions to Google Forms or your preferred survey tool.</p>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {selectedQuestions.map((question, index) => (
-                <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                  <p className="font-medium text-sm" style={{color: '#ff5757'}}>Question {index + 1}</p>
-                  <p className="text-sm mt-1 text-black">{question}</p>
+  <Card>
+    <CardHeader>
+      <div className="flex items-center justify-between">
+        <div>
+          <CardTitle as="h2" className="text-black">Ready to Use Survey</CardTitle>
+          <p className="text-sm text-gray-600">
+            Copy this formatted version directly into Google Forms, Typeform, or email it to customers.
+          </p>
+        </div>
+        <Button 
+          onClick={() => setShowPreview(!showPreview)}
+          variant="outline"
+          size="sm"
+        >
+          {showPreview ? 'Hide Preview' : 'Show Preview'}
+        </Button>
+      </div>
+    </CardHeader>
+    {showPreview && (
+      <CardContent>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="mb-4">
+            <h3 className="font-medium text-black mb-2">Customer Discovery Survey</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Goal: Understanding our customers better to improve how we serve you.
+              <br />
+              Instructions: Please answer as openly as possible. Your responses help us understand your needs.
+            </p>
+          </div>
+          <div className="space-y-4">
+            {selectedQuestions.map((question, index) => (
+              <div key={index}>
+                <p className="font-medium text-sm" style={{color: '#ff5757'}}>
+                  Question {index + 1}
+                </p>
+                <p className="text-sm mt-1 text-black">{question}</p>
+                <div className="mt-2 text-xs text-gray-500">
+                  [Open text response]
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    )}
+  </Card>
+)}
 
       <Card>
         <CardHeader>
