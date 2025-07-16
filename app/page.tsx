@@ -401,78 +401,81 @@ const generateQuestions = () => {
   }
 
   // If using a template, handle smart refill
-  if (selectedTemplate) {
-    console.log('Template selected:', selectedTemplate);
-    console.log('Generated questions:', generatedQuestions);
-    console.log('Selected questions:', selectedQuestions);
+if (selectedTemplate) {
+  console.log('Template selected:', selectedTemplate);
+  console.log('Generated questions:', generatedQuestions);
+  console.log('Selected questions:', selectedQuestions);
+  
+  const template = surveyTemplates[selectedTemplate];
+  
+  // Get unselected questions (these are the gaps to fill)
+  const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+  console.log('Unselected questions:', unselectedQuestions);
+  
+  if (unselectedQuestions.length > 0) {
+    console.log('Found gaps to fill, proceeding...');
     
-    const template = surveyTemplates[selectedTemplate];
+    // Get ALL available questions from all categories  
+    const allQuestions = Object.values(discoveryQuestions).flat();
+    console.log('Total available questions:', allQuestions.length);
     
-    // Get unselected questions (these are the gaps to fill)
-    const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
-    console.log('Unselected questions:', unselectedQuestions);
-    
-    if (unselectedQuestions.length > 0) {
-  console.log('Found gaps to fill, proceeding...');
-  
-  // Get ALL available questions from all categories
-  const allQuestions = Object.values(discoveryQuestions).flat();
-  
-  // Filter out questions already in use
-  const availableQuestions = allQuestions.filter(q => {
-    const customizedQ = q.replace('[product/service]', `"${productService}"` || 'product/service');
-    return !selectedQuestions.includes(customizedQ) && 
-           !generatedQuestions.includes(customizedQ);
-  });
-  
-  console.log('Available replacement questions:', availableQuestions.length);
-  
-  // Get random replacement questions
-  const replacementCount = Math.min(unselectedQuestions.length, availableQuestions.length);
-  const replacementQuestions = getRandomQuestions(availableQuestions, replacementCount);
-  
-  // Customize the replacement questions
-  const customizedReplacements = replacementQuestions.map(q => {
-    return q.replace('[product/service]', `"${productService}"` || 'product/service');
-  });
-  
-  console.log('Replacement questions:', customizedReplacements);
-  
-  // Create new question list: keep selected questions + add new replacements
-  let updatedQuestions = [...selectedQuestions, ...customizedReplacements];
-  
-  // Keep your existing minimum 5 questions logic (lines 459-481)
-  if (updatedQuestions.length < 5) {
-    const needMore = 5 - updatedQuestions.length;
-    
-    // Get more questions from any remaining available ones
-    const moreAvailable = allQuestions.filter(q => {
+    // Filter out questions already in use
+    const availableQuestions = allQuestions.filter(q => {
       const customizedQ = q.replace('[product/service]', `"${productService}"` || 'product/service');
-      return !updatedQuestions.includes(customizedQ);
+      return !selectedQuestions.includes(customizedQ) && 
+             !generatedQuestions.includes(customizedQ);
     });
     
-    const moreQuestions = getRandomQuestions(moreAvailable, needMore);
-    const customizedMore = moreQuestions.map(q => {
+    console.log('Available replacement questions:', availableQuestions.length);
+    
+    if (availableQuestions.length === 0) {
+      console.log('No replacement questions available');
+      return;
+    }
+    
+    // Get random replacement questions
+    const replacementCount = Math.min(unselectedQuestions.length, availableQuestions.length);
+    const replacementQuestions = getRandomQuestions(availableQuestions, replacementCount);
+    
+    // Customize the replacement questions
+    const customizedReplacements = replacementQuestions.map(q => {
       return q.replace('[product/service]', `"${productService}"` || 'product/service');
     });
     
-    updatedQuestions.push(...customizedMore);
-  }
-  
-  console.log('Final updated questions:', updatedQuestions);
-  
-  setGeneratedQuestions(updatedQuestions);
-  return;
+    console.log('Replacement questions:', customizedReplacements);
     
-   } else {
-      console.log('No gaps to fill');
-    // If all questions are selected, just regenerate the original template
-    const customizedQuestions = template.questions.map(q => {
-      return q.replace('[product/service]', `"${productService}"` || 'product/service');
-    });
+    // Create new question list: keep selected questions + add new replacements
+    let updatedQuestions = [...selectedQuestions, ...customizedReplacements];
     
-    setGeneratedQuestions(customizedQuestions);
-    setSelectedQuestions(customizedQuestions);
+    // Ensure minimum 5 questions
+    if (updatedQuestions.length < 5) {
+      const needMore = 5 - updatedQuestions.length;
+      const moreAvailable = allQuestions.filter(q => {
+        const customizedQ = q.replace('[product/service]', `"${productService}"` || 'product/service');
+        return !updatedQuestions.includes(customizedQ);
+      });
+      
+      const moreQuestions = getRandomQuestions(moreAvailable, needMore);
+      const customizedMore = moreQuestions.map(q => {
+        return q.replace('[product/service]', `"${productService}"` || 'product/service');
+      });
+      
+      updatedQuestions.push(...customizedMore);
+    }
+    
+    console.log('Final updated questions:', updatedQuestions);
+    setGeneratedQuestions(updatedQuestions);
+    
+    // Force a re-render
+    setTimeout(() => {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({ type: 'resize', height }, '*');
+    }, 100);
+    
+    return;
+    
+  } else {
+    console.log('No gaps to fill - all questions selected');
     return;
   }
 }
