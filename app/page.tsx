@@ -709,110 +709,111 @@ const copyToClipboard = async () => {
   </p>
 </div>
         </CardHeader>
-        <CardContent className="space-y-8">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+       <CardContent className="space-y-8">
+  {/* Quick Start Templates - NOW AT TOP */}
   <div>
-    <label className="block text-sm font-medium mb-2 text-black">Industry <span className="text-gray-400">(optional)</span></label>
-    <Input 
-      placeholder="e.g., marketing, healthcare, finance"
-      value={businessInfo.industry}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
-    />
-  </div>
-
-  <div>
-    <label className="block text-sm font-medium mb-2 text-black">Product/Service Description <span className="text-gray-400">(optional)</span></label>
-    <Input 
-      placeholder="Brief description of your offer"
-      value={businessInfo.productService}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
-    />
-  </div>
-</div>
-
-  <div className="mt-4">
-  <div className="mb-6">
     <label className="block text-sm font-medium mb-3 text-black">
-      Choose Your Research Focus
+      🚀 Quick Start Templates
     </label>
+    <p className="text-sm text-gray-600 mb-4">
+      Get started instantly with proven survey templates for different business situations:
+    </p>
     
-    {/* Quick Start Templates */}
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-medium text-blue-900">🚀 Quick Start Templates</h3>
+        <h3 className="font-medium text-blue-900">Choose Your Situation</h3>
         <div className="flex flex-col sm:flex-row gap-2">
-  {selectedTemplate && (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={() => {
-        setSelectedTemplate('');
-        setGeneratedQuestions([]);
-        setSelectedQuestions([]);
-        setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
-      }}
-      className="text-red-600 border-red-300 text-xs"
-    >
-      Clear Template
-    </Button>
-  )}
-  <Button
-    variant="outline"
-    size="sm"
-    onClick={() => setShowTemplateOptions(!showTemplateOptions)}
-    className="text-blue-600 border-blue-300 text-xs"
-  >
-    {showTemplateOptions ? 'Hide Templates' : 'Show Templates'}
-  </Button>
-</div>
+          {selectedTemplate && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSelectedTemplate('');
+                setGeneratedQuestions([]);
+                setSelectedQuestions([]);
+                setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+              }}
+              className="text-red-600 border-red-300 text-xs"
+            >
+              Clear Template
+            </Button>
+          )}
+        </div>
       </div>
       
-      {showTemplateOptions && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {Object.entries(surveyTemplates).map(([key, template]) => (
-  <div
-  key={key}
-  className={`p-3 border rounded-lg cursor-pointer transition-all ${
-    selectedTemplate === key 
-      ? 'bg-blue-100 border-blue-400' 
-      : 'bg-white border-gray-200 hover:border-blue-300'
-  }`}
-  onClick={() => handleTemplateSelection(key)}
->
-  <div className="flex items-start space-x-2">
-    <span className="text-lg">{template.icon}</span>
-    <div className="flex-1">
-      <h4 className="font-medium text-sm text-black">{template.title}</h4>
-      <p className="text-xs text-gray-600 mt-1">{template.description}</p>
-      <p className="text-xs text-blue-600 mt-1">
-        {template.questions.length} questions
-      </p>
-      {selectedTemplate === key && (
-        <div className="mt-3 pt-3 border-t border-blue-200">
-          <p className="text-xs font-medium text-blue-800 mb-2">Questions in this template:</p>
-          <ul className="text-xs text-gray-700 space-y-1">
-            {template.questions.map((question, index) => (
-              <li key={index} className="flex items-start">
-                <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
-                <span>{question}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {Object.entries(surveyTemplates).map(([key, template]) => (
+          <div
+            key={key}
+            className={`p-3 border rounded-lg cursor-pointer transition-all ${
+              selectedTemplate === key 
+                ? 'bg-blue-100 border-blue-400' 
+                : 'bg-white border-gray-200 hover:border-blue-300'
+            }`}
+            onClick={() => handleTemplateSelection(key)}
+          >
+            <div className="flex items-start space-x-2">
+              <span className="text-lg">{template.icon}</span>
+              <div className="flex-1">
+                <h4 className="font-medium text-sm text-black">{template.title}</h4>
+                <p className="text-xs text-gray-600 mt-1">{template.description}</p>
+                <p className="text-xs text-blue-600 mt-1">
+                  {template.questions.length} questions
+                </p>
+                {selectedTemplate === key && (
+                  <div className="mt-3 pt-3 border-t border-blue-200">
+                    <p className="text-xs font-medium text-blue-800 mb-2">Questions in this template:</p>
+                    <ul className="text-xs text-gray-700 space-y-1">
+                      {template.questions.map((question, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
+                          <span>{question}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
-</div>
-))}
-        </div>
-      )}
+
+  {/* Advanced Options - NOW LOWER */}
+  <div className="border-t pt-6">
+    <h3 className="text-lg font-medium text-black mb-4">🛠️ Advanced Customization</h3>
+    <p className="text-sm text-gray-600 mb-6">
+      Want more control? Customize your survey questions by adding business details and selecting specific research areas:
+    </p>
+    
+    {/* Business Info Fields */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label className="block text-sm font-medium mb-2 text-black">Industry <span className="text-gray-400">(optional)</span></label>
+        <Input 
+          placeholder="e.g., marketing, healthcare, finance"
+          value={businessInfo.industry}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2 text-black">Product/Service Description <span className="text-gray-400">(optional)</span></label>
+        <Input 
+          placeholder="Brief description of your offer"
+          value={businessInfo.productService}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
+        />
+      </div>
     </div>
 
-    {/* Custom Selection */}
+    {/* Custom Selection Areas */}
     <div className="border border-gray-200 rounded-lg p-4">
-      <h3 className="font-medium text-black mb-3">🛠️ Custom Selection</h3>
+      <h4 className="font-medium text-black mb-3">Choose Specific Research Areas</h4>
       <p className="text-sm text-gray-600 mb-4">
-        Or choose specific areas you want to research:
+        Select the areas you want to focus your research on:
       </p>
       
       {/* Your existing uncertainty areas grid */}
@@ -872,30 +873,30 @@ const copyToClipboard = async () => {
       </div>
     </div>
   </div>
-</div>
 
+  {/* Generate Button */}
   <div className="pt-4">
     <Button 
-  onClick={generateQuestions}
-  className="w-full text-white font-bold text-sm sm:text-base py-3"
-  disabled={selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0}
-  style={{
-    backgroundColor: '#ff5757', 
-    borderColor: '#ff5757',
-    color: 'white',
-    fontWeight: 'bold'
-  }}
->
-  <RefreshCw className="w-4 h-4 mr-2 flex-shrink-0" />
-  <span className="truncate">
-    {selectedTemplate 
-      ? `Generate ${surveyTemplates[selectedTemplate].title}`
-      : businessInfo.uncertaintyAreas.length === 0 
-        ? 'Select template or categories first' 
-        : 'Generate Custom Questions'
-    }
-  </span>
-</Button>
+      onClick={generateQuestions}
+      className="w-full text-white font-bold text-sm sm:text-base py-3"
+      disabled={selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0}
+      style={{
+        backgroundColor: '#ff5757', 
+        borderColor: '#ff5757',
+        color: 'white',
+        fontWeight: 'bold'
+      }}
+    >
+      <RefreshCw className="w-4 h-4 mr-2 flex-shrink-0" />
+      <span className="truncate">
+        {selectedTemplate 
+          ? `Generate ${surveyTemplates[selectedTemplate].title}`
+          : businessInfo.uncertaintyAreas.length === 0 
+            ? 'Select template or categories first' 
+            : 'Generate Custom Questions'
+        }
+      </span>
+    </Button>
   </div>
 </CardContent>
       </Card>
@@ -913,7 +914,7 @@ const copyToClipboard = async () => {
         {selectedTemplate ? (
           <>
             <strong>Template: {surveyTemplates[selectedTemplate].description}</strong><br />
-            All questions are pre-selected. You can deselect any you don't need.
+            All questions are pre-selected. Deselect any and choose from any category to get new question options.
           </>
         ) : (
           <>
