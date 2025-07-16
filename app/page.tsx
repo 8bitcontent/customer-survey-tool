@@ -182,6 +182,7 @@ const SurveyCreatorTool = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState('');
 const [showTemplateOptions, setShowTemplateOptions] = useState(false);
+const [fillGapsCategory, setFillGapsCategory] = useState('any');
 
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
@@ -394,11 +395,6 @@ const recalculateHeight = () => {
 const generateQuestions = () => {
   console.log('generateQuestions called');
   const { industry, productService, uncertaintyAreas } = businessInfo;
-  
-  if (!productService) {
-    console.log('No product service, returning');
-    return;
-  }
 
   // If using a template, handle smart refill
 if (selectedTemplate) {
@@ -417,23 +413,56 @@ if (selectedTemplate) {
   if (unselectedQuestions.length > 0) {
     console.log('Found gaps to fill, proceeding...');
     
-    // Simple test: just add a hardcoded question to see if it works
-    const testQuestion = `TEST REPLACEMENT QUESTION ${Math.random().toString(36).substr(2, 5)}`;
+    // Determine which questions to use for replacement based on fillGapsCategory
+    let replacementPool: string[] = [];
     
-    // Create new list: selected questions + test question
-    const newQuestionsList = [...selectedQuestions, testQuestion];
+    if (fillGapsCategory === 'any') {
+      // Get all available questions from all categories
+      replacementPool = [
+        ...discoveryQuestions.demographicsPsychographics,
+        ...discoveryQuestions.painPointsDiscovery,
+        ...discoveryQuestions.jobsToBeDone,
+        ...discoveryQuestions.purchasingBehavior,
+        ...discoveryQuestions.hesitationsBarriers,
+        ...discoveryQuestions.languageVoice,
+        ...discoveryQuestions.motivationsDrivers,
+        ...discoveryQuestions.competitors
+      ];
+    } else {
+      // Get questions from specific category
+      const categoryMap: { [key: string]: string[] } = {
+        'demographics': discoveryQuestions.demographicsPsychographics,
+        'pain-points': discoveryQuestions.painPointsDiscovery,
+        'jobs-to-be-done': discoveryQuestions.jobsToBeDone,
+        'purchasing': discoveryQuestions.purchasingBehavior,
+        'hesitations': discoveryQuestions.hesitationsBarriers,
+        'language': discoveryQuestions.languageVoice,
+        'triggers': discoveryQuestions.motivationsDrivers,
+        'competitors': discoveryQuestions.competitors
+      };
+      replacementPool = categoryMap[fillGapsCategory] || [];
+    }
     
-    console.log('OLD generatedQuestions:', generatedQuestions);
-    console.log('NEW generatedQuestions will be:', newQuestionsList);
+    // Filter out questions already in use
+    const usedQuestions = [...generatedQuestions, ...selectedQuestions];
+    const availableQuestions = replacementPool.filter(q => !usedQuestions.includes(q));
+    
+    // Get random replacement questions
+    const shuffledAvailable = shuffleArray(availableQuestions);
+    const replacementQuestions = shuffledAvailable.slice(0, unselectedQuestions.length);
+    
+    // Customize the replacement questions
+    const customizedReplacements = replacementQuestions.map(q => {
+      return q
+        .replace('[product/service]', productService ? `"${productService}"` : 'product/service')
+        .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+        .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+    });
+    
+    // Create new list: selected questions + replacement questions
+    const newQuestionsList = [...selectedQuestions, ...customizedReplacements];
     
     setGeneratedQuestions(newQuestionsList);
-    
-    console.log('setGeneratedQuestions called with:', newQuestionsList);
-    
-    // Force a re-render
-    setTimeout(() => {
-      console.log('After timeout - generatedQuestions should be:', generatedQuestions);
-    }, 100);
     
     return;
     
@@ -441,7 +470,7 @@ if (selectedTemplate) {
     console.log('No gaps to fill - all questions selected');
     // Just regenerate original template
     const customizedQuestions = template.questions.map(q => {
-      return q.replace('[product/service]', `"${productService}"` || 'product/service');
+      return q.replace('[product/service]', productService ? `"${productService}"` : 'product/service');
     });
     
     setGeneratedQuestions(customizedQuestions);
@@ -452,11 +481,6 @@ if (selectedTemplate) {
 
   // Rest of your existing custom selection logic...
   let questionPool: string[] = [];
-  
-  // Add questions from selected categories
-  if (uncertaintyAreas.includes('demographics')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.demographicsPsychographics, 4));
-  }
   
   // Add questions from selected categories
   if (uncertaintyAreas.includes('demographics')) {
@@ -688,7 +712,7 @@ const copyToClipboard = async () => {
         <CardContent className="space-y-8">
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
   <div>
-    <label className="block text-sm font-medium mb-2 text-black">Industry</label>
+    <label className="block text-sm font-medium mb-2 text-black">Industry <span className="text-gray-400">(optional)</span></label>
     <Input 
       placeholder="e.g., marketing, healthcare, finance"
       value={businessInfo.industry}
@@ -697,7 +721,7 @@ const copyToClipboard = async () => {
   </div>
 
   <div>
-    <label className="block text-sm font-medium mb-2 text-black">Product/Service Description</label>
+    <label className="block text-sm font-medium mb-2 text-black">Product/Service Description <span className="text-gray-400">(optional)</span></label>
     <Input 
       placeholder="Brief description of your offer"
       value={businessInfo.productService}
@@ -854,8 +878,7 @@ const copyToClipboard = async () => {
     <Button 
   onClick={generateQuestions}
   className="w-full text-white font-bold text-sm sm:text-base py-3"
-  disabled={!businessInfo.productService || 
-           (selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0)}
+  disabled={selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0}
   style={{
     backgroundColor: '#ff5757', 
     borderColor: '#ff5757',
@@ -902,38 +925,56 @@ const copyToClipboard = async () => {
     </CardHeader>
           <CardContent>
             <div className="flex justify-between items-center mb-4 p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  checked={selectedQuestions.length === generatedQuestions.length && generatedQuestions.length > 0}
-                  onCheckedChange={(checked: boolean) => {
-                    if (checked) {
-                      setSelectedQuestions([...generatedQuestions]);
-                    } else {
-                      setSelectedQuestions([]);
-                    }
-                  }}
-                />
-                <span className="text-sm font-medium text-black">Select All Questions</span>
-              </div>
-              <Button 
-  onClick={() => {
-    console.log('Fill gaps button clicked');
-    generateQuestions();
-  }} 
-  variant="outline" 
-  size="sm"
-  className="text-xs px-2 py-1"
-  style={{borderColor: '#ff5757', color: '#ff5757'}}
+  <div className="flex items-center space-x-2">
+    <Checkbox
+      checked={selectedQuestions.length === generatedQuestions.length && generatedQuestions.length > 0}
+      onCheckedChange={(checked: boolean) => {
+        if (checked) {
+          setSelectedQuestions([...generatedQuestions]);
+        } else {
+          setSelectedQuestions([]);
+        }
+      }}
+    />
+    <span className="text-sm font-medium text-black">Select All Questions</span>
+  </div>
+  <div className="flex items-center space-x-2">
+    {selectedTemplate && (
+      <Select onValueChange={setFillGapsCategory}>
+        <SelectValue placeholder="Any category" />
+        <SelectContent>
+          <SelectItem value="any">Any category</SelectItem>
+          <SelectItem value="demographics">Demographics & Role</SelectItem>
+          <SelectItem value="pain-points">Pain Points</SelectItem>
+          <SelectItem value="jobs-to-be-done">Goals & Jobs</SelectItem>
+          <SelectItem value="purchasing">Purchasing Behavior</SelectItem>
+          <SelectItem value="hesitations">Hesitations</SelectItem>
+          <SelectItem value="language">Language & Voice</SelectItem>
+          <SelectItem value="triggers">Motivations</SelectItem>
+          <SelectItem value="competitors">Competitors</SelectItem>
+        </SelectContent>
+      </Select>
+    )}
+    <Button 
+onClick={() => {
+  console.log('Fill gaps button clicked');
+  generateQuestions();
+}} 
+variant="outline" 
+size="sm"
+className="text-xs px-2 py-1"
+style={{borderColor: '#ff5757', color: '#ff5757'}}
 >
-  <RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
-  <span className="hidden sm:inline">
-    {selectedTemplate ? 'Fill Gaps' : 'Add More Questions'}
-  </span>
-  <span className="sm:hidden">
-    {selectedTemplate ? 'Fill' : 'Add More'}
-  </span>
+<RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
+<span className="hidden sm:inline">
+  {selectedTemplate ? 'Fill Gaps' : 'Add More Questions'}
+</span>
+<span className="sm:hidden">
+  {selectedTemplate ? 'Fill' : 'Add More'}
+</span>
 </Button>
-            </div>
+  </div>
+</div>
 
             <div className="space-y-3 mb-4">
               {generatedQuestions.map((question, index) => (
