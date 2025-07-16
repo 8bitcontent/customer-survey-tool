@@ -627,14 +627,14 @@ const handleTemplateSelection = (templateKey: string) => {
     
     // Customize questions with business-specific terms
     const customizedQuestions = template.questions.map(q => {
-  return q.replace('[product/service]', `"${businessInfo.productService}"` || 'product/service');
-});
+      return q.replace('[product/service]', `"${businessInfo.productService}"` || 'product/service');
+    });
     
     setGeneratedQuestions(customizedQuestions);
     setSelectedQuestions(customizedQuestions); // Auto-select all template questions
     
-    // Clear custom uncertainty areas when using template
-    setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+    // DON'T clear custom uncertainty areas - let users combine them
+    // setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
   }
   
   // Trigger height recalculation
@@ -799,14 +799,13 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Just scroll - don't change any state
+    // Simple scroll down to questions section
     setTimeout(() => {
-      // Scroll down to where the questions section should be
       window.scrollTo({
-        top: window.scrollY + 800,
+        top: window.scrollY + 600,
         behavior: 'smooth'
       });
-    }, 50);
+    }, 100);
   }}
   variant="outline"
   size="sm"
@@ -953,7 +952,7 @@ const copyToClipboard = async () => {
 </CardContent>
       </Card>
 
-      {generatedQuestions.length > 0 && (
+      {(generatedQuestions.length > 0 || selectedQuestions.length > 0) && (
   <Card data-questions-section>
     <CardHeader>
       <CardTitle as="h2" className="text-black">
