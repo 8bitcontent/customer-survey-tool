@@ -807,14 +807,14 @@ const copyToClipboard = async () => {
             <Button
   onClick={() => {
     setTimeout(() => {
-      const questionsSection = document.querySelector('.scroll-target-questions');
+      const questionsSection = document.getElementById('questions-section-target');
       if (questionsSection) {
         questionsSection.scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
         });
       }
-    }, 100);
+    }, 300); // Increased timeout to ensure content is rendered
   }}
   variant="outline"
   size="sm"
@@ -962,7 +962,8 @@ const copyToClipboard = async () => {
       </Card>
 
       {(generatedQuestions.length > 0 || selectedQuestions.length > 0) && (
-  <Card className="scroll-target-questions">
+  <Card>
+    <div id="questions-section-target"></div>
     <CardHeader>
       <CardTitle as="h2" className="text-black">
         {selectedTemplate 
