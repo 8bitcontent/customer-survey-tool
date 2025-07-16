@@ -806,6 +806,19 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
+    // Force the questions to render first if they haven't already
+    if (generatedQuestions.length === 0) {
+      // If no questions are generated yet, generate them first
+      const template = surveyTemplates[selectedTemplate];
+      const customizedQuestions = template.questions.map(q => {
+        return q.replace('[product/service]', businessInfo.productService ? `"${businessInfo.productService}"` : 'product/service');
+      });
+      
+      setGeneratedQuestions(customizedQuestions);
+      setSelectedQuestions(customizedQuestions);
+    }
+    
+    // Then scroll after a delay to ensure rendering
     setTimeout(() => {
       const questionsSection = document.getElementById('questions-section-target');
       if (questionsSection) {
@@ -813,8 +826,14 @@ const copyToClipboard = async () => {
           behavior: 'smooth',
           block: 'start'
         });
+      } else {
+        // Fallback - scroll to approximate position
+        window.scrollTo({
+          top: window.scrollY + 800,
+          behavior: 'smooth'
+        });
       }
-    }, 300); // Increased timeout to ensure content is rendered
+    }, 500); // Longer delay to ensure content is rendered
   }}
   variant="outline"
   size="sm"
