@@ -177,10 +177,10 @@ const SurveyCreatorTool = () => {
   uncertaintyAreas: [] as string[]
 });
 
-  const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
-  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState('');
+const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
+const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
+const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+const [selectedTemplate, setSelectedTemplate] = useState('');
 const [showTemplateOptions, setShowTemplateOptions] = useState(false);
 const [fillGapsCategory, setFillGapsCategory] = useState('any');
 const [showPreview, setShowPreview] = useState(false);
@@ -746,22 +746,22 @@ const copyToClipboard = async () => {
         {Object.entries(surveyTemplates).map(([key, template]) => (
           <div
   key={key}
-  className={`p-3 border rounded-lg cursor-pointer transition-all overflow-hidden ${
+  className={`p-3 border rounded-lg cursor-pointer transition-all ${
     selectedTemplate === key 
       ? 'bg-blue-100 border-blue-400' 
       : 'bg-white border-gray-200 hover:border-blue-300'
   }`}
   onClick={() => handleTemplateSelection(key)}
 >
-  <div className="flex items-start space-x-2 min-w-0">
+  <div className="flex items-start space-x-2">
     <span className="text-lg flex-shrink-0">{template.icon}</span>
     <div className="flex-1 min-w-0">
-      <h4 className="font-medium text-sm text-black truncate">{template.title}</h4>
-      <p className="text-xs text-gray-600 mt-1 overflow-hidden" style={{
-  display: '-webkit-box',
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: 'vertical' as const
-}}>{template.description}</p>
+      <h4 className="font-medium text-sm text-black leading-tight mb-1">
+        {template.title}
+      </h4>
+      <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+        {template.description}
+      </p>
       <p className="text-xs text-blue-600 mt-1">
         {template.questions.length} questions
       </p>
@@ -772,13 +772,13 @@ const copyToClipboard = async () => {
             {template.questions.map((question, index) => (
               <li key={index} className="flex items-start">
                 <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
-                <span className="break-words min-w-0 flex-1">{question}</span>
+                <span className="leading-relaxed">{question}</span>
               </li>
             ))}
           </ul>
           
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2 mt-3">
+          {/* Action Buttons - Always stack vertically for better mobile experience */}
+          <div className="flex flex-col gap-2 mt-3">
             <Button
               onClick={async () => {
                 const surveyText = `${template.title}\n\nQuestions:\n` + 
@@ -792,7 +792,7 @@ const copyToClipboard = async () => {
               }}
               variant="outline"
               size="sm"
-              className="text-xs flex-1 sm:flex-none"
+              className="text-xs w-full"
               style={{borderColor: '#3b82f6', color: '#3b82f6'}}
             >
               <Copy className="w-3 h-3 mr-1 flex-shrink-0" />
@@ -800,44 +800,60 @@ const copyToClipboard = async () => {
             </Button>
             
             <Button
-              onClick={() => {
-                // Scroll to Advanced Customization section
-                setTimeout(() => {
-                  const advancedHeading = Array.from(document.querySelectorAll('h3')).find(
-                    h => h.textContent?.includes('Advanced Customization')
-                  );
-                  
-                  if (advancedHeading) {
-                    advancedHeading.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'start'
-                    });
-                    
-                    // Visual feedback
-                    const section = advancedHeading.closest('div') as HTMLElement;
-                    if (section) {
-                      section.style.backgroundColor = '#fef2f2';
-                      setTimeout(() => {
-                        section.style.backgroundColor = '';
-                      }, 2000);
-                    }
-                  } else {
-                    // Fallback scroll
-                    window.scrollTo({
-                      top: window.scrollY + 800,
-                      behavior: 'smooth'
-                    });
-                  }
-                }, 100);
-              }}
-              variant="outline"
-              size="sm"
-              className="text-xs flex-1 sm:flex-none"
-              style={{borderColor: '#ff5757', color: '#ff5757'}}
-            >
-              <Target className="w-3 h-3 mr-1 flex-shrink-0" />
-              <span className="truncate">Customize Further</span>
-            </Button>
+  onClick={() => {
+    // Scroll to Industry/Product fields section
+    setTimeout(() => {
+      // Try multiple methods to find the business fields
+      let targetElement = document.getElementById('business-fields');
+      
+      if (!targetElement) {
+        // Fallback: look for Industry label
+        const industryLabel = Array.from(document.querySelectorAll('label')).find(
+          label => label.textContent?.includes('Industry')
+        );
+        if (industryLabel) {
+          targetElement = industryLabel.closest('.grid') as HTMLElement;
+        }
+      }
+      
+      if (!targetElement) {
+        // Final fallback: look for Advanced Customization heading
+        const advancedHeading = Array.from(document.querySelectorAll('h3')).find(
+          h => h.textContent?.includes('Advanced Customization')
+        );
+        if (advancedHeading) {
+          targetElement = advancedHeading.parentElement as HTMLElement;
+        }
+      }
+      
+      if (targetElement) {
+        targetElement.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+        
+        // Visual feedback
+        targetElement.style.backgroundColor = '#fef2f2';
+        setTimeout(() => {
+          targetElement!.style.backgroundColor = '';
+        }, 2000);
+      } else {
+        // Ultimate fallback
+        window.scrollTo({
+          top: window.scrollY + 600,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  }}
+  variant="outline"
+  size="sm"
+  className="text-xs w-full"
+  style={{borderColor: '#ff5757', color: '#ff5757'}}
+>
+  <Target className="w-3 h-3 mr-1 flex-shrink-0" />
+  Customize Further
+</Button>
           </div>
         </div>
       )}
@@ -859,27 +875,29 @@ const copyToClipboard = async () => {
   </p>
   
   {/* Business Info Fields */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-    <div>
-      <label className="block text-sm font-medium mb-2 text-black" htmlFor="industry">
-        Industry <span className="text-gray-400">(optional)</span>
-      </label>
-        <Input 
-          placeholder="e.g., marketing, healthcare, finance"
-          value={businessInfo.industry}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
-        />
-      </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6" id="business-fields">
+  <div>
+    <label className="block text-sm font-medium mb-2 text-black">
+      Industry <span className="text-gray-400">(optional)</span>
+    </label>
+    <Input 
+      placeholder="e.g., marketing, healthcare, finance"
+      value={businessInfo.industry}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
+    />
+  </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-2 text-black">Product/Service Description <span className="text-gray-400">(optional)</span></label>
-        <Input 
-          placeholder="Brief description of your offer"
-          value={businessInfo.productService}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
-        />
-      </div>
-    </div>
+  <div>
+    <label className="block text-sm font-medium mb-2 text-black">
+      Product/Service Description <span className="text-gray-400">(optional)</span>
+    </label>
+    <Input 
+      placeholder="Brief description of your offer"
+      value={businessInfo.productService}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
+    />
+  </div>
+</div>
 
     {/* Custom Selection Areas */}
     <div className="border border-gray-200 rounded-lg p-4">
@@ -1090,6 +1108,7 @@ style={{borderColor: '#ff5757', color: '#ff5757'}}
           onClick={() => setShowPreview(!showPreview)}
           variant="outline"
           size="sm"
+          style={{borderColor: '#ff5757', color: '#ff5757'}}
         >
           {showPreview ? 'Hide Preview' : 'Show Preview'}
         </Button>
