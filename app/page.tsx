@@ -807,9 +807,9 @@ const copyToClipboard = async () => {
             <Button
   onClick={() => {
   setTimeout(() => {
-    const businessFields = document.getElementById('business-fields');
-    if (businessFields) {
-      businessFields.scrollIntoView({ 
+    const questionsSection = document.querySelector('[data-questions-section]');
+    if (questionsSection) {
+      questionsSection.scrollIntoView({ 
         behavior: 'smooth',
         block: 'start'
       });
