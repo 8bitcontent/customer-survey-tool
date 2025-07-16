@@ -806,19 +806,7 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Force the questions to render first if they haven't already
-    if (generatedQuestions.length === 0) {
-      // If no questions are generated yet, generate them first
-      const template = surveyTemplates[selectedTemplate];
-      const customizedQuestions = template.questions.map(q => {
-        return q.replace('[product/service]', businessInfo.productService ? `"${businessInfo.productService}"` : 'product/service');
-      });
-      
-      setGeneratedQuestions(customizedQuestions);
-      setSelectedQuestions(customizedQuestions);
-    }
-    
-    // Then scroll after a delay to ensure rendering
+    // Just scroll to the questions section - don't regenerate anything
     setTimeout(() => {
       const questionsSection = document.getElementById('questions-section-target');
       if (questionsSection) {
@@ -833,7 +821,7 @@ const copyToClipboard = async () => {
           behavior: 'smooth'
         });
       }
-    }, 500); // Longer delay to ensure content is rendered
+    }, 100);
   }}
   variant="outline"
   size="sm"
