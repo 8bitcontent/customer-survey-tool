@@ -806,17 +806,16 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Scroll to the advanced customization section
-    setTimeout(() => {
-      const advancedSection = document.getElementById('advanced-customization');
-      if (advancedSection) {
-        advancedSection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    }, 100);
-  }}
+  setTimeout(() => {
+    const businessFields = document.getElementById('business-fields');
+    if (businessFields) {
+      businessFields.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }, 100);
+}}
   variant="outline"
   size="sm"
   className="text-xs w-full"
