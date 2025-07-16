@@ -801,7 +801,7 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Scroll to the questions customization section (the generated questions area)
+    // DON'T clear the template - just scroll to the questions section
     setTimeout(() => {
       // Look for the questions section with "Select All Questions"
       let targetElement = null;
@@ -815,23 +815,13 @@ const copyToClipboard = async () => {
         targetElement = selectAllElement.closest('.bg-gray-50') as HTMLElement;
       }
       
-      // Method 2: Find by Fill Gaps button if Select All not found
+      // Method 2: Find by the questions card
       if (!targetElement) {
-        const fillGapsButton = Array.from(document.querySelectorAll('span')).find(
-          span => span.textContent?.includes('Fill Gaps') || span.textContent?.includes('Add More Questions')
+        const questionCards = Array.from(document.querySelectorAll('h2')).find(
+          h => h.textContent?.includes('New Business') || h.textContent?.includes('Existing Product') || h.textContent?.includes('Recommended Questions')
         );
-        if (fillGapsButton) {
-          targetElement = fillGapsButton.closest('.bg-gray-50') as HTMLElement;
-        }
-      }
-      
-      // Method 3: Find by the questions card header
-      if (!targetElement) {
-        const questionHeaders = Array.from(document.querySelectorAll('h2')).find(
-          h => h.textContent?.includes('Recommended Questions') || h.textContent?.includes('New Business')
-        );
-        if (questionHeaders) {
-          targetElement = questionHeaders.closest('.bg-white') as HTMLElement;
+        if (questionCards) {
+          targetElement = questionCards.closest('.bg-white') as HTMLElement;
         }
       }
       
@@ -841,13 +831,16 @@ const copyToClipboard = async () => {
           block: 'start'
         });
         
-        // Visual feedback on the controls area
-        targetElement.style.backgroundColor = '#fef2f2';
-        setTimeout(() => {
-          targetElement!.style.backgroundColor = '';
-        }, 2000);
+        // Visual feedback
+        const controlsArea = targetElement.querySelector('.bg-gray-50') as HTMLElement;
+        if (controlsArea) {
+          controlsArea.style.backgroundColor = '#fef2f2';
+          setTimeout(() => {
+            controlsArea.style.backgroundColor = '#f9fafb';
+          }, 2000);
+        }
       } else {
-        // Fallback: scroll down to where questions section should be
+        // Fallback scroll
         window.scrollTo({
           top: window.scrollY + 800,
           behavior: 'smooth'
@@ -1088,17 +1081,6 @@ style={{borderColor: '#ff5757', color: '#ff5757'}}
               ))}
             </div>
             
-            <div className="flex space-x-2">
-              <Button onClick={copyToClipboard} variant="outline" style={{borderColor: '#ff5757', color: '#ff5757'}}>
-  <Copy className="w-4 h-4 mr-2" />
-  <span className="hidden sm:inline">Copy Selected ({selectedQuestions.length})</span>
-  <span className="sm:hidden">Copy ({selectedQuestions.length})</span>
-</Button>
-              <Button onClick={exportSurvey} variant="outline" style={{borderColor: '#ff5757', color: '#ff5757'}}>
-                <Download className="w-4 h-4 mr-2" />
-                Export Survey
-              </Button>
-            </div>
           </CardContent>
         </Card>
       )}
@@ -1106,10 +1088,10 @@ style={{borderColor: '#ff5757', color: '#ff5757'}}
       {selectedQuestions.length > 0 && (
   <Card>
     <CardHeader>
-      <div className="flex items-center justify-between">
-        <div>
-          <CardTitle as="h2" className="text-black">Ready to Use Survey</CardTitle>
-          <p className="text-sm text-gray-600">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <CardTitle as="h2" className="text-black mb-3">Ready to Use Survey</CardTitle>
+          <p className="text-sm text-gray-600 leading-relaxed">
             Copy this formatted version directly into Google Forms, Typeform, or email it to customers.
           </p>
         </div>
@@ -1117,6 +1099,7 @@ style={{borderColor: '#ff5757', color: '#ff5757'}}
           onClick={() => setShowPreview(!showPreview)}
           variant="outline"
           size="sm"
+          className="flex-shrink-0 mt-1"
           style={{borderColor: '#ff5757', color: '#ff5757'}}
         >
           {showPreview ? 'Hide Preview' : 'Show Preview'}
@@ -1125,10 +1108,10 @@ style={{borderColor: '#ff5757', color: '#ff5757'}}
     </CardHeader>
     {showPreview && (
       <CardContent>
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="bg-gray-50 p-4 rounded-lg mb-4">
           <div className="mb-4">
             <h3 className="font-medium text-black mb-2">Customer Discovery Survey</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
               Goal: Understanding our customers better to improve how we serve you.
               <br />
               Instructions: Please answer as openly as possible. Your responses help us understand your needs.
@@ -1140,13 +1123,35 @@ style={{borderColor: '#ff5757', color: '#ff5757'}}
                 <p className="font-medium text-sm" style={{color: '#ff5757'}}>
                   Question {index + 1}
                 </p>
-                <p className="text-sm mt-1 text-black">{question}</p>
+                <p className="text-sm mt-1 text-black leading-relaxed">{question}</p>
                 <div className="mt-2 text-xs text-gray-500">
                   [Open text response]
                 </div>
               </div>
             ))}
           </div>
+        </div>
+        
+        {/* Move Copy/Export buttons to preview section */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button 
+            onClick={copyToClipboard} 
+            variant="outline" 
+            className="flex-1"
+            style={{borderColor: '#ff5757', color: '#ff5757'}}
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            Copy Selected ({selectedQuestions.length})
+          </Button>
+          <Button 
+            onClick={exportSurvey} 
+            variant="outline" 
+            className="flex-1"
+            style={{borderColor: '#ff5757', color: '#ff5757'}}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export Survey
+          </Button>
         </div>
       </CardContent>
     )}
