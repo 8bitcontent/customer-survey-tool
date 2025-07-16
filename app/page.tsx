@@ -941,34 +941,38 @@ const copyToClipboard = async () => {
     </CardHeader>
     <CardContent>
       {/* Question Selection Interface */}
-      <div className="flex justify-between items-center mb-4 p-3 bg-gray-50 rounded-lg">
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            checked={selectedQuestions.length === generatedQuestions.length && generatedQuestions.length > 0}
-            onCheckedChange={(checked: boolean) => {
-              if (checked) {
-                setSelectedQuestions([...generatedQuestions]);
-              } else {
-                setSelectedQuestions([]);
-              }
-            }}
-          />
-          <span className="text-sm font-medium text-black">Select All Questions</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button 
-            onClick={generateQuestions}
-            variant="outline" 
-            size="sm"
-            className="text-xs px-2 py-1"
-            style={{borderColor: '#ff5757', color: '#ff5757'}}
-          >
-            <RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
-            <span className="hidden sm:inline">Refresh Questions</span>
-            <span className="sm:hidden">Refresh</span>
-          </Button>
-        </div>
-      </div>
+<div className="flex justify-between items-center mb-4 p-3 bg-gray-50 rounded-lg">
+  <div className="flex items-center space-x-2">
+    <Checkbox
+      checked={selectedQuestions.length === generatedQuestions.length && generatedQuestions.length > 0}
+      onCheckedChange={(checked: boolean) => {
+        if (checked) {
+          setSelectedQuestions([...generatedQuestions]);
+        } else {
+          setSelectedQuestions([]);
+        }
+      }}
+    />
+    <span className="text-sm font-medium text-black">Select All Questions</span>
+  </div>
+  
+  {/* Only show refresh button for custom questions, not templates */}
+  {!selectedTemplate && (
+    <div className="flex items-center space-x-2">
+      <Button 
+        onClick={generateQuestions}
+        variant="outline" 
+        size="sm"
+        className="text-xs px-2 py-1"
+        style={{borderColor: '#ff5757', color: '#ff5757'}}
+      >
+        <RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
+        <span className="hidden sm:inline">Refresh Questions</span>
+        <span className="sm:hidden">Refresh</span>
+      </Button>
+    </div>
+  )}
+</div>
 
       {/* Questions List */}
       <div className="space-y-3 mb-6">
