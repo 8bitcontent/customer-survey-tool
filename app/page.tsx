@@ -716,7 +716,7 @@ const copyToClipboard = async () => {
 </div>
         </CardHeader>
        <CardContent className="space-y-8">
-  {/* Quick Start Templates - NOW AT TOP */}
+  {/* Quick Start Templates - Clean and focused */}
   <div>
     <label className="block text-sm font-medium mb-3 text-black">
       🚀 Quick Start Templates
@@ -750,315 +750,283 @@ const copyToClipboard = async () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {Object.entries(surveyTemplates).map(([key, template]) => (
           <div
-  key={key}
-  className={`p-3 border rounded-lg cursor-pointer transition-all ${
-    selectedTemplate === key 
-      ? 'bg-blue-100 border-blue-400' 
-      : 'bg-white border-gray-200 hover:border-blue-300'
-  }`}
-  onClick={() => handleTemplateSelection(key)}
->
-  <div className="flex items-start space-x-2">
-    <span className="text-lg flex-shrink-0">{template.icon}</span>
-    <div className="flex-1 min-w-0">
-      <h4 className="font-medium text-sm text-black leading-tight mb-1">
-        {template.title}
-      </h4>
-      <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-        {template.description}
-      </p>
-      <p className="text-xs text-blue-600 mt-1">
-        {template.questions.length} questions
-      </p>
-      {selectedTemplate === key && (
-        <div className="mt-3 pt-3 border-t border-blue-200">
-          <p className="text-xs font-medium text-blue-800 mb-2">Questions in this template:</p>
-          <ul className="text-xs text-gray-700 space-y-1 mb-3">
-            {template.questions.map((question, index) => (
-              <li key={index} className="flex items-start">
-                <span className="text-blue-600 mr-2 mt-0.5 flex-shrink-0">•</span>
-                <span className="leading-relaxed">{question}</span>
-              </li>
-            ))}
-          </ul>
-          
-          {/* Action Buttons - Always stack vertically for better mobile experience */}
-          <div className="flex flex-col gap-2 mt-3">
-            <Button
-              onClick={async () => {
-                const surveyText = `${template.title}\n\nQuestions:\n` + 
-                  template.questions.map((q, i) => `${i + 1}. ${q}`).join('\n\n');
-                try {
-                  await navigator.clipboard.writeText(surveyText);
-                  alert('Template questions copied to clipboard!');
-                } catch {
-                  alert('Copy failed, but you can manually select and copy the text.');
-                }
-              }}
-              variant="outline"
-              size="sm"
-              className="text-xs w-full"
-              style={{borderColor: '#3b82f6', color: '#3b82f6'}}
-            >
-              <Copy className="w-3 h-3 mr-1 flex-shrink-0" />
-              Copy Questions
-            </Button>
-            
-            <Button
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Force the template to stay selected using selectedTemplate state
-    setSelectedTemplate(selectedTemplate); // Use selectedTemplate instead of key
-    
-    setTimeout(() => {
-      const questionsSection = document.getElementById('questions-section-target');
-      if (questionsSection) {
-        questionsSection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    }, 100);
-  }}
-  variant="outline"
-  size="sm"
-  className="text-xs w-full"
-  style={{borderColor: '#ff5757', color: '#ff5757'}}
->
-  <Target className="w-3 h-3 mr-1 flex-shrink-0" />
-  Customize Further
-</Button>
+            key={key}
+            className={`p-3 border rounded-lg cursor-pointer transition-all ${
+              selectedTemplate === key 
+                ? 'bg-blue-100 border-blue-400' 
+                : 'bg-white border-gray-200 hover:border-blue-300'
+            }`}
+            onClick={() => handleTemplateSelection(key)}
+          >
+            <div className="flex items-start space-x-2">
+              <span className="text-lg flex-shrink-0">{template.icon}</span>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium text-sm text-black leading-tight mb-1">
+                  {template.title}
+                </h4>
+                <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                  {template.description}
+                </p>
+                <p className="text-xs text-blue-600 mt-1">
+                  {template.questions.length} questions
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  </div>
-</div>
         ))}
       </div>
     </div>
   </div>
 
-  {/* Advanced Options - NOW LOWER */}
-<div className="border-t pt-6">
-  <h3 className="text-lg font-medium text-black mb-4" id="advanced-customization">
-    🛠️ Advanced Customization
-  </h3>
-  <p className="text-sm text-gray-600 mb-6">
-    Want more control? Customize your survey questions by adding business details and selecting specific research areas:
-  </p>
-  
-  {/* Business Info Fields */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6" id="business-fields">
-  <div>
-    <label className="block text-sm font-medium mb-2 text-black">
-      Industry <span className="text-gray-400">(optional)</span>
-    </label>
-    <Input 
-      placeholder="e.g., marketing, healthcare, finance"
-      value={businessInfo.industry}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
-    />
-  </div>
-
-  <div>
-    <label className="block text-sm font-medium mb-2 text-black">
-      Product/Service Description <span className="text-gray-400">(optional)</span>
-    </label>
-    <Input 
-      placeholder="Brief description of your offer"
-      value={businessInfo.productService}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
-    />
-  </div>
-</div>
-
-    {/* Custom Selection Areas */}
-    <div className="border border-gray-200 rounded-lg p-4">
-      <h4 className="font-medium text-black mb-3">Choose Specific Research Areas</h4>
-      <p className="text-sm text-gray-600 mb-4">
-        Select the areas you want to focus your research on:
+  {/* Generate Button for custom questions only */}
+  {selectedTemplate === '' && (
+    <div className="border-t pt-6">
+      <h3 className="text-lg font-medium text-black mb-4">
+        🛠️ Custom Question Generator
+      </h3>
+      <p className="text-sm text-gray-600 mb-6">
+        Or create your own custom survey by selecting specific research areas:
       </p>
       
-      {/* Your existing uncertainty areas grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[
-          { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are, their role, and what drives their professional decisions. Critical for targeting and personalization.' },
-          { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover the specific problems and frustrations that drive customers to seek solutions. These insights become your strongest marketing messages.' },
-          { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Understand what outcomes customers want to achieve and how they measure success. Reveals why they buy and what they value most.' },
-          { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research, evaluate, and make buying decisions. Essential for optimizing your sales process and messaging.' },
-          { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying and address concerns that create friction. Critical for removing conversion barriers.' },
-          { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy and messaging.' },
-          { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what events and motivations push customers to take action. Reveals when prospects become active buyers.' },
-          { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider and why they choose you. Learn how to position against competition and alternatives.' }
-        ].map(area => (
-          <div key={area.key} className="relative">
-            <div 
-              className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
-              onClick={() => toggleDropdown(area.key)}
-            >
-              <div className="flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
-                <Checkbox
-                  checked={businessInfo.uncertaintyAreas.includes(area.key)}
-                  onCheckedChange={() => toggleUncertaintyArea(area.key)}
-                />
-                <span className="text-lg">{area.icon}</span>
-                <span className="text-sm text-black">{area.label}</span>
+      {/* Business Info Fields */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <label className="block text-sm font-medium mb-2 text-black">
+            Industry <span className="text-gray-400">(optional)</span>
+          </label>
+          <Input 
+            placeholder="e.g., marketing, healthcare, finance"
+            value={businessInfo.industry}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, industry: e.target.value}))}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2 text-black">
+            Product/Service Description <span className="text-gray-400">(optional)</span>
+          </label>
+          <Input 
+            placeholder="Brief description of your offer"
+            value={businessInfo.productService}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBusinessInfo(prev => ({...prev, productService: e.target.value}))}
+          />
+        </div>
+      </div>
+
+      {/* Custom Selection Areas */}
+      <div className="border border-gray-200 rounded-lg p-4 mb-6">
+        <h4 className="font-medium text-black mb-3">Choose Specific Research Areas</h4>
+        <p className="text-sm text-gray-600 mb-4">
+          Select the areas you want to focus your research on:
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are, their role, and what drives their professional decisions. Critical for targeting and personalization.' },
+            { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover the specific problems and frustrations that drive customers to seek solutions. These insights become your strongest marketing messages.' },
+            { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Understand what outcomes customers want to achieve and how they measure success. Reveals why they buy and what they value most.' },
+            { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research, evaluate, and make buying decisions. Essential for optimizing your sales process and messaging.' },
+            { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying and address concerns that create friction. Critical for removing conversion barriers.' },
+            { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy and messaging.' },
+            { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what events and motivations push customers to take action. Reveals when prospects become active buyers.' },
+            { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider and why they choose you. Learn how to position against competition and alternatives.' }
+          ].map(area => (
+            <div key={area.key} className="relative">
+              <div 
+                className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
+                onClick={() => toggleDropdown(area.key)}
+              >
+                <div className="flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
+                  <Checkbox
+                    checked={businessInfo.uncertaintyAreas.includes(area.key)}
+                    onCheckedChange={() => toggleUncertaintyArea(area.key)}
+                  />
+                  <span className="text-lg">{area.icon}</span>
+                  <span className="text-sm text-black">{area.label}</span>
+                </div>
+                
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
               
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              {openDropdown === area.key && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-5"
+                    onClick={() => setOpenDropdown(null)}
+                  />
+                  <div 
+                    className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
+                    style={{ 
+                      backgroundColor: '#ff5757', 
+                      borderColor: '#ff5757',
+                      left: '0',
+                      right: '0'
+                    }}
+                  >
+                    <p className="text-sm font-bold text-white">
+                      {area.tooltip}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
-            
-            {openDropdown === area.key && (
-              <>
-                <div 
-                  className="fixed inset-0 z-5"
-                  onClick={() => setOpenDropdown(null)}
-                />
-                <div 
-                  className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
-                  style={{ 
-                    backgroundColor: '#ff5757', 
-                    borderColor: '#ff5757',
-                    left: '0',
-                    right: '0'
-                  }}
-                >
-                  <p className="text-sm font-bold text-white">
-                    {area.tooltip}
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  </div>
 
-  {/* Generate Button */}
-  <div className="pt-4">
-    <Button 
-      onClick={generateQuestions}
-      className="w-full text-white font-bold text-sm sm:text-base py-3"
-      disabled={selectedTemplate === '' && businessInfo.uncertaintyAreas.length === 0}
-      style={{
-        backgroundColor: '#ff5757', 
-        borderColor: '#ff5757',
-        color: 'white',
-        fontWeight: 'bold'
-      }}
-    >
-      <RefreshCw className="w-4 h-4 mr-2 flex-shrink-0" />
-      <span className="truncate">
-        {selectedTemplate 
-          ? `Generate ${surveyTemplates[selectedTemplate].title}`
-          : businessInfo.uncertaintyAreas.length === 0 
-            ? 'Select template or categories first' 
-            : 'Generate Custom Questions'
-        }
-      </span>
-    </Button>
-  </div>
+      {/* Generate Button for custom questions */}
+      <Button 
+        onClick={generateQuestions}
+        className="w-full text-white font-bold text-sm sm:text-base py-3"
+        disabled={businessInfo.uncertaintyAreas.length === 0}
+        style={{
+          backgroundColor: '#ff5757', 
+          borderColor: '#ff5757',
+          color: 'white',
+          fontWeight: 'bold'
+        }}
+      >
+        <RefreshCw className="w-4 h-4 mr-2 flex-shrink-0" />
+        Generate Custom Questions
+      </Button>
+    </div>
+  )}
 </CardContent>
       </Card>
 
       {(generatedQuestions.length > 0 || selectedQuestions.length > 0) && (
   <Card>
-    <div id="questions-section-target"></div>
     <CardHeader>
       <CardTitle as="h2" className="text-black">
         {selectedTemplate 
           ? `${surveyTemplates[selectedTemplate].icon} ${surveyTemplates[selectedTemplate].title}`
-          : 'Recommended Questions'
+          : 'Your Custom Questions'
         }
       </CardTitle>
       <p className="text-sm text-gray-600">
         {selectedTemplate ? (
           <>
             <strong>Template: {surveyTemplates[selectedTemplate].description}</strong><br />
-            All questions are pre-selected. Deselect any and choose from any category to get new question options.
+            Select the questions you want to include in your survey.
           </>
         ) : (
           <>
-            <strong>Select up to 15 questions for your survey.</strong><br />
-            Click 'Add More Questions' to refresh the unselected ones.
+            <strong>Custom questions based on your selected research areas.</strong><br />
+            Select the questions you want to include in your survey.
           </>
         )}
       </p>
     </CardHeader>
-          <CardContent>
-            <div className="flex justify-between items-center mb-4 p-3 bg-gray-50 rounded-lg">
-  <div className="flex items-center space-x-2">
-    <Checkbox
-      checked={selectedQuestions.length === generatedQuestions.length && generatedQuestions.length > 0}
-      onCheckedChange={(checked: boolean) => {
-        if (checked) {
-          setSelectedQuestions([...generatedQuestions]);
-        } else {
-          setSelectedQuestions([]);
-        }
-      }}
-    />
-    <span className="text-sm font-medium text-black">Select All Questions</span>
-  </div>
-  <div className="flex items-center space-x-2">
-    {selectedTemplate && (
-      <Select onValueChange={setFillGapsCategory}>
-        <SelectValue placeholder="Any category" />
-        <SelectContent>
-          <SelectItem value="any">Any category</SelectItem>
-          <SelectItem value="demographics">Demographics & Role</SelectItem>
-          <SelectItem value="pain-points">Pain Points</SelectItem>
-          <SelectItem value="jobs-to-be-done">Goals & Jobs</SelectItem>
-          <SelectItem value="purchasing">Purchasing Behavior</SelectItem>
-          <SelectItem value="hesitations">Hesitations</SelectItem>
-          <SelectItem value="language">Language & Voice</SelectItem>
-          <SelectItem value="triggers">Motivations</SelectItem>
-          <SelectItem value="competitors">Competitors</SelectItem>
-        </SelectContent>
-      </Select>
-    )}
-    <Button 
-onClick={() => {
-  console.log('Fill gaps button clicked');
-  generateQuestions();
-}} 
-variant="outline" 
-size="sm"
-className="text-xs px-2 py-1"
-style={{borderColor: '#ff5757', color: '#ff5757'}}
->
-<RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
-<span className="hidden sm:inline">
-  {selectedTemplate ? 'Fill Gaps' : 'Add More Questions'}
-</span>
-<span className="sm:hidden">
-  {selectedTemplate ? 'Fill' : 'Add More'}
-</span>
-</Button>
-  </div>
-</div>
+    <CardContent>
+      {/* Question Selection Interface */}
+      <div className="flex justify-between items-center mb-4 p-3 bg-gray-50 rounded-lg">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            checked={selectedQuestions.length === generatedQuestions.length && generatedQuestions.length > 0}
+            onCheckedChange={(checked: boolean) => {
+              if (checked) {
+                setSelectedQuestions([...generatedQuestions]);
+              } else {
+                setSelectedQuestions([]);
+              }
+            }}
+          />
+          <span className="text-sm font-medium text-black">Select All Questions</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button 
+            onClick={generateQuestions}
+            variant="outline" 
+            size="sm"
+            className="text-xs px-2 py-1"
+            style={{borderColor: '#ff5757', color: '#ff5757'}}
+          >
+            <RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
+            <span className="hidden sm:inline">Refresh Questions</span>
+            <span className="sm:hidden">Refresh</span>
+          </Button>
+        </div>
+      </div>
 
-            <div className="space-y-3 mb-4">
-              {generatedQuestions.map((question, index) => (
-                <div key={index} className={`flex items-start space-x-3 p-3 border rounded-lg ${selectedQuestions.includes(question) ? 'bg-red-50 border-red-200' : ''}`}>
+      {/* Questions List */}
+      <div className="space-y-3 mb-6">
+        {generatedQuestions.map((question, index) => (
+          <div key={index} className={`flex items-start space-x-3 p-3 border rounded-lg ${selectedQuestions.includes(question) ? 'bg-red-50 border-red-200' : ''}`}>
+            <Checkbox
+              checked={selectedQuestions.includes(question)}
+              onCheckedChange={() => toggleQuestionSelection(question)}
+            />
+            <p className="text-sm flex-1 text-black">{question}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Advanced Customization Dropdown - Only show if template is selected */}
+      {selectedTemplate && (
+        <div className="border-t pt-6 mt-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 className="font-medium text-blue-900 mb-3">🎯 Need More Question Options?</h4>
+            <p className="text-sm text-gray-600 mb-4">
+              Want to add more questions or replace some template questions? Choose a category to get additional options:
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              {[
+                { key: 'demographics', label: 'Demographics & Role', icon: '👤' },
+                { key: 'pain-points', label: 'Pain Points', icon: '💡' },
+                { key: 'jobs-to-be-done', label: 'Goals & Jobs', icon: '🎯' },
+                { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥' },
+                { key: 'hesitations', label: 'Hesitations', icon: '⚠️' },
+                { key: 'language', label: 'Language & Voice', icon: '💬' },
+                { key: 'triggers', label: 'Motivations', icon: '⚡' },
+                { key: 'competitors', label: 'Competitors', icon: '🏆' }
+              ].map(area => (
+                <div key={area.key} className="flex items-center space-x-2">
                   <Checkbox
-                    checked={selectedQuestions.includes(question)}
-                    onCheckedChange={() => toggleQuestionSelection(question)}
+                    checked={businessInfo.uncertaintyAreas.includes(area.key)}
+                    onCheckedChange={() => toggleUncertaintyArea(area.key)}
                   />
-                  <p className="text-sm flex-1 text-black">{question}</p>
+                  <span className="text-sm">{area.icon}</span>
+                  <span className="text-sm text-black">{area.label}</span>
                 </div>
               ))}
             </div>
-            
-          </CardContent>
-        </Card>
+
+            <div className="flex items-center space-x-2">
+              <Select onValueChange={setFillGapsCategory}>
+                <SelectValue placeholder="Replace unselected questions with..." />
+                <SelectContent>
+                  <SelectItem value="any">Any category</SelectItem>
+                  <SelectItem value="demographics">Demographics & Role</SelectItem>
+                  <SelectItem value="pain-points">Pain Points</SelectItem>
+                  <SelectItem value="jobs-to-be-done">Goals & Jobs</SelectItem>
+                  <SelectItem value="purchasing">Purchasing Behavior</SelectItem>
+                  <SelectItem value="hesitations">Hesitations</SelectItem>
+                  <SelectItem value="language">Language & Voice</SelectItem>
+                  <SelectItem value="triggers">Motivations</SelectItem>
+                  <SelectItem value="competitors">Competitors</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Button 
+                onClick={generateQuestions}
+                variant="outline" 
+                size="sm"
+                className="text-xs px-3 py-1"
+                style={{borderColor: '#ff5757', color: '#ff5757'}}
+              >
+                <RefreshCw className="w-3 h-3 mr-1 flex-shrink-0" />
+                Fill Gaps
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
+    </CardContent>
+  </Card>
+)}
 
       {selectedQuestions.length > 0 && (
   <Card>
