@@ -398,87 +398,100 @@ const generateQuestions = () => {
   const { industry, productService, uncertaintyAreas } = businessInfo;
 
   // If using a template, handle smart refill
-if (selectedTemplate) {
-  console.log('=== FILL GAPS DEBUG ===');
-  console.log('Template selected:', selectedTemplate);
-  console.log('Generated questions:', generatedQuestions);
-  console.log('Selected questions:', selectedQuestions);
-  
-  const template = surveyTemplates[selectedTemplate];
-  
-  // Get unselected questions (these are the gaps to fill)
-  const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
-  console.log('Unselected questions:', unselectedQuestions);
-  console.log('Number of gaps to fill:', unselectedQuestions.length);
-  
-  if (unselectedQuestions.length > 0) {
-    console.log('Found gaps to fill, proceeding...');
+  if (selectedTemplate) {
+    console.log('=== FILL GAPS DEBUG ===');
+    console.log('Template selected:', selectedTemplate);
+    console.log('Generated questions:', generatedQuestions);
+    console.log('Selected questions:', selectedQuestions);
     
-    // Determine which questions to use for replacement based on fillGapsCategory
-    let replacementPool: string[] = [];
+    const template = surveyTemplates[selectedTemplate];
     
-    if (fillGapsCategory === 'any') {
-      // Get all available questions from all categories
-      replacementPool = [
-        ...discoveryQuestions.demographicsPsychographics,
-        ...discoveryQuestions.painPointsDiscovery,
-        ...discoveryQuestions.jobsToBeDone,
-        ...discoveryQuestions.purchasingBehavior,
-        ...discoveryQuestions.hesitationsBarriers,
-        ...discoveryQuestions.languageVoice,
-        ...discoveryQuestions.motivationsDrivers,
-        ...discoveryQuestions.competitors
-      ];
+    // Get unselected questions (these are the gaps to fill)
+    const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+    console.log('Unselected questions:', unselectedQuestions);
+    console.log('Number of gaps to fill:', unselectedQuestions.length);
+    
+    if (unselectedQuestions.length > 0) {
+      console.log('Found gaps to fill, proceeding...');
+      
+      // Determine which questions to use for replacement based on fillGapsCategory
+      let replacementPool: string[] = [];
+      
+      if (fillGapsCategory === 'any') {
+        // Get all available questions from all categories
+        replacementPool = [
+          ...discoveryQuestions.demographicsPsychographics,
+          ...discoveryQuestions.painPointsDiscovery,
+          ...discoveryQuestions.jobsToBeDone,
+          ...discoveryQuestions.purchasingBehavior,
+          ...discoveryQuestions.hesitationsBarriers,
+          ...discoveryQuestions.languageVoice,
+          ...discoveryQuestions.motivationsDrivers,
+          ...discoveryQuestions.competitors
+        ];
+      } else {
+        // Get questions from specific category
+        const categoryMap: { [key: string]: string[] } = {
+          'demographics': discoveryQuestions.demographicsPsychographics,
+          'pain-points': discoveryQuestions.painPointsDiscovery,
+          'jobs-to-be-done': discoveryQuestions.jobsToBeDone,
+          'purchasing': discoveryQuestions.purchasingBehavior,
+          'hesitations': discoveryQuestions.hesitationsBarriers,
+          'language': discoveryQuestions.languageVoice,
+          'triggers': discoveryQuestions.motivationsDrivers,
+          'competitors': discoveryQuestions.competitors
+        };
+        replacementPool = categoryMap[fillGapsCategory] || [];
+      }
+      
+      // Filter out questions already in use
+      const usedQuestions = [...generatedQuestions, ...selectedQuestions];
+      const availableQuestions = replacementPool.filter(q => !usedQuestions.includes(q));
+      
+      // Get random replacement questions
+      const shuffledAvailable = shuffleArray(availableQuestions);
+      const replacementQuestions = shuffledAvailable.slice(0, unselectedQuestions.length);
+      
+      // Customize the replacement questions
+      const customizedReplacements = replacementQuestions.map(q => {
+        return q
+          .replace('[product/service]', productService ? `"${productService}"` : 'product/service')
+          .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+          .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+      });
+      
+      // Create new list: selected questions + replacement questions
+      const newQuestionsList = [...selectedQuestions, ...customizedReplacements];
+      
+      setGeneratedQuestions(newQuestionsList);
+      
+      // Trigger height recalculation
+      setTimeout(() => {
+        const height = document.documentElement.scrollHeight;
+        window.parent.postMessage({ type: 'resize', height }, '*');
+      }, 200);
+      
+      return;
+      
     } else {
-      // Get questions from specific category
-      const categoryMap: { [key: string]: string[] } = {
-        'demographics': discoveryQuestions.demographicsPsychographics,
-        'pain-points': discoveryQuestions.painPointsDiscovery,
-        'jobs-to-be-done': discoveryQuestions.jobsToBeDone,
-        'purchasing': discoveryQuestions.purchasingBehavior,
-        'hesitations': discoveryQuestions.hesitationsBarriers,
-        'language': discoveryQuestions.languageVoice,
-        'triggers': discoveryQuestions.motivationsDrivers,
-        'competitors': discoveryQuestions.competitors
-      };
-      replacementPool = categoryMap[fillGapsCategory] || [];
+      console.log('No gaps to fill - all questions selected');
+      // Just regenerate original template
+      const customizedQuestions = template.questions.map(q => {
+        return q.replace('[product/service]', productService ? `"${productService}"` : 'product/service');
+      });
+      
+      setGeneratedQuestions(customizedQuestions);
+      setSelectedQuestions(customizedQuestions);
+      
+      // Trigger height recalculation
+      setTimeout(() => {
+        const height = document.documentElement.scrollHeight;
+        window.parent.postMessage({ type: 'resize', height }, '*');
+      }, 200);
+      
+      return;
     }
-    
-    // Filter out questions already in use
-    const usedQuestions = [...generatedQuestions, ...selectedQuestions];
-    const availableQuestions = replacementPool.filter(q => !usedQuestions.includes(q));
-    
-    // Get random replacement questions
-    const shuffledAvailable = shuffleArray(availableQuestions);
-    const replacementQuestions = shuffledAvailable.slice(0, unselectedQuestions.length);
-    
-    // Customize the replacement questions
-    const customizedReplacements = replacementQuestions.map(q => {
-      return q
-        .replace('[product/service]', productService ? `"${productService}"` : 'product/service')
-        .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-        .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
-    });
-    
-    // Create new list: selected questions + replacement questions
-    const newQuestionsList = [...selectedQuestions, ...customizedReplacements];
-    
-    setGeneratedQuestions(newQuestionsList);
-    
-    return;
-    
-  } else {
-    console.log('No gaps to fill - all questions selected');
-    // Just regenerate original template
-    const customizedQuestions = template.questions.map(q => {
-      return q.replace('[product/service]', productService ? `"${productService}"` : 'product/service');
-    });
-    
-    setGeneratedQuestions(customizedQuestions);
-    setSelectedQuestions(customizedQuestions);
-    return;
   }
-}
 
   // Rest of your existing custom selection logic...
   let questionPool: string[] = [];
@@ -509,8 +522,8 @@ if (selectedTemplate) {
   }
   
   if (uncertaintyAreas.includes('triggers')) {
-  questionPool.push(...getRandomQuestions(discoveryQuestions.motivationsDrivers, 4));
-}
+    questionPool.push(...getRandomQuestions(discoveryQuestions.motivationsDrivers, 4));
+  }
 
   if (uncertaintyAreas.includes('competitors')) {
     questionPool.push(...getRandomQuestions(discoveryQuestions.competitors, 4));
@@ -529,35 +542,37 @@ if (selectedTemplate) {
       .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
   });
 
-// Always refresh unselected questions when button is clicked
-const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
+  // Always refresh unselected questions when button is clicked
+  const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
 
-if (unselectedQuestions.length > 0) {
-  // Get fresh random questions that aren't duplicates
-  const usedQuestions = [...generatedQuestions, ...selectedQuestions];
-  const availableQuestions = customizedQuestions.filter(q => !usedQuestions.includes(q));
-  
-  // If we need more questions than available, get random ones from all questions
-  const freshQuestions = availableQuestions.length >= unselectedQuestions.length 
-    ? availableQuestions.slice(0, unselectedQuestions.length)
-    : [...availableQuestions, ...customizedQuestions.filter(q => !selectedQuestions.includes(q))].slice(0, unselectedQuestions.length);
-  
-  // Stack selected questions at top, then new questions
-  const updatedQuestions = [...selectedQuestions, ...freshQuestions];
-  
-  setGeneratedQuestions(updatedQuestions);
-} else {
-  // If all questions are selected, add more unique questions
-  const allExisting = [...generatedQuestions, ...selectedQuestions];
-  const newQuestions = customizedQuestions.filter(q => !allExisting.includes(q));
-  const moreQuestions = [...selectedQuestions, ...newQuestions].slice(0, 15);
-  setGeneratedQuestions(moreQuestions);
-}
+  if (unselectedQuestions.length > 0) {
+    // Get fresh random questions that aren't duplicates
+    const usedQuestions = [...generatedQuestions, ...selectedQuestions];
+    const availableQuestions = customizedQuestions.filter(q => !usedQuestions.includes(q));
+    
+    // If we need more questions than available, get random ones from all questions
+    const freshQuestions = availableQuestions.length >= unselectedQuestions.length 
+      ? availableQuestions.slice(0, unselectedQuestions.length)
+      : [...availableQuestions, ...customizedQuestions.filter(q => !selectedQuestions.includes(q))].slice(0, unselectedQuestions.length);
+    
+    // Stack selected questions at top, then new questions
+    const updatedQuestions = [...selectedQuestions, ...freshQuestions];
+    
+    setGeneratedQuestions(updatedQuestions);
+  } else {
+    // If all questions are selected, add more unique questions
+    const allExisting = [...generatedQuestions, ...selectedQuestions];
+    const newQuestions = customizedQuestions.filter(q => !allExisting.includes(q));
+    const moreQuestions = [...selectedQuestions, ...newQuestions].slice(0, 15);
+    setGeneratedQuestions(moreQuestions);
+  }
 
-setTimeout(() => {
-  const height = document.documentElement.scrollHeight;
-  window.parent.postMessage({ type: 'resize', height }, '*');
-}, 200)};
+  // Trigger height recalculation
+  setTimeout(() => {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ type: 'resize', height }, '*');
+  }, 200);
+};
 
   const getRelevantArea = (industry: string) => {
     const areaMap: { [key: string]: string } = {
@@ -593,16 +608,8 @@ setTimeout(() => {
       ? prev.uncertaintyAreas.filter(a => a !== area)
       : [...prev.uncertaintyAreas, area];
     
-    // DON'T clear template when user starts selecting custom areas
-    // Let users combine template + custom areas
-    
-    // Only clear unselected questions from the available pool
-    if (generatedQuestions.length > 0) {
-      const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
-      if (unselectedQuestions.length > 0) {
-        setGeneratedQuestions(selectedQuestions); // Keep only selected ones visible
-      }
-    }
+    // Don't clear template or questions when user selects custom areas
+    // This allows users to combine template + custom areas
     
     return {
       ...prev,
@@ -799,12 +806,15 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Simple scroll down to questions section
+    // Scroll to the advanced customization section
     setTimeout(() => {
-      window.scrollTo({
-        top: window.scrollY + 600,
-        behavior: 'smooth'
-      });
+      const advancedSection = document.getElementById('advanced-customization');
+      if (advancedSection) {
+        advancedSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     }, 100);
   }}
   variant="outline"
