@@ -974,22 +974,55 @@ const copyToClipboard = async () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
               {[
-                { key: 'demographics', label: 'Demographics & Role', icon: '👤' },
-                { key: 'pain-points', label: 'Pain Points', icon: '💡' },
-                { key: 'jobs-to-be-done', label: 'Goals & Jobs', icon: '🎯' },
-                { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥' },
-                { key: 'hesitations', label: 'Hesitations', icon: '⚠️' },
-                { key: 'language', label: 'Language & Voice', icon: '💬' },
-                { key: 'triggers', label: 'Motivations', icon: '⚡' },
-                { key: 'competitors', label: 'Competitors', icon: '🏆' }
+                { key: 'demographics', label: 'Demographics & Role Details', icon: '👤', tooltip: 'Understand who your customers are, their role, and what drives their professional decisions. Critical for targeting and personalization.' },
+                { key: 'pain-points', label: 'Pain Points & Challenges', icon: '💡', tooltip: 'Discover the specific problems and frustrations that drive customers to seek solutions. These insights become your strongest marketing messages.' },
+                { key: 'jobs-to-be-done', label: 'Jobs-to-be-Done & Goals', icon: '🎯', tooltip: 'Understand what outcomes customers want to achieve and how they measure success. Reveals why they buy and what they value most.' },
+                { key: 'purchasing', label: 'Purchasing Behavior', icon: '👥', tooltip: 'Understand how customers research, evaluate, and make buying decisions. Essential for optimizing your sales process and messaging.' },
+                { key: 'hesitations', label: 'Hesitations & Concerns', icon: '⚠️', tooltip: 'Identify what stops customers from buying and address concerns that create friction. Critical for removing conversion barriers.' },
+                { key: 'language', label: 'Language & Voice', icon: '💬', tooltip: 'Capture the exact words customers use to describe problems and solutions. Use their language in your copy and messaging.' },
+                { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what events and motivations push customers to take action. Reveals when prospects become active buyers.' },
+                { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider and why they choose you. Learn how to position against competition and alternatives.' }
               ].map(area => (
-                <div key={area.key} className="flex items-center space-x-2">
-                  <Checkbox
-                    checked={businessInfo.uncertaintyAreas.includes(area.key)}
-                    onCheckedChange={() => toggleUncertaintyArea(area.key)}
-                  />
-                  <span className="text-sm">{area.icon}</span>
-                  <span className="text-sm text-black">{area.label}</span>
+                <div key={area.key} className="relative">
+                  <div 
+                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
+                    onClick={() => toggleDropdown(area.key)}
+                  >
+                    <div className="flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={businessInfo.uncertaintyAreas.includes(area.key)}
+                        onCheckedChange={() => toggleUncertaintyArea(area.key)}
+                      />
+                      <span className="text-lg">{area.icon}</span>
+                      <span className="text-sm text-black">{area.label}</span>
+                    </div>
+                    
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  
+                  {openDropdown === area.key && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-5"
+                        onClick={() => setOpenDropdown(null)}
+                      />
+                      <div 
+                        className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
+                        style={{ 
+                          backgroundColor: '#ff5757', 
+                          borderColor: '#ff5757',
+                          left: '0',
+                          right: '0'
+                        }}
+                      >
+                        <p className="text-sm font-bold text-white">
+                          {area.tooltip}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
