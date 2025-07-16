@@ -801,28 +801,37 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // Scroll to Industry/Product fields section
+    // Scroll to the questions customization section (the generated questions area)
     setTimeout(() => {
-      // Try multiple methods to find the business fields
-      let targetElement = document.getElementById('business-fields');
+      // Look for the questions section with "Select All Questions"
+      let targetElement = null;
       
+      // Method 1: Find by the "Select All Questions" text
+      const selectAllElement = Array.from(document.querySelectorAll('span')).find(
+        span => span.textContent?.includes('Select All Questions')
+      );
+      
+      if (selectAllElement) {
+        targetElement = selectAllElement.closest('.bg-gray-50') as HTMLElement;
+      }
+      
+      // Method 2: Find by Fill Gaps button if Select All not found
       if (!targetElement) {
-        // Fallback: look for Industry label
-        const industryLabel = Array.from(document.querySelectorAll('label')).find(
-          label => label.textContent?.includes('Industry')
+        const fillGapsButton = Array.from(document.querySelectorAll('span')).find(
+          span => span.textContent?.includes('Fill Gaps') || span.textContent?.includes('Add More Questions')
         );
-        if (industryLabel) {
-          targetElement = industryLabel.closest('.grid') as HTMLElement;
+        if (fillGapsButton) {
+          targetElement = fillGapsButton.closest('.bg-gray-50') as HTMLElement;
         }
       }
       
+      // Method 3: Find by the questions card header
       if (!targetElement) {
-        // Final fallback: look for Advanced Customization heading
-        const advancedHeading = Array.from(document.querySelectorAll('h3')).find(
-          h => h.textContent?.includes('Advanced Customization')
+        const questionHeaders = Array.from(document.querySelectorAll('h2')).find(
+          h => h.textContent?.includes('Recommended Questions') || h.textContent?.includes('New Business')
         );
-        if (advancedHeading) {
-          targetElement = advancedHeading.parentElement as HTMLElement;
+        if (questionHeaders) {
+          targetElement = questionHeaders.closest('.bg-white') as HTMLElement;
         }
       }
       
@@ -832,15 +841,15 @@ const copyToClipboard = async () => {
           block: 'start'
         });
         
-        // Visual feedback
+        // Visual feedback on the controls area
         targetElement.style.backgroundColor = '#fef2f2';
         setTimeout(() => {
           targetElement!.style.backgroundColor = '';
         }, 2000);
       } else {
-        // Ultimate fallback
+        // Fallback: scroll down to where questions section should be
         window.scrollTo({
-          top: window.scrollY + 600,
+          top: window.scrollY + 800,
           behavior: 'smooth'
         });
       }
