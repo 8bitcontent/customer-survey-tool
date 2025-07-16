@@ -801,52 +801,22 @@ const copyToClipboard = async () => {
             
             <Button
   onClick={() => {
-    // DON'T clear the template - just scroll to the questions section
+    // Simply scroll down by a fixed amount to where the questions section will be
+    window.scrollTo({
+      top: window.scrollY + 700,
+      behavior: 'smooth'
+    });
+    
+    // Add a small delay to ensure the section is visible, then try to find it
     setTimeout(() => {
-      // Look for the questions section with "Select All Questions"
-      let targetElement = null;
-      
-      // Method 1: Find by the "Select All Questions" text
-      const selectAllElement = Array.from(document.querySelectorAll('span')).find(
-        span => span.textContent?.includes('Select All Questions')
-      );
-      
-      if (selectAllElement) {
-        targetElement = selectAllElement.closest('.bg-gray-50') as HTMLElement;
-      }
-      
-      // Method 2: Find by the questions card
-      if (!targetElement) {
-        const questionCards = Array.from(document.querySelectorAll('h2')).find(
-          h => h.textContent?.includes('New Business') || h.textContent?.includes('Existing Product') || h.textContent?.includes('Recommended Questions')
-        );
-        if (questionCards) {
-          targetElement = questionCards.closest('.bg-white') as HTMLElement;
-        }
-      }
-      
-      if (targetElement) {
-        targetElement.scrollIntoView({ 
+      const questionSection = document.querySelector('[data-questions-section]');
+      if (questionSection) {
+        questionSection.scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
         });
-        
-        // Visual feedback
-        const controlsArea = targetElement.querySelector('.bg-gray-50') as HTMLElement;
-        if (controlsArea) {
-          controlsArea.style.backgroundColor = '#fef2f2';
-          setTimeout(() => {
-            controlsArea.style.backgroundColor = '#f9fafb';
-          }, 2000);
-        }
-      } else {
-        // Fallback scroll
-        window.scrollTo({
-          top: window.scrollY + 800,
-          behavior: 'smooth'
-        });
       }
-    }, 100);
+    }, 300);
   }}
   variant="outline"
   size="sm"
@@ -994,7 +964,7 @@ const copyToClipboard = async () => {
       </Card>
 
       {generatedQuestions.length > 0 && (
-  <Card>
+  <Card data-questions-section>
     <CardHeader>
       <CardTitle as="h2" className="text-black">
         {selectedTemplate 
