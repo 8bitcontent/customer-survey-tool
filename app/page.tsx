@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import { JSX } from 'react';
 
-// Add the TypeScript interfaces here (after the imports)
 interface SurveyTemplate {
   title: string;
   description: string;
   icon: string;
+  labels: string[];  // ADD THIS LINE
   questions: string[];
 }
 
@@ -333,12 +333,13 @@ const [showPreview, setShowPreview] = useState(false);
     ]
   };
 
-  // Survey templates for one-click generation
+  // Updated surveyTemplates with labels for filtering and display
 const surveyTemplates: SurveyTemplates = {
   'new-business': {
     title: 'New Business (No Existing Customers)',
     description: 'Validate your target market and understand potential customers before you have customer data to analyze',
     icon: '🚀',
+    labels: ['Market & Customer Fit', 'Positioning & Differentiation'],
     questions: [
       "What problem are you currently facing that you're looking to solve?",
       "What solutions have you tried before, and what didn't work about them?",
@@ -351,6 +352,7 @@ const surveyTemplates: SurveyTemplates = {
     title: 'Existing Product (Current Customers)',
     description: 'Learn from your customers why they chose you and how to attract more customers like them',
     icon: '✅',
+    labels: ['Messaging & Language Insights', 'Voice of Customer'],
     questions: [
       "What problem were you trying to solve before finding our solution?",
       "What alternatives did you consider before choosing us?",
@@ -363,6 +365,7 @@ const surveyTemplates: SurveyTemplates = {
     title: 'Competitive Research (Market Analysis)',
     description: 'Understand your competitive landscape and identify positioning opportunities against alternatives',
     icon: '🏆',
+    labels: ['Positioning & Differentiation', 'Voice of Customer'],
     questions: [
       "What alternatives did you consider before choosing us?",
       "What made you choose us over other options in the market?",
@@ -376,6 +379,7 @@ const surveyTemplates: SurveyTemplates = {
     title: 'Content Strategy (Messaging Focus)',
     description: 'Capture the exact language, messaging, and voice insights customers use for better copy and content',
     icon: '💬',
+    labels: ['Messaging & Language Insights', 'Voice of Customer'],
     questions: [
       "How would you describe the problem we solve to someone who's never heard of it?",
       "If you were recommending us to a colleague, what would you say?",
@@ -388,6 +392,7 @@ const surveyTemplates: SurveyTemplates = {
     title: 'Customer Satisfaction & Experience',
     description: 'Measure satisfaction levels and identify specific experience improvement opportunities',
     icon: '😊',
+    labels: ['Voice of Customer', 'Retention & Loyalty Signals'],
     questions: [
       "What part of working with us exceeded your expectations?",
       "What was your first impression of our company/solution?",
@@ -396,70 +401,11 @@ const surveyTemplates: SurveyTemplates = {
       "What would make you more likely to choose us again?"
     ]
   },
-  'churn-retention': {
-    title: 'Churn Risk & Retention',
-    description: 'Identify at-risk customers and understand what drives retention versus customer departure',
-    icon: '📉',
-    questions: [
-      "What would make you switch to a competitor?",
-      "What concerns do you have about our solution that we haven't addressed?",
-      "What would make you more likely to renew/continue?",
-      "What almost stopped you from moving forward with us initially?",
-      "What's missing that would make this solution more valuable to you?"
-    ]
-  },
-  'referral-advocacy': {
-    title: 'Referral & Word-of-Mouth',
-    description: 'Understand advocacy drivers and optimize how customers describe and recommend your solution',
-    icon: '🤝',
-    questions: [
-      "How would you describe our solution to a colleague in your own words?",
-      "What's the elevator pitch you'd give for our solution?",
-      "What would make you more likely to recommend us to others?",
-      "What hesitations would you address if referring someone to us?",
-      "How would you describe the before and after of using our solution?"
-    ]
-  },
-  'pricing-value': {
-    title: 'Pricing & Value Assessment',
-    description: 'Understand how customers perceive value relative to cost and their pricing sensitivity',
-    icon: '💰',
-    questions: [
-      "What would make this purchase worth every penny?",
-      "What concerns did you have about our pricing before purchasing?",
-      "How do you typically justify purchases like this to others?",
-      "What would make this solution worth paying more for?",
-      "What budget constraints influenced your purchasing decision?"
-    ]
-  },
-  'implementation-onboarding': {
-    title: 'Implementation & Onboarding',
-    description: 'Optimize customer success processes and reduce time-to-value for new customers',
-    icon: '🚀',
-    questions: [
-      "What concerns did you have about implementing our solution?",
-      "What was the biggest obstacle during implementation?",
-      "How long did it take you to see value from our solution?",
-      "What would have made the onboarding process easier for you?",
-      "What additional support would have helped during setup?"
-    ]
-  },
-  'feature-development': {
-    title: 'Feature Development & Product',
-    description: 'Guide product roadmap decisions with customer-driven insights about feature usage and gaps',
-    icon: '⚡',
-    questions: [
-      "What are the top 3 benefits you receive from our solution?",
-      "What features do our competitors offer that you wish we provided?",
-      "What capability are you missing that would transform your results?",
-      "What features do you use most often and why?",
-      "What would you change about our solution if you could wave a magic wand?"
-    ]
-  },
   'sales-optimization': {
     title: 'Sales Process Optimization',
     description: 'Improve sales effectiveness and reduce sales cycle length by understanding the buying journey',
     icon: '📈',
+    labels: ['Sales & Conversion Drivers', 'Messaging & Language Insights'],
     questions: [
       "What information would have shortened your decision-making process?",
       "Who else was involved in the decision to work with us?",
@@ -467,7 +413,68 @@ const surveyTemplates: SurveyTemplates = {
       "What red flags do you typically watch out for when evaluating vendors?",
       "What finally pushed you over the edge to take action?"
     ]
+  },
+  'feature-development': {
+    title: 'Feature Development & Product',
+    description: 'Guide product roadmap decisions with customer-driven insights about feature usage and gaps',
+    icon: '⚡',
+    labels: ['Product & UX Feedback', 'Positioning & Differentiation'],
+    questions: [
+      "What are the top 3 benefits you receive from our solution?",
+      "What features do our competitors offer that you wish we provided?",
+      "What capability are you missing that would transform your results?",
+      "What features do you use most often and why?",
+      "What would you change about our solution if you could wave a magic wand?"
+    ]
   }
+};
+
+// Filter categories with colors
+const filterCategories = [
+  { key: 'all', label: 'All Templates', color: 'gray' },
+  { key: 'voice-of-customer', label: '💬 Voice of Customer', color: 'blue' },
+  { key: 'messaging-language', label: '🗣️ Messaging & Language', color: 'purple' },
+  { key: 'positioning', label: '🎯 Positioning & Differentiation', color: 'green' },
+  { key: 'sales-conversion', label: '📈 Sales & Conversion', color: 'red' },
+  { key: 'retention-loyalty', label: '🔄 Retention & Loyalty', color: 'orange' },
+  { key: 'product-feedback', label: '⚙️ Product & UX Feedback', color: 'indigo' }
+];
+
+// Add filter state to your component
+const [selectedFilter, setSelectedFilter] = useState('all');
+
+// Filter function
+const getFilteredTemplates = () => {
+  if (selectedFilter === 'all') return Object.entries(surveyTemplates);
+  
+  const filterMap: { [key: string]: string } = {
+    'voice-of-customer': 'Voice of Customer',
+    'messaging-language': 'Messaging & Language Insights',
+    'positioning': 'Positioning & Differentiation',
+    'sales-conversion': 'Sales & Conversion Drivers',
+    'retention-loyalty': 'Retention & Loyalty Signals',
+    'product-feedback': 'Product & UX Feedback'
+  };
+  
+  const targetLabel = filterMap[selectedFilter];
+  return Object.entries(surveyTemplates).filter(([_, template]) => 
+    template.labels.includes(targetLabel)
+  );
+};
+
+// Label color mapping
+const getLabelColor = (label: string) => {
+  const colorMap: { [key: string]: string } = {
+    'Voice of Customer': 'bg-blue-100 text-blue-800',
+    'Messaging & Language Insights': 'bg-purple-100 text-purple-800',
+    'Positioning & Differentiation': 'bg-green-100 text-green-800',
+    'Sales & Conversion Drivers': 'bg-red-100 text-red-800',
+    'Retention & Loyalty Signals': 'bg-orange-100 text-orange-800',
+    'Product & UX Feedback': 'bg-indigo-100 text-indigo-800',
+    'Market & Customer Fit': 'bg-teal-100 text-teal-800',
+    'Perceived Value & Pricing': 'bg-yellow-100 text-yellow-800'
+  };
+  return colorMap[label] || 'bg-gray-100 text-gray-800';
 };
 
 // Helper function to shuffle array
@@ -829,58 +836,102 @@ const copyToClipboard = async () => {
       Get started instantly with proven survey templates for different business situations:
     </p>
     
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-medium text-blue-900">Choose Your Situation</h3>
-        <div className="flex flex-col sm:flex-row gap-2">
-          {selectedTemplate && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSelectedTemplate('');
-                setGeneratedQuestions([]);
-                setSelectedQuestions([]);
-                setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
-              }}
-              className="text-red-600 border-red-300 text-xs"
-            >
-              Clear Template
-            </Button>
-          )}
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {Object.entries(surveyTemplates).map(([key, template]) => (
-          <div
-            key={key}
-            className={`p-3 border rounded-lg cursor-pointer transition-all ${
-              selectedTemplate === key 
-                ? 'bg-blue-100 border-blue-400' 
-                : 'bg-white border-gray-200 hover:border-blue-300'
-            }`}
-            onClick={() => handleTemplateSelection(key)}
-          >
-            <div className="flex items-start space-x-2">
-              <span className="text-lg flex-shrink-0">{template.icon}</span>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-sm text-black leading-tight mb-1">
-                  {template.title}
-                </h4>
-                <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                  {template.description}
-                </p>
-                <p className="text-xs text-blue-600 mt-1">
-                  {template.questions.length} questions
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    // Updated template selection section with filters and labels
+<div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+  <div className="flex items-center justify-between mb-4">
+    <h3 className="font-medium text-blue-900">Choose Your Situation</h3>
+    <div className="flex flex-col sm:flex-row gap-2">
+      {selectedTemplate && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setSelectedTemplate('');
+            setGeneratedQuestions([]);
+            setSelectedQuestions([]);
+            setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+          }}
+          className="text-red-600 border-red-300 text-xs"
+        >
+          Clear Template
+        </Button>
+      )}
     </div>
   </div>
+
+  {/* Filter Dropdown */}
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-blue-800 mb-2">
+      🏷️ Filter by Focus Area
+    </label>
+    <Select onValueChange={setSelectedFilter} className="w-full max-w-xs">
+      <SelectValue placeholder="All Templates" />
+      <SelectContent>
+        {filterCategories.map(category => (
+          <SelectItem key={category.key} value={category.key}>
+            {category.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+
+  {/* Filtered Templates Grid */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    {getFilteredTemplates().map(([key, template]) => (
+      <div
+        key={key}
+        className={`p-3 border rounded-lg cursor-pointer transition-all ${
+          selectedTemplate === key 
+            ? 'bg-blue-100 border-blue-400' 
+            : 'bg-white border-gray-200 hover:border-blue-300'
+        }`}
+        onClick={() => handleTemplateSelection(key)}
+      >
+        <div className="flex items-start space-x-2">
+          <span className="text-lg flex-shrink-0">{template.icon}</span>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-medium text-sm text-black leading-tight mb-1">
+              {template.title}
+            </h4>
+            <p className="text-xs text-gray-600 mt-1 mb-2 leading-relaxed">
+              {template.description}
+            </p>
+            
+            {/* Labels */}
+            <div className="flex flex-wrap gap-1 mb-2">
+              {template.labels.map((label, index) => (
+                <span 
+                  key={index}
+                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getLabelColor(label)}`}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+            
+            <p className="text-xs text-blue-600">
+              {template.questions.length} questions
+            </p>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {/* Show message if no templates match filter */}
+  {getFilteredTemplates().length === 0 && (
+    <div className="text-center py-8 text-gray-500">
+      <p className="text-sm">No templates match the selected filter.</p>
+      <button 
+        onClick={() => setSelectedFilter('all')}
+        className="text-blue-600 hover:text-blue-800 text-sm underline mt-1"
+      >
+        Show all templates
+      </button>
+    </div>
+  )}
+</div>
 
   {/* Generate Button for custom questions only */}
   {selectedTemplate === '' && (
