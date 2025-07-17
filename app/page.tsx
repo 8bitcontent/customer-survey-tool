@@ -463,7 +463,7 @@ const getFilteredTemplates = () => {
 };
 
 // Label color mapping
-const getLabelColorAlt = (label: string) => {
+const getLabelColor = (label: string) => {
   const colorMap: { [key: string]: string } = {
     'Voice of Customer': 'bg-blue-50 text-blue-600 border border-blue-100',
     'Messaging & Language Insights': 'bg-purple-50 text-purple-600 border border-purple-100',
@@ -984,48 +984,72 @@ const copyToClipboard = async () => {
             { key: 'triggers', label: 'Motivations & Triggers', icon: '⚡', tooltip: 'Discover what events and motivations push customers to take action. Reveals when prospects become active buyers.' },
             { key: 'competitors', label: 'Competitors & Alternatives', icon: '🏆', tooltip: 'Discover what alternatives customers consider and why they choose you. Learn how to position against competition and alternatives.' }
           ].map(area => (
-            <div key={area.key} className="relative">
-              <div 
-                className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
-                onClick={() => toggleDropdown(area.key)}
-              >
-                <div className="flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
-                  <Checkbox
-                    checked={businessInfo.uncertaintyAreas.includes(area.key)}
-                    onCheckedChange={() => toggleUncertaintyArea(area.key)}
-                  />
-                  <span className="text-lg">{area.icon}</span>
-                  <span className="text-sm text-black">{area.label}</span>
-                </div>
-                
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-              
-              {openDropdown === area.key && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-5"
-                    onClick={() => setOpenDropdown(null)}
-                  />
-                  <div 
-                    className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
-                    style={{ 
-                      backgroundColor: '#ff5757', 
-                      borderColor: '#ff5757',
-                      left: '0',
-                      right: '0'
-                    }}
-                  >
-                    <p className="text-sm font-bold text-white">
-                      {area.tooltip}
-                    </p>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
+  <div key={area.key} className="relative">
+    <div 
+      className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
+    >
+      {/* Checkbox area - separate click handler */}
+      <div 
+        className="flex items-center space-x-3" 
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent tooltip from opening when clicking checkbox
+          toggleUncertaintyArea(area.key);
+        }}
+      >
+        <Checkbox
+          checked={businessInfo.uncertaintyAreas.includes(area.key)}
+          onCheckedChange={() => toggleUncertaintyArea(area.key)}
+        />
+        <span className="text-lg">{area.icon}</span>
+        <span className="text-sm text-black">{area.label}</span>
+      </div>
+      
+      {/* Tooltip trigger area - larger click area */}
+      <div 
+        className="flex-1 flex justify-end items-center pl-4 cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent checkbox from being triggered
+          toggleDropdown(area.key);
+        }}
+      >
+        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+
+    {/* Make the entire right side clickable for tooltip */}
+    <div 
+      className="absolute top-0 right-0 w-1/2 h-full cursor-pointer"
+      onClick={(e) => {
+        e.stopPropagation();
+        toggleDropdown(area.key);
+      }}
+    />
+    
+    {openDropdown === area.key && (
+      <>
+        <div 
+          className="fixed inset-0 z-5"
+          onClick={() => setOpenDropdown(null)}
+        />
+        <div 
+          className="absolute z-10 mt-1 p-3 rounded-lg shadow-lg border-2 max-w-xs"
+          style={{ 
+            backgroundColor: '#ff5757', 
+            borderColor: '#ff5757',
+            left: '0',
+            right: '0'
+          }}
+        >
+          <p className="text-sm font-bold text-white">
+            {area.tooltip}
+          </p>
+        </div>
+      </>
+    )}
+  </div>
+))}
         </div>
       </div>
 
