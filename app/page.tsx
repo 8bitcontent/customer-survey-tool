@@ -835,90 +835,104 @@ const copyToClipboard = async () => {
       Get started instantly with proven survey templates for different business situations:
     </p>
     
+// Streamlined template section - replace the existing template section
 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-blue-900">Choose Your Situation</h3>
-        <div className="flex flex-col sm:flex-row gap-2">
-          {selectedTemplate && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSelectedTemplate('');
-                setGeneratedQuestions([]);
-                setSelectedQuestions([]);
-                setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
-              }}
-              className="text-red-600 border-red-300 text-xs"
-            >
-              Clear Template
-            </Button>
-          )}
-        </div>
-      </div>
-
-  {/* Filter Dropdown */}
-  <div className="mb-4">
-    <label className="block text-sm font-medium text-blue-800 mb-2">
-      🏷️ Filter by Focus Area
-    </label>
-    <Select onValueChange={setSelectedFilter} className="w-full max-w-xs">
-  <SelectValue placeholder="Filter templates..." />
-  <SelectContent>
-    {filterCategories.map(category => (
-      <SelectItem key={category.key} value={category.key}>
-        {category.label}
-      </SelectItem>
-    ))}
-  </SelectContent>
-</Select>
+  <div className="flex items-center justify-between mb-3">
+    <div>
+      <h3 className="font-medium text-blue-900 flex items-center gap-2">
+        🚀 Quick Start Templates
+      </h3>
+      <p className="text-sm text-blue-700 mt-1">
+        Get started instantly with proven survey templates for different business situations
+      </p>
+    </div>
+    <div className="flex flex-col sm:flex-row gap-2">
+      {selectedTemplate && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setSelectedTemplate('');
+            setGeneratedQuestions([]);
+            setSelectedQuestions([]);
+            setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+          }}
+          className="text-red-600 border-red-300 text-xs"
+        >
+          Clear Template
+        </Button>
+      )}
+    </div>
   </div>
 
-  {/* Filtered Templates Grid */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-    {getFilteredTemplates().map(([key, template]) => (
-      <div
-        key={key}
-        className={`p-3 border rounded-lg cursor-pointer transition-all ${
-          selectedTemplate === key 
-            ? 'bg-blue-100 border-blue-400' 
-            : 'bg-white border-gray-200 hover:border-blue-300'
-        }`}
-        onClick={() => handleTemplateSelection(key)}
-      >
-        <div className="flex items-start space-x-2">
-          <span className="text-lg flex-shrink-0">{template.icon}</span>
-          <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-sm text-black leading-tight mb-1">
-              {template.title}
-            </h4>
-            <p className="text-xs text-gray-600 mt-1 mb-2 leading-relaxed">
-              {template.description}
-            </p>
-            
-            {/* Labels */}
-            <div className="flex flex-wrap gap-1 mb-2">
-              {template.labels.map((label, index) => (
-                <span 
-                  key={index}
-                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getLabelColor(label)}`}
-                >
-                  {label}
-                </span>
-              ))}
+  {/* Compact Filter Dropdown */}
+  <div className="mb-4">
+  <select 
+    className="flex h-10 w-full max-w-sm items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+    value={selectedFilter}
+    onChange={(e) => setSelectedFilter(e.target.value)}
+  >
+    <option value="">Choose your situation...</option>
+    {filterCategories.map(category => (
+      <option key={category.key} value={category.key}>
+        {category.label}
+      </option>
+    ))}
+  </select>
+</div>
+
+  {/* Template Grid - Only show when templates are filtered or selected */}
+  {selectedFilter !== 'all' || selectedTemplate ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {getFilteredTemplates().map(([key, template]) => (
+        <div
+          key={key}
+          className={`p-3 border rounded-lg cursor-pointer transition-all ${
+            selectedTemplate === key 
+              ? 'bg-blue-100 border-blue-400' 
+              : 'bg-white border-gray-200 hover:border-blue-300'
+          }`}
+          onClick={() => handleTemplateSelection(key)}
+        >
+          <div className="flex items-start space-x-2">
+            <span className="text-lg flex-shrink-0">{template.icon}</span>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-medium text-sm text-black leading-tight mb-1">
+                {template.title}
+              </h4>
+              <p className="text-xs text-gray-600 mt-1 mb-2 leading-relaxed">
+                {template.description}
+              </p>
+              
+              {/* Labels */}
+              <div className="flex flex-wrap gap-1 mb-2">
+                {template.labels.map((label, index) => (
+                  <span 
+                    key={index}
+                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getLabelColor(label)}`}
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+              
+              <p className="text-xs text-blue-600">
+                {template.questions.length} questions
+              </p>
             </div>
-            
-            <p className="text-xs text-blue-600">
-              {template.questions.length} questions
-            </p>
           </div>
         </div>
-      </div>
-    ))}
-  </div>
+      ))}
+    </div>
+  ) : (
+    // Show hint when no filter is selected
+    <div className="text-center py-6 text-gray-500">
+      <p className="text-sm">Select a situation above to see relevant templates</p>
+    </div>
+  )}
 
   {/* Show message if no templates match filter */}
-  {getFilteredTemplates().length === 0 && (
+  {selectedFilter !== 'all' && getFilteredTemplates().length === 0 && (
     <div className="text-center py-8 text-gray-500">
       <p className="text-sm">No templates match the selected filter.</p>
       <button 
