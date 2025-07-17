@@ -994,21 +994,20 @@ const copyToClipboard = async () => {
     <div 
       className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer min-h-[70px]"
     >
-      {/* Checkbox area - separate click handler */}
-      <div 
-        className="flex items-center space-x-3" 
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent tooltip from opening when clicking checkbox
-          toggleUncertaintyArea(area.key);
-        }}
-      >
-        <Checkbox
-          checked={businessInfo.uncertaintyAreas.includes(area.key)}
-          onCheckedChange={() => toggleUncertaintyArea(area.key)}
-        />
-        <span className="text-lg">{area.icon}</span>
-        <span className="text-sm text-black">{area.label}</span>
-      </div>
+      {/* Checkbox area - simple click handler */}
+<div className="flex items-center space-x-3">
+  <Checkbox
+    checked={businessInfo.uncertaintyAreas.includes(area.key)}
+    onCheckedChange={() => toggleUncertaintyArea(area.key)}
+  />
+  <span className="text-lg">{area.icon}</span>
+  <span 
+    className="text-sm text-black cursor-pointer"
+    onClick={() => toggleUncertaintyArea(area.key)}
+  >
+    {area.label}
+  </span>
+</div>
       
       {/* Tooltip trigger area - larger click area */}
       <div 
