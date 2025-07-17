@@ -463,18 +463,18 @@ const getFilteredTemplates = () => {
 };
 
 // Label color mapping
-const getLabelColor = (label: string) => {
+const getLabelColorAlt = (label: string) => {
   const colorMap: { [key: string]: string } = {
-    'Voice of Customer': 'bg-blue-100 text-blue-700 border border-blue-200',
-    'Messaging & Language Insights': 'bg-purple-100 text-purple-700 border border-purple-200',
-    'Positioning & Differentiation': 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-    'Sales & Conversion Drivers': 'bg-rose-100 text-rose-700 border border-rose-200',
-    'Retention & Loyalty Signals': 'bg-amber-100 text-amber-700 border border-amber-200',
-    'Product & UX Feedback': 'bg-slate-100 text-slate-700 border border-slate-200',
-    'Market & Customer Fit': 'bg-cyan-100 text-cyan-700 border border-cyan-200',
-    'Perceived Value & Pricing': 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+    'Voice of Customer': 'bg-blue-50 text-blue-600 border border-blue-100',
+    'Messaging & Language Insights': 'bg-purple-50 text-purple-600 border border-purple-100',
+    'Positioning & Differentiation': 'bg-emerald-50 text-emerald-600 border border-emerald-100',
+    'Sales & Conversion Drivers': 'bg-rose-50 text-rose-600 border border-rose-100',
+    'Retention & Loyalty Signals': 'bg-amber-50 text-amber-600 border border-amber-100',
+    'Product & UX Feedback': 'bg-slate-50 text-slate-600 border border-slate-100',
+    'Market & Customer Fit': 'bg-cyan-50 text-cyan-600 border border-cyan-100',
+    'Perceived Value & Pricing': 'bg-yellow-50 text-yellow-600 border border-yellow-100'
   };
-  return colorMap[label] || 'bg-gray-100 text-gray-700 border border-gray-200';
+  return colorMap[label] || 'bg-gray-50 text-gray-600 border border-gray-100';
 };
 
 // Helper function to shuffle array
