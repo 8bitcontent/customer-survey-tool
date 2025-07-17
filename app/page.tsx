@@ -828,7 +828,7 @@ const copyToClipboard = async () => {
         </CardHeader>
        <CardContent className="space-y-8">
   {/* Quick Start Templates - Clean and focused */}
-  <div>
+  
     <label className="block text-sm font-medium mb-3 text-black">
       🚀 Quick Start Templates
     </label>
@@ -836,28 +836,27 @@ const copyToClipboard = async () => {
       Get started instantly with proven survey templates for different business situations:
     </p>
     
-    // Updated template selection section with filters and labels
 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-  <div className="flex items-center justify-between mb-4">
-    <h3 className="font-medium text-blue-900">Choose Your Situation</h3>
-    <div className="flex flex-col sm:flex-row gap-2">
-      {selectedTemplate && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            setSelectedTemplate('');
-            setGeneratedQuestions([]);
-            setSelectedQuestions([]);
-            setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
-          }}
-          className="text-red-600 border-red-300 text-xs"
-        >
-          Clear Template
-        </Button>
-      )}
-    </div>
-  </div>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-medium text-blue-900">Choose Your Situation</h3>
+        <div className="flex flex-col sm:flex-row gap-2">
+          {selectedTemplate && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSelectedTemplate('');
+                setGeneratedQuestions([]);
+                setSelectedQuestions([]);
+                setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+              }}
+              className="text-red-600 border-red-300 text-xs"
+            >
+              Clear Template
+            </Button>
+          )}
+        </div>
+      </div>
 
   {/* Filter Dropdown */}
   <div className="mb-4">
