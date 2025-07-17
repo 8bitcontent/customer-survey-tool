@@ -844,22 +844,35 @@ const copyToClipboard = async () => {
       </p>
     </div>
     <div className="flex flex-col sm:flex-row gap-2">
-      {selectedTemplate && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            setSelectedTemplate('');
-            setGeneratedQuestions([]);
-            setSelectedQuestions([]);
-            setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
-          }}
-          className="text-red-600 border-red-300 text-xs"
-        >
-          Clear Template
-        </Button>
-      )}
-    </div>
+  {selectedFilter && selectedFilter !== '' && (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => {
+        setSelectedFilter('');
+        // Don't clear selectedTemplate or questions, just hide the templates
+      }}
+      className="text-blue-600 border-blue-300 text-xs"
+    >
+      Minimize Templates
+    </Button>
+  )}
+  {selectedTemplate && (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => {
+        setSelectedTemplate('');
+        setGeneratedQuestions([]);
+        setSelectedQuestions([]);
+        setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+      }}
+      className="text-red-600 border-red-300 text-xs"
+    >
+      Clear Template
+    </Button>
+  )}
+</div>
   </div>
 
   {/* Compact Filter Dropdown */}
@@ -921,12 +934,7 @@ const copyToClipboard = async () => {
         </div>
       ))}
     </div>
-  ) : (
-    // Show hint when no filter is selected
-    <div className="text-center py-6 text-gray-500">
-      <p className="text-sm">Select a situation above to see relevant templates</p>
-    </div>
-  )}
+  ) : null}
 </div>
 
   {/* Generate Button for custom questions only */}
