@@ -613,35 +613,35 @@ const generateQuestions = () => {
   
   // Add questions from selected categories
   if (uncertaintyAreas.includes('demographics')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.demographicsPsychographics, 4));
+    questionPool.push(...getRandomQuestions(discoveryQuestions.demographicsPsychographics, 8));
   }
   
   if (uncertaintyAreas.includes('pain-points')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.painPointsDiscovery, 5));
+    questionPool.push(...getRandomQuestions(discoveryQuestions.painPointsDiscovery, 8));
   }
   
   if (uncertaintyAreas.includes('jobs-to-be-done')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.jobsToBeDone, 5));
+    questionPool.push(...getRandomQuestions(discoveryQuestions.jobsToBeDone, 8));
   }
   
   if (uncertaintyAreas.includes('purchasing')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.purchasingBehavior, 4));
+    questionPool.push(...getRandomQuestions(discoveryQuestions.purchasingBehavior, 8));
   }
   
   if (uncertaintyAreas.includes('hesitations')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.hesitationsBarriers, 4));
+    questionPool.push(...getRandomQuestions(discoveryQuestions.hesitationsBarriers, 8));
   }
   
   if (uncertaintyAreas.includes('language')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.languageVoice, 4));
+    questionPool.push(...getRandomQuestions(discoveryQuestions.languageVoice, 8));
   }
   
   if (uncertaintyAreas.includes('triggers')) {
-  questionPool.push(...getRandomQuestions([...discoveryQuestions.motivationsDrivers, ...discoveryQuestions.categoryEntryPoints], 4));
+  questionPool.push(...getRandomQuestions([...discoveryQuestions.motivationsDrivers, ...discoveryQuestions.categoryEntryPoints], 8));
 }
 
   if (uncertaintyAreas.includes('competitors')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.competitors, 4));
+    questionPool.push(...getRandomQuestions(discoveryQuestions.competitors, 8));
   }
 
   if (uncertaintyAreas.length === 0) {
