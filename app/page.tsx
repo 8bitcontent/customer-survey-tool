@@ -465,16 +465,16 @@ const getFilteredTemplates = () => {
 // Label color mapping
 const getLabelColor = (label: string) => {
   const colorMap: { [key: string]: string } = {
-    'Voice of Customer': 'bg-blue-100 text-blue-800',
-    'Messaging & Language Insights': 'bg-purple-100 text-purple-800',
-    'Positioning & Differentiation': 'bg-green-100 text-green-800',
-    'Sales & Conversion Drivers': 'bg-red-100 text-red-800',
-    'Retention & Loyalty Signals': 'bg-orange-100 text-orange-800',
-    'Product & UX Feedback': 'bg-indigo-100 text-indigo-800',
-    'Market & Customer Fit': 'bg-teal-100 text-teal-800',
-    'Perceived Value & Pricing': 'bg-yellow-100 text-yellow-800'
+    'Voice of Customer': 'bg-blue-600 text-blue-50',
+    'Messaging & Language Insights': 'bg-purple-600 text-purple-50',
+    'Positioning & Differentiation': 'bg-green-600 text-green-50',
+    'Sales & Conversion Drivers': 'bg-red-600 text-red-50',
+    'Retention & Loyalty Signals': 'bg-orange-600 text-orange-50',
+    'Product & UX Feedback': 'bg-indigo-600 text-indigo-50',
+    'Market & Customer Fit': 'bg-teal-600 text-teal-50',
+    'Perceived Value & Pricing': 'bg-yellow-600 text-yellow-50'
   };
-  return colorMap[label] || 'bg-gray-100 text-gray-800';
+  return colorMap[label] || 'bg-gray-600 text-gray-50';
 };
 
 // Helper function to shuffle array
@@ -863,15 +863,15 @@ const copyToClipboard = async () => {
       🏷️ Filter by Focus Area
     </label>
     <Select onValueChange={setSelectedFilter} className="w-full max-w-xs">
-      <SelectValue placeholder="All Templates" />
-      <SelectContent>
-        {filterCategories.map(category => (
-          <SelectItem key={category.key} value={category.key}>
-            {category.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+  <SelectValue placeholder="Filter templates..." />
+  <SelectContent>
+    {filterCategories.map(category => (
+      <SelectItem key={category.key} value={category.key}>
+        {category.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
   </div>
 
   {/* Filtered Templates Grid */}
