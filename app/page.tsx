@@ -445,6 +445,10 @@ const [selectedFilter, setSelectedFilter] = useState('all');
 
 // Filter function
 const getFilteredTemplates = () => {
+  // If no filter selected or filter is empty string, don't show any templates
+  if (!selectedFilter || selectedFilter === '') return [];
+  
+  // If "all" is selected, show all templates
   if (selectedFilter === 'all') return Object.entries(surveyTemplates);
   
   const filterMap: { [key: string]: string } = {
@@ -828,21 +832,14 @@ const copyToClipboard = async () => {
         </CardHeader>
 <CardContent className="space-y-8">
   {/* Quick Start Templates - Clean and focused */}
-    <label className="block text-sm font-medium mb-3 text-black">
-      🚀 Quick Start Templates
-    </label>
-    <p className="text-sm text-gray-600 mb-4">
-      Get started instantly with proven survey templates for different business situations:
-    </p>
     
-// Streamlined template section - replace the existing template section
 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
   <div className="flex items-center justify-between mb-3">
     <div>
-      <h3 className="font-medium text-blue-900 flex items-center gap-2">
+      <h3 className="font-medium text-black flex items-center gap-2">
         🚀 Quick Start Templates
       </h3>
-      <p className="text-sm text-blue-700 mt-1">
+      <p className="text-sm text-gray-600 mt-1">
         Get started instantly with proven survey templates for different business situations
       </p>
     </div>
@@ -872,7 +869,7 @@ const copyToClipboard = async () => {
     value={selectedFilter}
     onChange={(e) => setSelectedFilter(e.target.value)}
   >
-    <option value="">Choose your situation...</option>
+    <option value="">Choose Your Situation</option>
     {filterCategories.map(category => (
       <option key={category.key} value={category.key}>
         {category.label}
@@ -882,7 +879,7 @@ const copyToClipboard = async () => {
 </div>
 
   {/* Template Grid - Only show when templates are filtered or selected */}
-  {selectedFilter !== 'all' || selectedTemplate ? (
+  {(selectedFilter && selectedFilter !== '') ? (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {getFilteredTemplates().map(([key, template]) => (
         <div
