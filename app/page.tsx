@@ -465,16 +465,16 @@ const getFilteredTemplates = () => {
 // Label color mapping
 const getLabelColor = (label: string) => {
   const colorMap: { [key: string]: string } = {
-    'Voice of Customer': 'bg-blue-600 text-blue-50',
-    'Messaging & Language Insights': 'bg-purple-600 text-purple-50',
-    'Positioning & Differentiation': 'bg-green-600 text-green-50',
-    'Sales & Conversion Drivers': 'bg-red-600 text-red-50',
-    'Retention & Loyalty Signals': 'bg-orange-600 text-orange-50',
-    'Product & UX Feedback': 'bg-indigo-600 text-indigo-50',
-    'Market & Customer Fit': 'bg-teal-600 text-teal-50',
-    'Perceived Value & Pricing': 'bg-yellow-600 text-yellow-50'
+    'Voice of Customer': 'bg-red-500 text-white',
+    'Messaging & Language Insights': 'bg-pink-500 text-white',
+    'Positioning & Differentiation': 'bg-emerald-500 text-white',
+    'Sales & Conversion Drivers': 'bg-rose-500 text-white',
+    'Retention & Loyalty Signals': 'bg-amber-500 text-white',
+    'Product & UX Feedback': 'bg-slate-600 text-white',
+    'Market & Customer Fit': 'bg-cyan-500 text-white',
+    'Perceived Value & Pricing': 'bg-lime-500 text-black'
   };
-  return colorMap[label] || 'bg-gray-600 text-gray-50';
+  return colorMap[label] || 'bg-gray-500 text-white';
 };
 
 // Helper function to shuffle array
