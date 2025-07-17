@@ -441,7 +441,7 @@ const filterCategories = [
 ];
 
 // Add filter state to your component
-const [selectedFilter, setSelectedFilter] = useState('all');
+const [selectedFilter, setSelectedFilter] = useState('');
 
 // Filter function
 const getFilteredTemplates = () => {
@@ -869,7 +869,7 @@ const copyToClipboard = async () => {
     value={selectedFilter}
     onChange={(e) => setSelectedFilter(e.target.value)}
   >
-    <option value="">Choose Your Situation</option>
+    <option value="" disabled>Choose Your Situation</option>
     {filterCategories.map(category => (
       <option key={category.key} value={category.key}>
         {category.label}
@@ -925,19 +925,6 @@ const copyToClipboard = async () => {
     // Show hint when no filter is selected
     <div className="text-center py-6 text-gray-500">
       <p className="text-sm">Select a situation above to see relevant templates</p>
-    </div>
-  )}
-
-  {/* Show message if no templates match filter */}
-  {selectedFilter !== 'all' && getFilteredTemplates().length === 0 && (
-    <div className="text-center py-8 text-gray-500">
-      <p className="text-sm">No templates match the selected filter.</p>
-      <button 
-        onClick={() => setSelectedFilter('all')}
-        className="text-blue-600 hover:text-blue-800 text-sm underline mt-1"
-      >
-        Show all templates
-      </button>
     </div>
   )}
 </div>
