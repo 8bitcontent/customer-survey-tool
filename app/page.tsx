@@ -826,9 +826,8 @@ const copyToClipboard = async () => {
   </p>
 </div>
         </CardHeader>
-       <CardContent className="space-y-8">
+<CardContent className="space-y-8">
   {/* Quick Start Templates - Clean and focused */}
-  
     <label className="block text-sm font-medium mb-3 text-black">
       🚀 Quick Start Templates
     </label>
