@@ -337,7 +337,7 @@ const [showPreview, setShowPreview] = useState(false);
 const surveyTemplates: SurveyTemplates = {
   'new-business': {
     title: 'New Business (No Existing Customers)',
-    description: 'Validate your target market and understand potential customers before you have customer data to analyze',
+    description: 'Survey potential customers: email subscribers, industry contacts, niche communities, and target demographics',
     icon: '🚀',
     labels: ['Market & Customer Fit', 'Positioning & Differentiation'],
     questions: [
