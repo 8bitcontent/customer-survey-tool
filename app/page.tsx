@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { JSX } from 'react';
 
 interface SurveyTemplate {
@@ -87,12 +87,6 @@ const Input = ({ placeholder, value, onChange, className = "" }: InputProps) => 
   />
 );
 
-interface TextareaProps {
-  placeholder: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-}
-
 const Select = ({ onValueChange, children, className = "" }: { 
   onValueChange?: (value: string) => void, 
   children: React.ReactNode,
@@ -165,7 +159,7 @@ const Target = ({ className }: { className?: string }) => (
 );
 
 const Lightbulb = ({ className }: { className?: string }) => (
-  <svg className={className} fill="nocurrentColorne" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
   </svg>
 );
@@ -181,57 +175,8 @@ const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
 const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
 const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 const [selectedTemplate, setSelectedTemplate] = useState('');
-const [showTemplateOptions, setShowTemplateOptions] = useState(false);
 const [fillGapsCategory, setFillGapsCategory] = useState('any');
 const [showPreview, setShowPreview] = useState(false);
-
-  useEffect(() => {
-  const sendHeight = () => {
-    const height = Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.offsetHeight
-    );
-
-    window.parent.postMessage(
-      {
-        type: 'survey-frame-height',
-        height
-      },
-      '*'
-    );
-  };
-
-  sendHeight();
-
-  const resizeObserver = new ResizeObserver(sendHeight);
-  resizeObserver.observe(document.body);
-  resizeObserver.observe(document.documentElement);
-
-  const mutationObserver = new MutationObserver(sendHeight);
-  mutationObserver.observe(document.body, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    characterData: true
-  });
-
-  window.addEventListener('resize', sendHeight);
-
-  const timers = [
-    window.setTimeout(sendHeight, 100),
-    window.setTimeout(sendHeight, 500),
-    window.setTimeout(sendHeight, 1000)
-  ];
-
-  return () => {
-    resizeObserver.disconnect();
-    mutationObserver.disconnect();
-    window.removeEventListener('resize', sendHeight);
-    timers.forEach(timer => window.clearTimeout(timer));
-  };
-}, []);
   
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
@@ -293,7 +238,6 @@ const [showPreview, setShowPreview] = useState(false);
       "Why was solving this problem important to you personally?",
       "What consequences were you trying to avoid?",
       "What opportunities were you hoping to unlock?",
-      "What finally pushed you over the edge to take action?",
       "How does solving this problem align with your long-term business or career goals?",
       "What finally pushed you over the edge to take action?",
       "What external factors (e.g., competitor actions, industry trends, peer recommendations) influenced your decision to seek a solution?",
@@ -548,22 +492,7 @@ const getRandomQuestions = (questionArray: string[], count: number) => {
   return shuffled.slice(0, count);
 };
 
-// Force height recalculation after content changes
-const recalculateHeight = () => {
-  setTimeout(() => {
-    const height = document.documentElement.scrollHeight;
-    window.parent.postMessage(
-      {
-        type: 'survey-frame-height',
-        height
-      },
-      '*'
-    );
-  }, 150);
-};
-
 const generateQuestions = () => {
-  console.log('generateQuestions called');
   const { industry, productService, uncertaintyAreas } = businessInfo;
 
   // If using a template, handle smart refill
@@ -634,18 +563,6 @@ const generateQuestions = () => {
       
       setGeneratedQuestions(newQuestionsList);
       
-      // Trigger height recalculation
-      setTimeout(() => {
-        const height = document.documentElement.scrollHeight;
-        window.parent.postMessage(
-  {
-    type: 'survey-frame-height',
-    height
-  },
-  '*'
-);
-      }, 200);
-      
       return;
       
     } else {
@@ -658,17 +575,6 @@ const generateQuestions = () => {
       setGeneratedQuestions(customizedQuestions);
       setSelectedQuestions(customizedQuestions);
       
-      // Trigger height recalculation
-      setTimeout(() => {
-        const height = document.documentElement.scrollHeight;
-        window.parent.postMessage(
-  {
-    type: 'survey-frame-height',
-    height
-  },
-  '*'
-);
-      }, 200);
       
       return;
     }
@@ -716,13 +622,21 @@ const generateQuestions = () => {
   }
 
   // Customize questions with business-specific terms
-  const customizedQuestions = questionPool.map(q => {
-    return q
-      .replace('[product/service]', `"${productService}"` || 'product/service')
-      .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-      .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
-  });
-
+  const customizedQuestions = questionPool.map(question => {
+  return question
+    .replace(
+      '[product/service]',
+      productService ? `"${productService}"` : 'product/service'
+    )
+    .replace(
+      '[relevant area]',
+      `"${getRelevantArea(industry)}"`
+    )
+    .replace(
+      '[relevant process]',
+      `"${getRelevantProcess(industry)}"`
+    );
+});
   // Always refresh unselected questions when button is clicked
   const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
 
@@ -747,20 +661,8 @@ const generateQuestions = () => {
     const moreQuestions = [...selectedQuestions, ...newQuestions].slice(0, 15);
     setGeneratedQuestions(moreQuestions);
   }
-
-  // Trigger height recalculation
-  setTimeout(() => {
-    const height = document.documentElement.scrollHeight;
-    window.parent.postMessage(
-  {
-    type: 'survey-frame-height',
-    height
-  },
-  '*'
-);
-  }, 200);
 };
-
+  
   const getRelevantArea = (industry: string) => {
     const areaMap: { [key: string]: string } = {
       'marketing': 'marketing and lead generation',
@@ -805,43 +707,34 @@ const generateQuestions = () => {
   });
 };
 
-// Add the handleTemplateSelection function here (after line 522)
 const handleTemplateSelection = (templateKey: string) => {
   const template = surveyTemplates[templateKey];
-  
+
   if (selectedTemplate === templateKey) {
-    // Deselect if clicking the same template
     setSelectedTemplate('');
     setGeneratedQuestions([]);
     setSelectedQuestions([]);
-    setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
-  } else {
-    // Select new template
-    setSelectedTemplate(templateKey);
-    
-    // Customize questions with business-specific terms
-    const customizedQuestions = template.questions.map(q => {
-      return q.replace('[product/service]', `"${businessInfo.productService}"` || 'product/service');
-    });
-    
-    setGeneratedQuestions(customizedQuestions);
-    setSelectedQuestions(customizedQuestions); // Auto-select all template questions
-    
-    // DON'T clear custom uncertainty areas - let users combine them
-    // setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+    setBusinessInfo(previous => ({
+      ...previous,
+      uncertaintyAreas: []
+    }));
+
+    return;
   }
-  
-  // Trigger height recalculation
-  setTimeout(() => {
-    const height = document.documentElement.scrollHeight;
-    window.parent.postMessage(
-  {
-    type: 'survey-frame-height',
-    height
-  },
-  '*'
-);
-  }, 200);
+
+  setSelectedTemplate(templateKey);
+
+  const customizedQuestions = template.questions.map(question =>
+    question.replace(
+      '[product/service]',
+      businessInfo.productService
+        ? `"${businessInfo.productService}"`
+        : 'product/service'
+    )
+  );
+
+  setGeneratedQuestions(customizedQuestions);
+  setSelectedQuestions(customizedQuestions);
 };
 
   const toggleQuestionSelection = (question: string) => {
@@ -855,29 +748,35 @@ const handleTemplateSelection = (templateKey: string) => {
 };
 
 const toggleDropdown = (key: string) => {
-  console.log('toggleDropdown called with key:', key);
-  console.log('current openDropdown:', openDropdown);
-  setOpenDropdown(openDropdown === key ? null : key);
+  setOpenDropdown(current => current === key ? null : key);
 };
 
   const exportSurvey = () => {
-    const intro = `Customer Discovery Survey
-    
+  const intro = `Customer Discovery Survey
+
 Goal: Understanding our customers better to improve how we serve you.
 
 Instructions: Please answer as openly and honestly as possible. Your responses will help us understand your needs and challenges better.
 
 Questions:
 `;
-    const surveyText = intro + selectedQuestions.map((q, i) => `${i + 1}. ${q}\n`).join('\n');
-    
-    const blob = new Blob([surveyText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'customer-discovery-survey.txt';
-    a.click();
-  };
+
+  const surveyText =
+    intro +
+    selectedQuestions
+      .map((question, index) => `${index + 1}. ${question}\n`)
+      .join('\n');
+
+  const blob = new Blob([surveyText], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+
+  anchor.href = url;
+  anchor.download = 'customer-discovery-survey.txt';
+  anchor.click();
+
+  URL.revokeObjectURL(url);
+};
 
 const copyToClipboard = async () => {
   const intro = `Customer Discovery Survey\n\nQuestions:\n`;
@@ -896,18 +795,18 @@ const copyToClipboard = async () => {
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold flex items-center gap-2 mb-6" style={{color: '#ff5757'}}>
-  <strong>Your Free Customer Research Survey Generator</strong>
-</CardTitle>
-<div className="text-left space-y-3">
-  <p className="text-gray-600 text-lg">
-     <strong>Get strategic survey questions that uncover your customers' real motivations, pain points, and decision triggers.<br />Use their words to create content and copy that connects and converts.</strong>
+  <CardTitle
+    as="h2"
+    className="text-xl font-bold"
+    style={{ color: '#ff5757' }}
+  >
+    Choose how you want to build your survey
+  </CardTitle>
+
+  <p className="text-sm text-gray-600">
+    Start with a template or choose specific research areas.
   </p>
-  <p className="text-base text-gray-500">
-    <em>Inspired by proven frameworks from customer research and conversion experts like Jennifer Havice, Tony Ulwick, Peep Laja, & others. Try our templates or scroll down to create your own!</em>
-  </p>
-</div>
-        </CardHeader>
+</CardHeader>
 <CardContent className="space-y-8">
   {/* Quick Start Templates - Clean and focused */}
     
@@ -994,9 +893,9 @@ const copyToClipboard = async () => {
               
               {/* Labels */}
               <div className="flex flex-wrap gap-1 mb-2">
-                {template.labels.map((label, index) => (
+                {template.labels.map(label => (
                   <span 
-                    key={index}
+                    key={label}
                     className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getLabelColor(label)}`}
                   >
                     {label}
@@ -1113,7 +1012,7 @@ const copyToClipboard = async () => {
     {openDropdown === area.key && (
       <>
         <div 
-          className="fixed inset-0 z-5"
+          className="fixed inset-0 z-[5]"
           onClick={() => setOpenDropdown(null)}
         />
         <div 
@@ -1216,8 +1115,15 @@ const copyToClipboard = async () => {
 
       {/* Questions List */}
       <div className="space-y-3 mb-6">
-        {generatedQuestions.map((question, index) => (
-          <div key={index} className={`flex items-start space-x-3 p-3 border rounded-lg ${selectedQuestions.includes(question) ? 'bg-red-50 border-red-200' : ''}`}>
+        {generatedQuestions.map(question => (
+  <div
+    key={question}
+    className={`flex items-start space-x-3 p-3 border rounded-lg ${
+      selectedQuestions.includes(question)
+        ? 'bg-red-50 border-red-200'
+        : ''
+    }`}
+  >
             <Checkbox
               checked={selectedQuestions.includes(question)}
               onCheckedChange={() => toggleQuestionSelection(question)}
@@ -1312,7 +1218,7 @@ const copyToClipboard = async () => {
           </div>
           <div className="space-y-4">
             {selectedQuestions.map((question, index) => (
-              <div key={index}>
+              <div key={question}>
                 <p className="font-medium text-sm" style={{color: '#ff5757'}}>
                   Question {index + 1}
                 </p>
@@ -1351,98 +1257,8 @@ const copyToClipboard = async () => {
   </Card>
 )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle as="h2" className="text-black">Marketing & Customer Experience Survey Best Practices</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm space-y-3">
-          <div>
-            <p className="font-medium text-black"><strong><h3>How to get quality survey responses?</h3></strong></p>
-            <ul className="mt-2 space-y-1">
-              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Ask customers who bought from you within the last 6 months.</strong> Recent buyers are more likely to remember their decision-making process and respond.
-  </span>
-</li>
-             <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Keep surveys to 7-10 questions maximum.</strong> Longer surveys kill response rates.
-    </span>
-</li>
-              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Use open-ended questions that capture authentic customer language.</strong> (Yes/no questions don't reveal the insights needed for effective copy.)
-    </span>
-</li>
-              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Send surveys with direct subject lines like "Can you help me with some quick questions?"</strong> - Or use your brand-moderated Facebook Group, Subreddit, etc. And always mention the time commitment upfront: "Takes 5-7 minutes."
-    </span>
-</li>
-  <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Frame it as helping you improve:</strong> "We're always working to better serve customers like you and improve our products/services based on real feedback."
-    </span>
-</li>
-   <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>If needed, consider small incentives:</strong> Discount codes, early access, exclusive content, etc.
-    </span>
-</li>
-            </ul>
-          </div>
-
-          <div>
-            <p className="font-medium text-black"><strong><h3>What to do with the responses?</h3></strong></p>
-            <ul className="mt-2 space-y-1">
-              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Look for recurring language patterns in customer responses.</strong> The words they repeat become your messaging goldmine.
-    </span>
-</li>
-              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Identify common trigger events that pushed customers to buy.</strong> These can reveal high-value insights.
-    </span>
-</li>
-              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Note demographic patterns among your best customers.</strong> This data helps you tailor content to similar prospects.
-    </span>
-</li>
-              <li className="text-black flex items-start">
-  <span className="text-red-500 mr-2">→</span>
-  <span>
-    <strong>Inject their exact words into your copy and content:</strong> Website headlines, product descriptions, marketing emails, and more.
-    </span>
-</li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
-      <div className="text-left p-6 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100 flex items-center gap-4">
-  <a href="https://www.8bitcontent.com" target="_blank" className="inline-block flex-shrink-0">
-    <img src="/8BitContentCoralRed.svg" alt="8-Bit Content Logo" className="w-16 h-16" />
-  </a>
-  <div>
-    <p className="text-gray-700 mb-3">
-      Need help using these customer insights to improve your website and content marketing strategy?
-    </p>
-    <a href="https://www.8bitcontent.com/contact" target="_blank" className="block text-xl text-red-500 hover:text-red-600 hover:underline">
-      Reach out to us for a quick intro!
-    </a>
-  </div>
-</div>
-    </div>
+      
+        </div>
   </div>
 );
 };
