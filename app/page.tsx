@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { JSX } from 'react';
 
 interface SurveyTemplate {
@@ -185,6 +185,54 @@ const [showTemplateOptions, setShowTemplateOptions] = useState(false);
 const [fillGapsCategory, setFillGapsCategory] = useState('any');
 const [showPreview, setShowPreview] = useState(false);
 
+  useEffect(() => {
+  const sendHeight = () => {
+    const height = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight
+    );
+
+    window.parent.postMessage(
+      {
+        type: 'survey-frame-height',
+        height
+      },
+      'https://www.8bitcontent.com'
+    );
+  };
+
+  sendHeight();
+
+  const resizeObserver = new ResizeObserver(sendHeight);
+  resizeObserver.observe(document.body);
+  resizeObserver.observe(document.documentElement);
+
+  const mutationObserver = new MutationObserver(sendHeight);
+  mutationObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    characterData: true
+  });
+
+  window.addEventListener('resize', sendHeight);
+
+  const timers = [
+    window.setTimeout(sendHeight, 100),
+    window.setTimeout(sendHeight, 500),
+    window.setTimeout(sendHeight, 1000)
+  ];
+
+  return () => {
+    resizeObserver.disconnect();
+    mutationObserver.disconnect();
+    window.removeEventListener('resize', sendHeight);
+    timers.forEach(timer => window.clearTimeout(timer));
+  };
+}, []);
+  
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
     demographicsPsychographics: [
@@ -504,7 +552,13 @@ const getRandomQuestions = (questionArray: string[], count: number) => {
 const recalculateHeight = () => {
   setTimeout(() => {
     const height = document.documentElement.scrollHeight;
-    window.parent.postMessage({ type: 'resize', height }, '*');
+    window.parent.postMessage(
+      {
+        type: 'survey-frame-height',
+        height
+      },
+      'https://www.8bitcontent.com'
+    );
   }, 150);
 };
 
@@ -583,7 +637,13 @@ const generateQuestions = () => {
       // Trigger height recalculation
       setTimeout(() => {
         const height = document.documentElement.scrollHeight;
-        window.parent.postMessage({ type: 'resize', height }, '*');
+        window.parent.postMessage(
+  {
+    type: 'survey-frame-height',
+    height
+  },
+  'https://www.8bitcontent.com'
+);
       }, 200);
       
       return;
@@ -601,7 +661,13 @@ const generateQuestions = () => {
       // Trigger height recalculation
       setTimeout(() => {
         const height = document.documentElement.scrollHeight;
-        window.parent.postMessage({ type: 'resize', height }, '*');
+        window.parent.postMessage(
+  {
+    type: 'survey-frame-height',
+    height
+  },
+  'https://www.8bitcontent.com'
+);
       }, 200);
       
       return;
@@ -685,7 +751,13 @@ const generateQuestions = () => {
   // Trigger height recalculation
   setTimeout(() => {
     const height = document.documentElement.scrollHeight;
-    window.parent.postMessage({ type: 'resize', height }, '*');
+    window.parent.postMessage(
+  {
+    type: 'survey-frame-height',
+    height
+  },
+  'https://www.8bitcontent.com'
+);
   }, 200);
 };
 
@@ -762,7 +834,13 @@ const handleTemplateSelection = (templateKey: string) => {
   // Trigger height recalculation
   setTimeout(() => {
     const height = document.documentElement.scrollHeight;
-    window.parent.postMessage({ type: 'resize', height }, '*');
+    window.parent.postMessage(
+  {
+    type: 'survey-frame-height',
+    height
+  },
+  'https://www.8bitcontent.com'
+);
   }, 200);
 };
 
