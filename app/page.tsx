@@ -199,7 +199,7 @@ const [showPreview, setShowPreview] = useState(false);
         type: 'survey-frame-height',
         height
       },
-      'https://www.8bitcontent.com'
+      '*'
     );
   };
 
@@ -557,7 +557,7 @@ const recalculateHeight = () => {
         type: 'survey-frame-height',
         height
       },
-      'https://www.8bitcontent.com'
+      '*'
     );
   }, 150);
 };
@@ -642,7 +642,7 @@ const generateQuestions = () => {
     type: 'survey-frame-height',
     height
   },
-  'https://www.8bitcontent.com'
+  '*'
 );
       }, 200);
       
@@ -666,7 +666,7 @@ const generateQuestions = () => {
     type: 'survey-frame-height',
     height
   },
-  'https://www.8bitcontent.com'
+  '*'
 );
       }, 200);
       
@@ -756,7 +756,7 @@ const generateQuestions = () => {
     type: 'survey-frame-height',
     height
   },
-  'https://www.8bitcontent.com'
+  '*'
 );
   }, 200);
 };
@@ -839,7 +839,7 @@ const handleTemplateSelection = (templateKey: string) => {
     type: 'survey-frame-height',
     height
   },
-  'https://www.8bitcontent.com'
+  '*'
 );
   }, 200);
 };
