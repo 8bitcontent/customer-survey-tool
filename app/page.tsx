@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { JSX } from 'react';
 
 interface SurveyTemplate {
@@ -87,6 +87,12 @@ const Input = ({ placeholder, value, onChange, className = "" }: InputProps) => 
   />
 );
 
+interface TextareaProps {
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}
+
 const Select = ({ onValueChange, children, className = "" }: { 
   onValueChange?: (value: string) => void, 
   children: React.ReactNode,
@@ -159,7 +165,7 @@ const Target = ({ className }: { className?: string }) => (
 );
 
 const Lightbulb = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className={className} fill="nocurrentColorne" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
   </svg>
 );
@@ -175,8 +181,57 @@ const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
 const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
 const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 const [selectedTemplate, setSelectedTemplate] = useState('');
+const [showTemplateOptions, setShowTemplateOptions] = useState(false);
 const [fillGapsCategory, setFillGapsCategory] = useState('any');
 const [showPreview, setShowPreview] = useState(false);
+
+  useEffect(() => {
+  const sendHeight = () => {
+    const height = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight
+    );
+
+    window.parent.postMessage(
+      {
+        type: 'survey-frame-height',
+        height
+      },
+      '*'
+    );
+  };
+
+  sendHeight();
+
+  const resizeObserver = new ResizeObserver(sendHeight);
+  resizeObserver.observe(document.body);
+  resizeObserver.observe(document.documentElement);
+
+  const mutationObserver = new MutationObserver(sendHeight);
+  mutationObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    characterData: true
+  });
+
+  window.addEventListener('resize', sendHeight);
+
+  const timers = [
+    window.setTimeout(sendHeight, 100),
+    window.setTimeout(sendHeight, 500),
+    window.setTimeout(sendHeight, 1000)
+  ];
+
+  return () => {
+    resizeObserver.disconnect();
+    mutationObserver.disconnect();
+    window.removeEventListener('resize', sendHeight);
+    timers.forEach(timer => window.clearTimeout(timer));
+  };
+}, []);
   
   // Question templates focused on customer discovery and ICP development
   const discoveryQuestions = {
@@ -238,6 +293,7 @@ const [showPreview, setShowPreview] = useState(false);
       "Why was solving this problem important to you personally?",
       "What consequences were you trying to avoid?",
       "What opportunities were you hoping to unlock?",
+      "What finally pushed you over the edge to take action?",
       "How does solving this problem align with your long-term business or career goals?",
       "What finally pushed you over the edge to take action?",
       "What external factors (e.g., competitor actions, industry trends, peer recommendations) influenced your decision to seek a solution?",
@@ -492,7 +548,22 @@ const getRandomQuestions = (questionArray: string[], count: number) => {
   return shuffled.slice(0, count);
 };
 
+// Force height recalculation after content changes
+const recalculateHeight = () => {
+  setTimeout(() => {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage(
+      {
+        type: 'survey-frame-height',
+        height
+      },
+      '*'
+    );
+  }, 150);
+};
+
 const generateQuestions = () => {
+  console.log('generateQuestions called');
   const { industry, productService, uncertaintyAreas } = businessInfo;
 
   // If using a template, handle smart refill
@@ -563,6 +634,18 @@ const generateQuestions = () => {
       
       setGeneratedQuestions(newQuestionsList);
       
+      // Trigger height recalculation
+      setTimeout(() => {
+        const height = document.documentElement.scrollHeight;
+        window.parent.postMessage(
+  {
+    type: 'survey-frame-height',
+    height
+  },
+  '*'
+);
+      }, 200);
+      
       return;
       
     } else {
@@ -575,6 +658,17 @@ const generateQuestions = () => {
       setGeneratedQuestions(customizedQuestions);
       setSelectedQuestions(customizedQuestions);
       
+      // Trigger height recalculation
+      setTimeout(() => {
+        const height = document.documentElement.scrollHeight;
+        window.parent.postMessage(
+  {
+    type: 'survey-frame-height',
+    height
+  },
+  '*'
+);
+      }, 200);
       
       return;
     }
@@ -622,21 +716,13 @@ const generateQuestions = () => {
   }
 
   // Customize questions with business-specific terms
-  const customizedQuestions = questionPool.map(question => {
-  return question
-    .replace(
-      '[product/service]',
-      productService ? `"${productService}"` : 'product/service'
-    )
-    .replace(
-      '[relevant area]',
-      `"${getRelevantArea(industry)}"`
-    )
-    .replace(
-      '[relevant process]',
-      `"${getRelevantProcess(industry)}"`
-    );
-});
+  const customizedQuestions = questionPool.map(q => {
+    return q
+      .replace('[product/service]', `"${productService}"` || 'product/service')
+      .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
+      .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+  });
+
   // Always refresh unselected questions when button is clicked
   const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
 
@@ -661,8 +747,20 @@ const generateQuestions = () => {
     const moreQuestions = [...selectedQuestions, ...newQuestions].slice(0, 15);
     setGeneratedQuestions(moreQuestions);
   }
+
+  // Trigger height recalculation
+  setTimeout(() => {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage(
+  {
+    type: 'survey-frame-height',
+    height
+  },
+  '*'
+);
+  }, 200);
 };
-  
+
   const getRelevantArea = (industry: string) => {
     const areaMap: { [key: string]: string } = {
       'marketing': 'marketing and lead generation',
@@ -707,34 +805,43 @@ const generateQuestions = () => {
   });
 };
 
+// Add the handleTemplateSelection function here (after line 522)
 const handleTemplateSelection = (templateKey: string) => {
   const template = surveyTemplates[templateKey];
-
+  
   if (selectedTemplate === templateKey) {
+    // Deselect if clicking the same template
     setSelectedTemplate('');
     setGeneratedQuestions([]);
     setSelectedQuestions([]);
-    setBusinessInfo(previous => ({
-      ...previous,
-      uncertaintyAreas: []
-    }));
-
-    return;
+    setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
+  } else {
+    // Select new template
+    setSelectedTemplate(templateKey);
+    
+    // Customize questions with business-specific terms
+    const customizedQuestions = template.questions.map(q => {
+      return q.replace('[product/service]', `"${businessInfo.productService}"` || 'product/service');
+    });
+    
+    setGeneratedQuestions(customizedQuestions);
+    setSelectedQuestions(customizedQuestions); // Auto-select all template questions
+    
+    // DON'T clear custom uncertainty areas - let users combine them
+    // setBusinessInfo(prev => ({...prev, uncertaintyAreas: []}));
   }
-
-  setSelectedTemplate(templateKey);
-
-  const customizedQuestions = template.questions.map(question =>
-    question.replace(
-      '[product/service]',
-      businessInfo.productService
-        ? `"${businessInfo.productService}"`
-        : 'product/service'
-    )
-  );
-
-  setGeneratedQuestions(customizedQuestions);
-  setSelectedQuestions(customizedQuestions);
+  
+  // Trigger height recalculation
+  setTimeout(() => {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage(
+  {
+    type: 'survey-frame-height',
+    height
+  },
+  '*'
+);
+  }, 200);
 };
 
   const toggleQuestionSelection = (question: string) => {
@@ -748,35 +855,29 @@ const handleTemplateSelection = (templateKey: string) => {
 };
 
 const toggleDropdown = (key: string) => {
-  setOpenDropdown(current => current === key ? null : key);
+  console.log('toggleDropdown called with key:', key);
+  console.log('current openDropdown:', openDropdown);
+  setOpenDropdown(openDropdown === key ? null : key);
 };
 
   const exportSurvey = () => {
-  const intro = `Customer Discovery Survey
-
+    const intro = `Customer Discovery Survey
+    
 Goal: Understanding our customers better to improve how we serve you.
 
 Instructions: Please answer as openly and honestly as possible. Your responses will help us understand your needs and challenges better.
 
 Questions:
 `;
-
-  const surveyText =
-    intro +
-    selectedQuestions
-      .map((question, index) => `${index + 1}. ${question}\n`)
-      .join('\n');
-
-  const blob = new Blob([surveyText], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-
-  anchor.href = url;
-  anchor.download = 'customer-discovery-survey.txt';
-  anchor.click();
-
-  URL.revokeObjectURL(url);
-};
+    const surveyText = intro + selectedQuestions.map((q, i) => `${i + 1}. ${q}\n`).join('\n');
+    
+    const blob = new Blob([surveyText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'customer-discovery-survey.txt';
+    a.click();
+  };
 
 const copyToClipboard = async () => {
   const intro = `Customer Discovery Survey\n\nQuestions:\n`;
@@ -893,9 +994,9 @@ const copyToClipboard = async () => {
               
               {/* Labels */}
               <div className="flex flex-wrap gap-1 mb-2">
-                {template.labels.map(label => (
+                {template.labels.map((label, index) => (
                   <span 
-                    key={label}
+                    key={index}
                     className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getLabelColor(label)}`}
                   >
                     {label}
@@ -1012,7 +1113,7 @@ const copyToClipboard = async () => {
     {openDropdown === area.key && (
       <>
         <div 
-          className="fixed inset-0 z-[5]"
+          className="fixed inset-0 z-5"
           onClick={() => setOpenDropdown(null)}
         />
         <div 
@@ -1115,15 +1216,8 @@ const copyToClipboard = async () => {
 
       {/* Questions List */}
       <div className="space-y-3 mb-6">
-        {generatedQuestions.map(question => (
-  <div
-    key={question}
-    className={`flex items-start space-x-3 p-3 border rounded-lg ${
-      selectedQuestions.includes(question)
-        ? 'bg-red-50 border-red-200'
-        : ''
-    }`}
-  >
+        {generatedQuestions.map((question, index) => (
+          <div key={index} className={`flex items-start space-x-3 p-3 border rounded-lg ${selectedQuestions.includes(question) ? 'bg-red-50 border-red-200' : ''}`}>
             <Checkbox
               checked={selectedQuestions.includes(question)}
               onCheckedChange={() => toggleQuestionSelection(question)}
@@ -1218,7 +1312,7 @@ const copyToClipboard = async () => {
           </div>
           <div className="space-y-4">
             {selectedQuestions.map((question, index) => (
-              <div key={question}>
+              <div key={index}>
                 <p className="font-medium text-sm" style={{color: '#ff5757'}}>
                   Question {index + 1}
                 </p>
@@ -1256,9 +1350,7 @@ const copyToClipboard = async () => {
     )}
   </Card>
 )}
-
-      
-        </div>
+    </div>
   </div>
 );
 };
