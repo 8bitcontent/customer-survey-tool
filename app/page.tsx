@@ -253,7 +253,7 @@ const [showPreview, setShowPreview] = useState(false);
     painPointsDiscovery: [
       "What was the biggest challenge you were facing before finding our solution?",
       "What keeps you up at night when it comes to [relevant area]?",
-      "What’s the most frustrating part of your [content creation/customer engagement/sales process] that impacts your results?",
+      "What’s the most frustrating part of your work that impacts your results?",
       "If you could wave a magic wand and fix one thing about [relevant area], what would it be?",
       "What problems do you face that you haven't found a good solution for yet?",
       "What adjacent problems do you face that we don't currently solve?",
@@ -352,7 +352,7 @@ const [showPreview, setShowPreview] = useState(false);
       "What typically happens right before you start looking for help with [relevant area]?",
       "What events or circumstances make this a priority for you?",
       "When during the year/quarter/month do you most need this type of solution?",
-      "What prompted you to engage with our recent [campaign/launch/offer]?",
+      "What prompted you to engage with our recent campaign, launch or offer?",
       "What has to go wrong for you to start actively seeking a solution?",
       "What specific event or failure (e.g., a failed campaign, lost sale) prompted you to seek a solution like ours?",
       "What specific triggers (e.g., budget approval, new project, leadership directive) prompt you to research tools like ours?",
@@ -563,25 +563,17 @@ const recalculateHeight = () => {
 };
 
 const generateQuestions = () => {
-  console.log('generateQuestions called');
   const { industry, productService, uncertaintyAreas } = businessInfo;
 
   // If using a template, handle smart refill
   if (selectedTemplate) {
-    console.log('=== FILL GAPS DEBUG ===');
-    console.log('Template selected:', selectedTemplate);
-    console.log('Generated questions:', generatedQuestions);
-    console.log('Selected questions:', selectedQuestions);
     
     const template = surveyTemplates[selectedTemplate];
     
     // Get unselected questions (these are the gaps to fill)
     const unselectedQuestions = generatedQuestions.filter(q => !selectedQuestions.includes(q));
-    console.log('Unselected questions:', unselectedQuestions);
-    console.log('Number of gaps to fill:', unselectedQuestions.length);
     
     if (unselectedQuestions.length > 0) {
-      console.log('Found gaps to fill, proceeding...');
       
       // Determine which questions to use for replacement based on fillGapsCategory
       let replacementPool: string[] = [];
@@ -625,8 +617,8 @@ const generateQuestions = () => {
       const customizedReplacements = replacementQuestions.map(q => {
         return q
           .replace('[product/service]', productService ? `"${productService}"` : 'product/service')
-          .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-          .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+          .replace('[relevant area]', getRelevantArea(industry))
+          .replace('[relevant process]', getRelevantProcess(industry));
       });
       
       // Create new list: selected questions + replacement questions
@@ -649,7 +641,6 @@ const generateQuestions = () => {
       return;
       
     } else {
-      console.log('No gaps to fill - all questions selected');
       // Just regenerate original template
       const customizedQuestions = template.questions.map(q => {
         return q.replace('[product/service]', productService ? `"${productService}"` : 'product/service');
@@ -675,39 +666,48 @@ const generateQuestions = () => {
   }
 
   // Rest of your existing custom selection logic...
-  let questionPool: string[] = [];
+  const areaPools: string[][] = [];
   
   // Add questions from selected categories
   if (uncertaintyAreas.includes('demographics')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.demographicsPsychographics, 8));
+    areaPools.push(getRandomQuestions(discoveryQuestions.demographicsPsychographics, 8));
   }
   
   if (uncertaintyAreas.includes('pain-points')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.painPointsDiscovery, 8));
+    areaPools.push(getRandomQuestions(discoveryQuestions.painPointsDiscovery, 8));
   }
   
   if (uncertaintyAreas.includes('jobs-to-be-done')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.jobsToBeDone, 8));
+    areaPools.push(getRandomQuestions(discoveryQuestions.jobsToBeDone, 8));
   }
   
   if (uncertaintyAreas.includes('purchasing')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.purchasingBehavior, 8));
+    areaPools.push(getRandomQuestions(discoveryQuestions.purchasingBehavior, 8));
   }
   
   if (uncertaintyAreas.includes('hesitations')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.hesitationsBarriers, 8));
+    areaPools.push(getRandomQuestions(discoveryQuestions.hesitationsBarriers, 8));
   }
   
   if (uncertaintyAreas.includes('language')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.languageVoice, 8));
+    areaPools.push(getRandomQuestions(discoveryQuestions.languageVoice, 8));
   }
   
   if (uncertaintyAreas.includes('triggers')) {
-  questionPool.push(...getRandomQuestions([...discoveryQuestions.motivationsDrivers, ...discoveryQuestions.categoryEntryPoints], 8));
+  areaPools.push(getRandomQuestions([...discoveryQuestions.motivationsDrivers, ...discoveryQuestions.categoryEntryPoints], 8));
 }
 
   if (uncertaintyAreas.includes('competitors')) {
-    questionPool.push(...getRandomQuestions(discoveryQuestions.competitors, 8));
+    areaPools.push(getRandomQuestions(discoveryQuestions.competitors, 8));
+  }
+
+  // Deal one question from each selected area in turn, so every area is represented
+  const questionPool: string[] = [];
+  const longestPool = Math.max(0, ...areaPools.map(pool => pool.length));
+  for (let i = 0; i < longestPool; i++) {
+    areaPools.forEach(pool => {
+      if (pool[i]) questionPool.push(pool[i]);
+    });
   }
 
   if (uncertaintyAreas.length === 0) {
@@ -718,9 +718,9 @@ const generateQuestions = () => {
   // Customize questions with business-specific terms
   const customizedQuestions = questionPool.map(q => {
     return q
-      .replace('[product/service]', `"${productService}"` || 'product/service')
-      .replace('[relevant area]', `"${getRelevantArea(industry)}"`)
-      .replace('[relevant process]', `"${getRelevantProcess(industry)}"`);
+      .replace('[product/service]', productService ? `"${productService}"` : 'product/service')
+      .replace('[relevant area]', getRelevantArea(industry))
+      .replace('[relevant process]', getRelevantProcess(industry));
   });
 
   // Always refresh unselected questions when button is clicked
@@ -772,7 +772,7 @@ const generateQuestions = () => {
       'fitness': 'health and fitness goals',
       'finance': 'financial management'
     };
-    return areaMap[industry] || 'your work';
+    return areaMap[industry.trim().toLowerCase()] || 'your work';
   };
 
   const getRelevantProcess = (industry: string) => {
@@ -786,7 +786,7 @@ const generateQuestions = () => {
       'fitness': 'fitness routine',
       'finance': 'financial planning process'
     };
-    return processMap[industry] || 'current process';
+    return processMap[industry.trim().toLowerCase()] || 'current process';
   };
 
   const toggleUncertaintyArea = (area: string) => {
@@ -821,7 +821,7 @@ const handleTemplateSelection = (templateKey: string) => {
     
     // Customize questions with business-specific terms
     const customizedQuestions = template.questions.map(q => {
-      return q.replace('[product/service]', `"${businessInfo.productService}"` || 'product/service');
+      return q.replace('[product/service]', businessInfo.productService ? `"${businessInfo.productService}"` : 'product/service');
     });
     
     setGeneratedQuestions(customizedQuestions);
@@ -855,8 +855,6 @@ const handleTemplateSelection = (templateKey: string) => {
 };
 
 const toggleDropdown = (key: string) => {
-  console.log('toggleDropdown called with key:', key);
-  console.log('current openDropdown:', openDropdown);
   setOpenDropdown(openDropdown === key ? null : key);
 };
 
