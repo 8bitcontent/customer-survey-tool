@@ -1225,6 +1225,13 @@ const copyToClipboard = async () => {
         ))}
       </div>
 
+      {/* The next steps stay hidden until a question is ticked, so say so */}
+      {selectedQuestions.length === 0 && (
+        <p className="text-sm text-black bg-gray-50 p-3 rounded-lg mb-6">
+          💡 Tick the questions you want to keep to preview, copy or export your survey.
+        </p>
+      )}
+
       {/* Advanced Customization Dropdown - Only show if template is selected */}
       {selectedTemplate && (
         <div className="border-t pt-6 mt-6">
@@ -1283,10 +1290,10 @@ const copyToClipboard = async () => {
         <div className="flex-1">
           <CardTitle as="h2" className="text-black mb-3">Ready to Use Survey</CardTitle>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Copy this formatted version directly into Google Forms, Typeform, or email it to customers.
+            Click Show Preview to copy or export your survey for Google Forms, Typeform or email.
           </p>
         </div>
-        <Button 
+        <Button
           onClick={() => setShowPreview(!showPreview)}
           variant="outline"
           size="sm"
